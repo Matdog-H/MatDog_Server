@@ -3,7 +3,7 @@ package org.duksung.matdog.dto;
 import lombok.Data;
 
 @Data
-//관련 사용자 입력 데이터 정보?
+//회원정보 관련
 public class User {
 
 
