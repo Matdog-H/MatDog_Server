@@ -27,12 +27,24 @@ public class RegisterController {
     @PostMapping("/register")
     public ResponseEntity registerNotice(@RequestBody final Register register) {
         try {
-            Register register_show = new Register();
-            DefaultRes<Register> defaultRes = new DefaultRes<Register>(HttpStatus.OK.value(), "success", register_show);
-            //return new ResponseEntity<>(registerService.saveRegister(register), HttpStatus.OK, register);
-            return new ResponseEntity<>(defaultRes, HttpStatus.OK);
+            //Register register_show = new Register();
+            //DefaultRes<Register> defaultRes = new DefaultRes<Register>(HttpStatus.OK.value(), "success", register_show);
+            return new ResponseEntity<>(registerService.saveRegister(register), HttpStatus.OK);
+            //return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e) {
             log.info("실패들어옴");
+            log.error(e.getMessage());
+            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{registerIdx}")
+    public ResponseEntity update_register(
+            @PathVariable(value = "registerIdx") final int registerIdx,
+            @RequestBody final Register register){
+        try{
+            return new ResponseEntity<>(registerService.register_update(registerIdx, register), HttpStatus.OK);
+        } catch (Exception e){
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -14,6 +14,9 @@ public interface RegisterMapper {
     @Select("SELECT * FROM register")
     List<Register> findAll();
 
+    @Select("SELECT * FROM register WHERE registerIdx = #{registerIdx}")
+    Register findByRegisterIdx(@Param("registerIdx") final int registerIdx);
+
     //분양 공고 등록
     @Insert("INSERT INTO register(userIdx, registerIdx, status, gender, transGender, weight, age, " +
             "protectPlace, lostDate, lostPlace, findDate, findPlace, feature, tel, email, memo, heart) " +
@@ -23,6 +26,15 @@ public interface RegisterMapper {
             "#{register.email}, #{register.memo}, #{register.heart})")
     @Options(useGeneratedKeys = true, keyColumn = "register.registerIdx")
     int save(@Param("register") final Register register);
+
+    //분양 공고 수정
+    @Update("UPDATE register SET status = #{register.status}, gender = #{register.gender}, transGender=#{register.transGender}, "
+            +"weight = #{register.weight}, age = #{register.age} "
+            +"protectPlace=#{register.protectPlace}, lostDate=#{register.lostDate}, lostPlace=#{register.lostPlace}"
+            +",findDate=#{register.findDate},findPlace=#{register.findPlace},"
+            +"feature=#{register.feature},tel=#{register.tel},email=#{register.email},memo=#{register.memo},heart=#{register.heart}"
+            +"WHERE registerIdx = #{register.registerIdx}")
+    void register_update(@Param("registerIdx") final int registerIdx, @Param("register") final Register register);
 //
 //    @Insert("INSERT INTO user(user_id, user_pw, user_gender) VALUES(#{user.user_id}, #{user.user_pw}, #{user.user_gender})")
 //    @Options(useGeneratedKeys = true, keyColumn = "user.user_idx")
