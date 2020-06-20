@@ -18,23 +18,21 @@ public interface RegisterMapper {
     Register findByRegisterIdx(@Param("registerIdx") final int registerIdx);
 
     //분양 공고 등록
-    @Insert("INSERT INTO register(userIdx, type, gender, transGender, weight, age, " +
-            "protectPlace, character, tel, email, memo, heart) " +
-            "VALUES(#{register.userIdx}, #{register.type}, #{register.gender}, " +
-            "#{register.transGender}, #{register.weight}, #{register.age}, #{register.protectPlace}, " +
-            "#{register.character}, #{register.tel}, " +
+    @Insert("INSERT INTO register(userIdx, registerIdx, variety, gender, transGender, weight, age, protectPlace, feature, tel, email, memo) " +
+            "VALUES(#{register.userIdx},#{register.registerIdx}, #{register.variety}, #{register.gender}, #{register.transGender}, #{register.weight}, #{register.age}, #{register.protectPlace}, " +
+            "#{register.feature}, #{register.tel}, " +
             "#{register.email}, #{register.memo})")
     @Options(useGeneratedKeys = true, keyColumn = "register.registerIdx")
     int save(@Param("register") final Register register);
 
     //분양 공고 수정
-    @Update("UPDATE register SET status = #{register.status}, gender = #{register.gender}, transGender=#{register.transGender}, "
-            +"weight = #{register.weight}, age = #{register.age} "
-            +"protectPlace=#{register.protectPlace}, lostDate=#{register.lostDate}, lostPlace=#{register.lostPlace},"
-            +"findDate=#{register.findDate},findPlace=#{register.findPlace},"
-            +"feature=#{register.feature},tel=#{register.tel},email=#{register.email},memo=#{register.memo},heart=#{register.heart}"
-            +"WHERE registerIdx = #{register.registerIdx}")
-    void register_update(@Param("register.registerIdx") final int registerIdx, @Param("register") final Register register);
+//    @Update("UPDATE register SET status = #{register.status}, gender = #{register.gender}, transGender=#{register.transGender}, "
+//            +"weight = #{register.weight}, age = #{register.age} "
+//            +"protectPlace=#{register.protectPlace}, lostDate=#{register.lostDate}, lostPlace=#{register.lostPlace},"
+//            +"findDate=#{register.findDate},findPlace=#{register.findPlace},"
+//            +"feature=#{register.feature},tel=#{register.tel},email=#{register.email},memo=#{register.memo},heart=#{register.heart}"
+//            +"WHERE registerIdx = #{register.registerIdx}")
+//    void register_update(@Param("register.registerIdx") final int registerIdx, @Param("register") final Register register);
 //
 //    @Insert("INSERT INTO user(user_id, user_pw, user_gender) VALUES(#{user.user_id}, #{user.user_pw}, #{user.user_gender})")
 //    @Options(useGeneratedKeys = true, keyColumn = "user.user_idx")

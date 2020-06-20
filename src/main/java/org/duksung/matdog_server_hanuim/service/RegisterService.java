@@ -54,21 +54,21 @@ public class RegisterService {
         if(temp == null)
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
         try{
-            temp.setStatus(register.getStatus());
-            temp.setGender(register.getGender());
-            temp.setTransGender(register.getTransGender());
-            temp.setWeight(register.getWeight());
-            temp.setAge(register.getAge());
-            if(register.getProtectPlace() != null) temp.setProtectPlace(register.getProtectPlace());
-            if(register.getLostDate() != null) temp.setLostDate(register.getLostDate());
-            if(register.getLostPlace() != null) temp.setLostPlace(register.getLostPlace());
-            if(register.getFindDate() != null) temp.setFindDate(register.getFindDate());
-            if(register.getFindPlace() != null) temp.setFindPlace(register.getFindPlace());
-            if(register.getFeature() != null) temp.setFeature(register.getFeature());
-            if(register.getTel() != null) temp.setTel(register.getTel());
-            if(register.getEmail() != null) temp.setEmail(register.getEmail());
-            if(register.getMemo() != null) temp.setMemo(register.getMemo());
-            registerMapper.register_update(registerIdx, temp);
+//            temp.setStatus(register.getStatus());
+//            temp.setGender(register.getGender());
+//            temp.setTransGender(register.getTransGender());
+//            temp.setWeight(register.getWeight());
+//            temp.setAge(register.getAge());
+//            if(register.getProtectPlace() != null) temp.setProtectPlace(register.getProtectPlace());
+//            if(register.getLostDate() != null) temp.setLostDate(register.getLostDate());
+//            if(register.getLostPlace() != null) temp.setLostPlace(register.getLostPlace());
+//            if(register.getFindDate() != null) temp.setFindDate(register.getFindDate());
+//            if(register.getFindPlace() != null) temp.setFindPlace(register.getFindPlace());
+//            if(register.getFeature() != null) temp.setFeature(register.getFeature());
+//            if(register.getTel() != null) temp.setTel(register.getTel());
+//            if(register.getEmail() != null) temp.setEmail(register.getEmail());
+//            if(register.getMemo() != null) temp.setMemo(register.getMemo());
+            //registerMapper.register_update(registerIdx, temp);
             return DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.UPDATE_REGISTER);
         } catch (Exception e){
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
