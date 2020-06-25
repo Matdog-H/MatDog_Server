@@ -9,13 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.xml.ws.Response;
+import java.util.List;
 import java.util.Optional;
 
 import static org.duksung.matdog_server_hanuim.model.DefaultRes.FAIL_DEFAULT_RES;
 
 @RestController
 @Slf4j
-@RequestMapping("program")
 public class RegisterController {
     private final RegisterService registerService;
 
@@ -24,11 +24,10 @@ public class RegisterController {
         this.registerService = registerService;
     }
 
-    @PostMapping("/register")
+    //공고 등록
+    @PostMapping("program/register")
     public ResponseEntity registerNotice(@RequestBody final Register register) {
         try {
-            //Register register_show = new Register();
-            //DefaultRes<Register> defaultRes = new DefaultRes<Register>(HttpStatus.OK.value(), "success", register_show);
             return new ResponseEntity<>(registerService.saveRegister(register), HttpStatus.OK);
             //return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e) {
@@ -38,12 +37,25 @@ public class RegisterController {
         }
     }
 
-    @PutMapping("/{registerIdx}")
+    //공고 수정
+    @PutMapping("program/register/{registerIdx}")
     public ResponseEntity update_register(
             @PathVariable(value = "registerIdx") final int registerIdx,
             @RequestBody final Register register){
         try{
             return new ResponseEntity<>(registerService.register_update(registerIdx, register), HttpStatus.OK);
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //공고 삭제
+    @DeleteMapping("program/register/{registerIdx}")
+    public ResponseEntity delete_register(
+            @PathVariable(value = "registerIdx") final int registerIdx){
+        try{
+            return new ResponseEntity<>(registerService.deleteByRegisterIdx(registerIdx), HttpStatus.OK);
         } catch (Exception e){
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -67,11 +79,15 @@ public class RegisterController {
 //        }
 //    }
 
-    //내가 쓴 모든 공고 가져오기
-//    @GetMapping("/program")
-//    public ResponseEntity getRegister(@RequestParam("userIdx") final Optional<Integer> userIdx){
-//        try{
-//            if(userIdx.isPresent()) return new ResponseEntity<>(registerService.getAllRegister())
-//        }
-//    }
+    //내가 쓴 모든 공고 가져오기(분양)
+    @GetMapping("/program/allregister")
+    public ResponseEntity getRegister(){
+        try{
+            DefaultRes<List<Register>> defaultRes = registerService.getAllRegister();
+            return new ResponseEntity<>(defaultRes, HttpStatus.OK);
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
