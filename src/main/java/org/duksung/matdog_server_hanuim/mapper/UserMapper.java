@@ -12,9 +12,17 @@ public interface UserMapper {
     @Select("SELECT * FROM user")
     List<User> findAll();
 
-    //ID으로 조회
+    //ID로 조회
     @Select("SELECT * FROM user WHERE id = #{id}")
     User findById(@Param("id") final String id);
+
+    //Useridx로 조회
+    @Select("SELECT * FROM user WHERE userIdx = #{userIdx}")
+    User findByUidx(@Param("userIdx") final int userIdx);
+
+    //@Update("UPDATE user SET u_description = #{userDescriptionReq.u_description} WHERE u_idx = #{userIdx}")
+    //void saveUserDescription(@Param("userIdx") final int userIdx, @Param("userDescriptionReq") final UserDescriptionReq userDescriptionReq);
+
 
     //회원 등록, Auto Increment는 회원 고유 번호
     //Auto Increment 값을 받아오고 싶으면 리턴 타입을 int(Auto Increment 컬럼 타입)으로 하면 된다.

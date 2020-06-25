@@ -78,4 +78,24 @@ public class UserService {
         }
     }
 
+    /**
+     * 유저 객체 반환
+     *
+     * @param userIdx 유저 정보
+     * @return DefaultRes - User 객체
+     */
+    public DefaultRes findUser(final int userIdx) {
+        final User user = userMapper.findByUidx(userIdx);
+        if (user != null) {
+            try {
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_USER, user);
+            } catch (Exception e) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                log.error(e.getMessage());
+                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+            }
+        }
+        return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.NOT_FOUND_USER);
+    }
+
 }

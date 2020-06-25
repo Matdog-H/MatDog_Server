@@ -1,7 +1,9 @@
 package org.duksung.matdog_server_hanuim.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.User;
+import org.duksung.matdog_server_hanuim.model.DefaultRes;
 import org.duksung.matdog_server_hanuim.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,5 +45,24 @@ public class UserController {
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     *
+     * @param userIdx
+     * @return User 객체
+     */
+    @GetMapping("")
+    public ResponseEntity getUserInfo(
+            @PathVariable("userIdx") final int userIdx) {
+        try {
+            DefaultRes defaultRes = userService.findUser(userIdx);
+            return new ResponseEntity<>(defaultRes, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
 }
