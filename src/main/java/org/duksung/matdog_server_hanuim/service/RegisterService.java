@@ -48,16 +48,18 @@ public class RegisterService {
         if (registerMapper.findByRegisterIdx(registerIdx) != null) {
             try {
                 Register myRegister = registerMapper.findByRegisterIdx(registerIdx);
-                myRegister.setVariety(register.getVariety());
+                if(myRegister == null)
+                    return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+                if(register.getVariety() != null) myRegister.setVariety(register.getVariety());
                 myRegister.setGender(register.getGender());
                 myRegister.setTransGender(register.getTransGender());
                 myRegister.setWeight(register.getWeight());
                 myRegister.setAge(register.getAge());
-                myRegister.setProtectPlace(register.getProtectPlace());
-                myRegister.setFeature(register.getFeature());
-                myRegister.setTel(register.getTel());
-                myRegister.setEmail(register.getEmail());
-                myRegister.setMemo(register.getMemo());
+                if(register.getProtectPlace() != null) myRegister.setProtectPlace(register.getProtectPlace());
+                if(register.getFeature() != null) myRegister.setFeature(register.getFeature());
+                if(register.getTel() != null) myRegister.setTel(register.getTel());
+                if(register.getEmail() != null) myRegister.setEmail(register.getEmail());
+                if(register.getMemo() != null) myRegister.setMemo(register.getMemo());
                 registerMapper.update(registerIdx, myRegister);
                 return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_REGISTER);
             } catch (Exception e) {

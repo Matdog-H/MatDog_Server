@@ -20,7 +20,7 @@ public class RegisterController {
     private final RegisterService registerService;
 
     public RegisterController(RegisterService registerService) {
-        log.info("컨트롤러");
+        log.info("분양 컨트롤러");
         this.registerService = registerService;
     }
 
@@ -31,7 +31,7 @@ public class RegisterController {
             return new ResponseEntity<>(registerService.saveRegister(register), HttpStatus.OK);
             //return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e) {
-            log.info("실패들어옴");
+            log.info("분양 공고 등록 실패");
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -45,6 +45,7 @@ public class RegisterController {
         try{
             return new ResponseEntity<>(registerService.register_update(registerIdx, register), HttpStatus.OK);
         } catch (Exception e){
+            log.info("분양 공고 수정 실패");
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -57,6 +58,7 @@ public class RegisterController {
         try{
             return new ResponseEntity<>(registerService.deleteByRegisterIdx(registerIdx), HttpStatus.OK);
         } catch (Exception e){
+            log.info("분양 공고 삭제 실패");
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -80,7 +82,7 @@ public class RegisterController {
 //    }
 
     //내가 쓴 모든 공고 가져오기(분양)
-    @GetMapping("/program/allregister")
+    @GetMapping("program/allregister")
     public ResponseEntity getRegister(){
         try{
             DefaultRes<List<Register>> defaultRes = registerService.getAllRegister();
