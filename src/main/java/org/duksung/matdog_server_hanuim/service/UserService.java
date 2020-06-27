@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.User;
 import org.duksung.matdog_server_hanuim.mapper.UserMapper;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
+import org.duksung.matdog_server_hanuim.model.UserSignUpReq;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.springframework.stereotype.Service;
@@ -98,4 +99,29 @@ public class UserService {
         return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.NOT_FOUND_USER);
     }
 
+    @Transactional
+    public DefaultRes user_update(final int userIdx, final User user){
+        if(userMapper.findByUidx(userIdx)!=null){
+            try {
+                User myUser = userMapper.findByUidx(userIdx);
+                if (myUser == null)
+                    return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
+                if (user.getName() != null) myUser.setName(user.getName());
+                if (user.getAddr() != null) myUser.setAddr(user.getAddr());
+                if (user.getBirth() != null) myUser.setBirth(user.getBirth());
+                if (user.getTel() != null) myUser.setTel(user.getTel());
+                if (user.getEmail() != null) myUser.setEmail(user.getEmail());
+                if (user.getMemo() != null) myUser.setMemo(user.getMemo());
+                userMapper.updateUserInfo(userIdx, myUser);
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_USER);
+            }
+            catch (Exception e) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                log.error(e.getMessage());
+                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+            }
+        }
+        return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
+
+            }
 }
