@@ -18,7 +18,7 @@ import static org.duksung.matdog_server_hanuim.model.DefaultRes.FAIL_DEFAULT_RES
 
 @Slf4j
 @RestController
-@RequestMapping("users")
+@RequestMapping("user")
 public class UserController {
 
     private final UserService userService;
@@ -40,7 +40,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("")
+    @PostMapping("/signup")
     public ResponseEntity signup(@RequestBody final User user) {
         try {
             return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
@@ -80,5 +80,7 @@ public class UserController {
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
    }
+
+
 
 }

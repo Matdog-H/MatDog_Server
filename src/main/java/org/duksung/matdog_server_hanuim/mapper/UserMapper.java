@@ -13,6 +13,9 @@ public interface UserMapper {
     @Select("SELECT * FROM user")
     List<User> findAll();
 
+    @Select("SELECT id FROM user")
+    String findID();
+
     //ID로 조회
     @Select("SELECT * FROM user WHERE id = #{id}")
     User findById(@Param("id") final String id);
@@ -40,9 +43,7 @@ public interface UserMapper {
             "birth = #{user.birth}, email = #{user.email}, memo = #{user.memo} WHERE userIdx = #{userIdx}")
     void updateUserInfo(@Param("userIdx") final int userIdx, @Param("user") final User user);
 
-    // 이름과 비밀번호로 조회
-    @Select("SELECT * FROM user WHERE id =#{loginReq.id} AND pw = #{loginReq.password}")
+    // 아이디와 비밀번호로 조회
+    @Select("SELECT * FROM user WHERE id =#{loginReq.id} AND pw = #{loginReq.pw}")
     User findByIdAndPassword(@Param("loginReq") final LoginReq loginReq);
-
-
 }
