@@ -1,6 +1,7 @@
 package org.duksung.matdog_server_hanuim.model;
 
 import lombok.*;
+import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
 
@@ -20,6 +21,7 @@ public class DefaultRes<T> {
         this.message = message;
         this.data = null;
     }
+
 
     public static <T> DefaultRes<T> res(final int status, final String message) {
         return res(status, message, null);

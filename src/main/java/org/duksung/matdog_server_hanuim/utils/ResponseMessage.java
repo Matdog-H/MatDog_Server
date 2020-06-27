@@ -11,10 +11,14 @@ public class ResponseMessage {
     public static final String UPDATE_USER = "회원 정보 수정 성공";
     public static final String UPDATE_REGISTER = "공고 정보 수정 성공";
     public static final String UPDATE_REGISTER_LOST = "실종 공고 수정 성공";
+    public static final String UPDATE_REGISTER_SPOT = "목격 공고 수정 성공";
     public static final String DELETE_USER = "회원 탈퇴 성공";
     public static final String DELETE_REGISTER = "분양 공고 삭제 성공";
     public static final String CREATED_REGISTER = "분양 공고 등록 성공";
     public static final String CREATED_REGISTER_LOST = "실종 공고 등록 성공";
+    public static final String CREATED_REGISTER_SPOT = "목격 공고 등록 성공";
+
+    public static final String SEARCH_REGISTER = "분양 공고 검색 성공";
 
     public static final String INTERNAL_SERVER_ERROR = "서버 내부 에러";
 

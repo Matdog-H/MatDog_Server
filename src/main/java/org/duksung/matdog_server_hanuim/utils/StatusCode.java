@@ -4,6 +4,7 @@ package org.duksung.matdog_server_hanuim.utils;
 public class StatusCode {
     public static final int OK = 200;
     public static final int CREATED = 201;
+    //204(콘텐츠 없음): 서버가 요청을 성공적으로 처리했지만 콘텐츠를 제공하지 않는다.
     public static final int NO_CONTENT = 204;
     public static final int BAD_REQUEST = 400;
     public static final int UNAUTHORIZED = 401;

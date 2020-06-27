@@ -42,6 +42,25 @@ public class RegisterService {
         }
     }
 
+//    @Transactional
+//    public DefaultRes<List<Register>> getAllRegister() {
+//        List<Register> registerList = registerMapper.findAll();
+//        if (registerList.isEmpty())
+//            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+//        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerList);
+//    }
+    //검색
+    @Transactional
+    public DefaultRes search_register(final String variety, final String protectPlace){
+        List<Register> registerList = registerMapper.search_register(variety, protectPlace);
+        if(registerList.isEmpty()){
+            log.info("검색 실패");
+            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+        }
+        log.info("검색 성공");
+        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerList);
+    }
+
     //공고 수정
     @Transactional
     public DefaultRes register_update(final int registerIdx, final Register register) {
@@ -74,9 +93,21 @@ public class RegisterService {
     //모든 공고 조회
     @Transactional
     public DefaultRes<List<Register>> getAllRegister() {
-        List<Register> registerList = registerMapper.findAll();
+        List<Register> registerList = registerMapper.findAll_register();
         if (registerList.isEmpty())
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerList);
+    }
+
+    //나이순 공고 조회
+    @Transactional
+    public DefaultRes<List<Register>> getAllRegister_age(){
+        List<Register> registerList = registerMapper.findAll_age();
+        if(registerList.isEmpty()){
+            log.info("나이순 공고 조회 실패");
+            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+        }
+        log.info("나이순 공고 조회 성공");
         return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerList);
     }
 
