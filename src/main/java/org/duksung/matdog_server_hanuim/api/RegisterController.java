@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.ws.Response;
+
 import java.util.Optional;
 
 import static org.duksung.matdog_server_hanuim.model.DefaultRes.FAIL_DEFAULT_RES;
