@@ -13,6 +13,8 @@ public interface UserMapper {
     @Select("SELECT * FROM user")
     List<User> findAll();
 
+    //
+
     @Select("SELECT id FROM user")
     String findID();
 

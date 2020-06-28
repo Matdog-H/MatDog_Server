@@ -2,6 +2,7 @@ package org.duksung.matdog_server_hanuim.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.Register;
+import org.duksung.matdog_server_hanuim.dto.User;
 import org.duksung.matdog_server_hanuim.mapper.RegisterMapper;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
@@ -29,11 +30,16 @@ public class RegisterService {
 
     //분양공고 등록하기
     @Transactional
-    public DefaultRes saveRegister(final Register register) {
+    public DefaultRes saveRegister(final int userIdx, final Register register) {
         try {
             log.info("분양 공고 저장");
-            registerMapper.save(register);
-            return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER);
+            int insertId = registerMapper.save(userIdx, register);
+            System.out.println(insertId);
+            Register returnedData = register;
+            returnedData.setUserIdx(userIdx);
+            returnedData.setRegisterIdx(insertId);
+            System.out.println(returnedData);
+            return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER, returnedData);
         } catch (Exception e) {
             log.info("저장안됨");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();

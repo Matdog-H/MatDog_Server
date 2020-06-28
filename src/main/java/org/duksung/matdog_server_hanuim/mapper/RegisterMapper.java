@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.*;
 import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.Register_lost;
 import org.duksung.matdog_server_hanuim.dto.Register_spot;
+import org.duksung.matdog_server_hanuim.dto.User;
 
 import java.util.List;
 
@@ -26,13 +27,13 @@ public interface RegisterMapper {
     List<Register> search_register(@Param("variety") final String variety, @Param("protectPlace") final String protectPlace);
 
     //분양 공고 등록
-    @Insert("INSERT INTO register(userIdx, registerIdx, variety, gender, transGender, weight, age, protectPlace, feature, tel, email, memo) " +
-            "VALUES(#{register.userIdx},#{register.registerIdx}, #{register.variety}, #{register.gender}, #{register.transGender}, #{register.weight}, " +
+    @Insert("INSERT INTO register(userIdx, variety, gender, transGender, weight, age, protectPlace, feature, tel, email, memo) " +
+            "VALUES(#{userIdx}, #{register.variety}, #{register.gender}, #{register.transGender}, #{register.weight}, " +
             "#{register.age}, #{register.protectPlace}, " +
             "#{register.feature}, #{register.tel}, " +
             "#{register.email}, #{register.memo})")
     @Options(useGeneratedKeys = true, keyColumn = "register.registerIdx")
-    int save(@Param("register") final Register register);
+    int save(@Param("userIdx") final int userIdx, @Param("register") final Register register);
 
     //분양 공고 수정
     @Update("UPDATE register SET variety=#{register.variety}, gender=#{register.gender}, transGender=#{register.transGender},weight=#{register.weight},age=#{register.age}," +

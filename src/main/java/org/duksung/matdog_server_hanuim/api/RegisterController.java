@@ -1,14 +1,11 @@
 package org.duksung.matdog_server_hanuim.api;
 
 import lombok.extern.slf4j.Slf4j;
-import org.duksung.matdog_server_hanuim.dto.Register;
-import org.duksung.matdog_server_hanuim.dto.RegisterAll;
-import org.duksung.matdog_server_hanuim.dto.Register_lost;
-import org.duksung.matdog_server_hanuim.dto.Register_spot;
+import org.duksung.matdog_server_hanuim.dto.*;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
-import org.duksung.matdog_server_hanuim.service.RegisterLostService;
-import org.duksung.matdog_server_hanuim.service.RegisterService;
-import org.duksung.matdog_server_hanuim.service.RegisterSpotService;
+import org.duksung.matdog_server_hanuim.service.*;
+import org.duksung.matdog_server_hanuim.utils.AuthAspect;
+import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,26 +23,68 @@ public class RegisterController {
     private final RegisterService registerService;
     private final RegisterLostService registerLostService;
     private final RegisterSpotService registerSpotService;
+    //private final AuthAspect authAspect;
+    private final JwtService jwtService;
+    private final UserService userService;
 
-    public RegisterController(RegisterService registerService,RegisterLostService registerLostService,RegisterSpotService registerSpotService) {
+    public RegisterController(RegisterService registerService,RegisterLostService registerLostService,
+                              RegisterSpotService registerSpotService, JwtService jwtService,UserService userService) {
         log.info("분양 컨트롤러");
         this.registerService = registerService;
         this.registerLostService = registerLostService;
         this.registerSpotService = registerSpotService;
+        this.jwtService = jwtService;
+        this.userService = userService;
     }
 
     //공고 등록
+    //@PostMapping("program/{userIdx}/reigister)
+//    @PostMapping("program/register")
+//    public ResponseEntity registerNotice(@RequestBody final Register register) {
+//        try {
+//            return new ResponseEntity<>(registerService.saveRegister(register), HttpStatus.OK);
+//            //return new ResponseEntity<>(defaultRes, HttpStatus.OK);
+//        } catch (Exception e) {
+//            log.info("분양 공고 등록 실패");
+//            log.error(e.getMessage());
+//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
     @PostMapping("program/register")
-    public ResponseEntity registerNotice(@RequestBody final Register register) {
-        try {
-            return new ResponseEntity<>(registerService.saveRegister(register), HttpStatus.OK);
-            //return new ResponseEntity<>(defaultRes, HttpStatus.OK);
-        } catch (Exception e) {
-            log.info("분양 공고 등록 실패");
-            log.error(e.getMessage());
-            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity registerNotice(
+            @RequestBody final Register register,
+            @RequestHeader(value = "Authorization") String token) {
+//        String a = Integer.toString(jwtService.decode(token).getUser_idx());
+//        log.info(a);
+        int userIdx = jwtService.decode(token).getUser_idx();
+        DefaultRes user = userService.findUser(userIdx);
+
+        if(user.getStatus() == 200){
+            try{
+                return new ResponseEntity<>(registerService.saveRegister(jwtService.decode(token).getUser_idx(), register), HttpStatus.OK);
+            }catch (Exception e) {
+                log.info("분양 공고 등록 실패");
+                log.error(e.getMessage());
+                return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
-    }
+        else{
+            return new ResponseEntity(FAIL_DEFAULT_RES, HttpStatus.UNAUTHORIZED);
+        }
+//        try {
+//            int user = userIdx;
+//            String temp = Integer.toString(user);
+//            log.info(temp);
+//            JwtService.Token id = jwtService.decode(token);
+//            log.info(id.toString());
+//            return new ResponseEntity<>(registerService.saveRegister(userIdx, register), HttpStatus.OK);
+//            //return new ResponseEntity<>(defaultRes, HttpStatus.OK);
+//        } catch (Exception e) {
+//            log.info("분양 공고 등록 실패");
+//            log.error(e.getMessage());
+//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+  }
 
 //    @GetMapping("program/allregisterAge")
 //    public ResponseEntity getRegister_age(){
@@ -148,6 +187,7 @@ public class RegisterController {
             DefaultRes<List<Register_lost>> defaultRes_lost = registerLostService.getAllRegister_lost();
             DefaultRes<List<Register_spot>> defaultRes_spot = registerSpotService.getAllRegister_spot();
             List<RegisterAll> registerAll = new ArrayList<RegisterAll>();
+            //registerAll.addAll(defaultRes);
 
 
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);

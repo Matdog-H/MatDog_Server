@@ -32,8 +32,8 @@ public class AuthService {
      * @return DefaultRes
      */
     public DefaultRes<JwtService.TokenRes> login(final LoginReq loginReq) {
-        final User user = userMapper.findByIdAndPassword(loginReq);
-        final User user_id = userMapper.findById(loginReq.getId());
+        final User user = userMapper.findByIdAndPassword(loginReq); //아이디 비번 체크 한후 유저 정보 통째로 가져오기
+        final User user_id = userMapper.findById(loginReq.getId()); //
         final User user_pw = userMapper.findById(loginReq.getPw());
 
         if (user != null) {
