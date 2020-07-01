@@ -23,10 +23,20 @@ public class RegisterService {
         this.registerMapper = registerMapper;
     }
 
-    //registerIdx 조회?
-//    public DefaultRes getRegisterIdx(){
-//
-//    }
+    //분양 공고 객체 반환
+    public DefaultRes<Register> findRegister(final int registerIdx){
+        Register register = registerMapper.findByRegisterIdx(registerIdx);
+        if(register != null){
+            try{
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, register);
+            } catch (Exception e){
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                log.error(e.getMessage());
+                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+            }
+        }
+        return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.NOT_FOUND_REGISTER);
+    }
 
     //분양공고 등록하기
     @Transactional
@@ -34,11 +44,9 @@ public class RegisterService {
         try {
             log.info("분양 공고 저장");
             int insertId = registerMapper.save(userIdx, register);
-            System.out.println(insertId);
             Register returnedData = register;
             returnedData.setUserIdx(userIdx);
             returnedData.setRegisterIdx(insertId);
-            System.out.println(returnedData);
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER, returnedData);
         } catch (Exception e) {
             log.info("저장안됨");
@@ -48,13 +56,6 @@ public class RegisterService {
         }
     }
 
-//    @Transactional
-//    public DefaultRes<List<Register>> getAllRegister() {
-//        List<Register> registerList = registerMapper.findAll();
-//        if (registerList.isEmpty())
-//            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
-//        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerList);
-//    }
     //검색
     @Transactional
     public DefaultRes search_register(final String variety, final String protectPlace){
@@ -85,8 +86,12 @@ public class RegisterService {
                 if(register.getTel() != null) myRegister.setTel(register.getTel());
                 if(register.getEmail() != null) myRegister.setEmail(register.getEmail());
                 if(register.getMemo() != null) myRegister.setMemo(register.getMemo());
-                registerMapper.update(registerIdx, myRegister);
-                return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_REGISTER);
+
+                int update_registerIdx = registerMapper.update(registerIdx, myRegister);
+                log.info(Integer.toString(update_registerIdx));
+                Register returnedDate = register;
+                returnedDate.setRegisterIdx(registerIdx);
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_REGISTER, returnedDate);
             } catch (Exception e) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 log.error(e.getMessage());
@@ -114,6 +119,18 @@ public class RegisterService {
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
         }
         log.info("나이순 공고 조회 성공");
+        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerList);
+    }
+
+    //userIdx가 쓴 공고 반환
+    @Transactional
+    public DefaultRes<List<Register>> getUserWriteRegister(final int userIdx){
+        List<Register> registerList = registerMapper.findByuserIdx(userIdx);
+        if(registerList.isEmpty()){
+            log.info("유저가 쓴 분양 공고 리스트 반환");
+            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+        }
+        log.info("유저가 쓴 분양 공고 리스트 반환 실패");
         return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerList);
     }
 

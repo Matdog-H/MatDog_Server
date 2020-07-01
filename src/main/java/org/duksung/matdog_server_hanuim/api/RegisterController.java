@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.*;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
 import org.duksung.matdog_server_hanuim.service.*;
+import org.duksung.matdog_server_hanuim.utils.Auth;
 import org.duksung.matdog_server_hanuim.utils.AuthAspect;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.springframework.http.HttpStatus;
@@ -38,24 +39,10 @@ public class RegisterController {
     }
 
     //공고 등록
-    //@PostMapping("program/{userIdx}/reigister)
-//    @PostMapping("program/register")
-//    public ResponseEntity registerNotice(@RequestBody final Register register) {
-//        try {
-//            return new ResponseEntity<>(registerService.saveRegister(register), HttpStatus.OK);
-//            //return new ResponseEntity<>(defaultRes, HttpStatus.OK);
-//        } catch (Exception e) {
-//            log.info("분양 공고 등록 실패");
-//            log.error(e.getMessage());
-//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
     @PostMapping("program/register")
     public ResponseEntity registerNotice(
             @RequestBody final Register register,
             @RequestHeader(value = "Authorization") String token) {
-//        String a = Integer.toString(jwtService.decode(token).getUser_idx());
-//        log.info(a);
         int userIdx = jwtService.decode(token).getUser_idx();
         DefaultRes user = userService.findUser(userIdx);
 
@@ -71,33 +58,7 @@ public class RegisterController {
         else{
             return new ResponseEntity(FAIL_DEFAULT_RES, HttpStatus.UNAUTHORIZED);
         }
-//        try {
-//            int user = userIdx;
-//            String temp = Integer.toString(user);
-//            log.info(temp);
-//            JwtService.Token id = jwtService.decode(token);
-//            log.info(id.toString());
-//            return new ResponseEntity<>(registerService.saveRegister(userIdx, register), HttpStatus.OK);
-//            //return new ResponseEntity<>(defaultRes, HttpStatus.OK);
-//        } catch (Exception e) {
-//            log.info("분양 공고 등록 실패");
-//            log.error(e.getMessage());
-//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
   }
-
-//    @GetMapping("program/allregisterAge")
-//    public ResponseEntity getRegister_age(){
-//        try{
-//            log.info("나이순 공고 가져오기 성공");
-//            DefaultRes<List<Register>> defaultRes = registerService.getAllRegister_age();
-//            return new ResponseEntity<>(defaultRes, HttpStatus.OK);
-//        } catch (Exception e){
-//            log.info("나이순 분양 공고 가져오기 실패");
-//            log.error(e.getMessage());
-//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 
     //분양 검색
     @GetMapping("program/register/search")
@@ -117,18 +78,67 @@ public class RegisterController {
     }
 
     //공고 수정
-    @PutMapping("program/register/{registerIdx}")
-    public ResponseEntity update_register(
-            @PathVariable(value = "registerIdx") final int registerIdx,
-            @RequestBody final Register register){
-        try{
-            return new ResponseEntity<>(registerService.register_update(registerIdx, register), HttpStatus.OK);
-        } catch (Exception e){
-            log.info("분양 공고 수정 실패");
-            log.error(e.getMessage());
-            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @PutMapping("program/register/{registerIdx}")
+//    public ResponseEntity update_register(
+//            @PathVariable(value = "registerIdx") final int registerIdx,
+//            @RequestBody final Register register){
+//        try{
+//            return new ResponseEntity<>(registerService.register_update(registerIdx, register), HttpStatus.OK);
+//        } catch (Exception e){
+//            log.info("분양 공고 수정 실패");
+//            log.error(e.getMessage());
+//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+    //공고 수정
+//    @Auth
+//    @PutMapping("program/register")
+//    public ResponseEntity update_register(
+//            @RequestBody final Register register,
+//            @RequestHeader(value = "Authorization") String token){
+//        int registerIdx = jwtService.decode_register(token).getRegister_idx();
+//        DefaultRes myRegister = registerService.findRegister(registerIdx);
+//
+//        if(myRegister.getStatus() == 200){
+//            try{
+//                log.info("분양 공고 수정 성공");
+//                return new ResponseEntity<>(registerService.register_update(registerIdx, register), HttpStatus.OK);
+//            } catch (Exception e){
+//                log.info("분양 공고 수정 실패");
+//                log.error(e.getMessage());
+//                return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//        }else {
+//            return new ResponseEntity(FAIL_DEFAULT_RES, HttpStatus.UNAUTHORIZED);
+//        }
+//    }
+//    @Auth
+//    @PutMapping("program/register")
+//    public ResponseEntity update_register(
+//            @RequestBody final Register register,
+//            @RequestHeader(value = "Authorization") String token){
+////        int registerIdx = jwtService.decode(token).getUser_idx();
+////        DefaultRes myRegister = registerService.findRegister(registerIdx);
+////        log.info(Integer.toString(registerIdx));
+//
+//        int userIdx = jwtService.decode(token).getUser_idx();
+//        DefaultRes <List<Register>> defaultRes = registerService.getUserWriteRegister(userIdx);
+//        log.info(Integer.toString(userIdx));
+//
+//        if(defaultRes.getStatus() == 200){
+//            try{
+//                log.info("분양 공고 수정 성공");
+//                return new ResponseEntity<>(registerService.register_update(registerIdx, register), HttpStatus.OK);
+//            } catch (Exception e){
+//                log.info("분양 공고 수정 실패");
+//                log.error(e.getMessage());
+//                return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//        }else {
+//            return new ResponseEntity(FAIL_DEFAULT_RES, HttpStatus.UNAUTHORIZED);
+//        }
+//    }
+
 
     //공고 삭제
     @DeleteMapping("program/register/{registerIdx}")

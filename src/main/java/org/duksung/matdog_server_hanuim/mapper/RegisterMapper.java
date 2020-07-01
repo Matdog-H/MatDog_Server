@@ -18,6 +18,10 @@ public interface RegisterMapper {
     @Select("SELECT * FROM register ORDER BY age DESC")
     List<Register> findAll_age();
 
+    //userIdx에 따른 registerIdx 조회
+    @Select("SELECT * FROM register WHERE userIdx = #{userIdx}")
+    List<Register> findByuserIdx(@Param("userIdx") final int userIdx);
+
     //registerIdx 조회
     @Select("SELECT * FROM register WHERE registerIdx = #{registerIdx}")
     Register findByRegisterIdx(@Param("registerIdx") final int registerIdx);
@@ -39,7 +43,7 @@ public interface RegisterMapper {
     @Update("UPDATE register SET variety=#{register.variety}, gender=#{register.gender}, transGender=#{register.transGender},weight=#{register.weight},age=#{register.age}," +
             "protectPlace=#{register.protectPlace}, feature=#{register.feature}, tel=#{register.tel}, email=#{register.email},memo=#{register.memo} " +
             "where registerIdx = #{registerIdx}")
-    void update(@Param("registerIdx") final int registerIdx, @Param("register") final Register register);
+    int update(@Param("registerIdx") final int registerIdx, @Param("register") final Register register);
 
     //분양 공고 삭제
     @Delete("DELETE FROM register WHERE registerIdx = #{registerIdx}")
