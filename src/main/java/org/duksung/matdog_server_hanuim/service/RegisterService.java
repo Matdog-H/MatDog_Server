@@ -23,8 +23,13 @@ public class RegisterService {
         this.registerMapper = registerMapper;
     }
 
-    //분양 공고 객체 반환
-    public DefaultRes<Register> findRegister(final int registerIdx){
+    /**
+     * 분양 공고 객체 반환
+     *
+     * @param registerIdx
+     * @return DefaultRes
+     */
+    public DefaultRes<Register> findByRegisterIdx(final int registerIdx){
         Register register = registerMapper.findByRegisterIdx(registerIdx);
         if(register != null){
             try{
@@ -43,6 +48,7 @@ public class RegisterService {
     public DefaultRes saveRegister(final int userIdx, final Register register) {
         try {
             log.info("분양 공고 저장");
+            log.info(Integer.toString(registerMapper.save(userIdx, register)));
             int insertId = registerMapper.save(userIdx, register);
             Register returnedData = register;
             returnedData.setUserIdx(userIdx);
@@ -148,5 +154,10 @@ public class RegisterService {
             log.error(e.getMessage());
             return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
         }
+    }
+
+    //글 권한 확인
+    public boolean checkAuth(final int userIdx, final int registerIdx){
+        return userIdx == findByRegisterIdx(registerIdx).getData().getRegisterIdx();
     }
 }

@@ -26,8 +26,8 @@ public interface RegisterMapper {
     @Select("SELECT * FROM register WHERE registerIdx = #{registerIdx}")
     Register findByRegisterIdx(@Param("registerIdx") final int registerIdx);
 
-    //검색 기능
-    @Select("SELECT * FROM register WHERE variety LIKE #{variety} OR protectPlace LIKE #{protectPlace}")
+    //검색 기능 concat('%',#{userName},'%')
+    @Select("SELECT * FROM register WHERE variety LIKE concat('%',#{variety},'%') OR protectPlace LIKE concat('%',#{protectPlace},'%')")
     List<Register> search_register(@Param("variety") final String variety, @Param("protectPlace") final String protectPlace);
 
     //분양 공고 등록
