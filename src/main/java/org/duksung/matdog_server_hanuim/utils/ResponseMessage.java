@@ -31,5 +31,6 @@ public class ResponseMessage {
     public static final String WRONG_PASSWORD = "비밀번호 틀림";
 
     public static final String UNAUTHORIZED = "인증 실패";
+
 }
 

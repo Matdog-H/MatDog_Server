@@ -141,8 +141,9 @@ public class RegisterController {
 //            return new ResponseEntity(FAIL_DEFAULT_RES, HttpStatus.UNAUTHORIZED);
 //        }
 //    }
+    //@PutMapping("program/
     @Auth
-    @PutMapping("program/register/{registerId x}")
+    @PutMapping("program/register/{registerIdx}")
     public ResponseEntity updateRegister(
             @RequestHeader(value = "Authorization") final String toekn,
             @PathVariable("registerIdx") final int registerIdx,
