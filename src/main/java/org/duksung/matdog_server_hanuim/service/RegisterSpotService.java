@@ -26,11 +26,14 @@ public class RegisterSpotService {
 
     //목격 공고 등록
     @Transactional
-    public DefaultRes saveRegister_spot(final Register_spot register_spot){
+    public DefaultRes saveRegister_spot(final int userIdx, final Register_spot register_spot){
         try{
             log.info("목격 공고 저장");
-            registerSpotMapper.save_spot(register_spot);
-            return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER_SPOT);
+            int insertId = registerSpotMapper.save_spot(userIdx, register_spot);
+            Register_spot returnedData = register_spot;
+            returnedData.setUserIdx(userIdx);
+            returnedData.setRegisterIdx(insertId);
+            return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER_SPOT, returnedData);
         } catch (Exception e){
             log.info("목격 공고 저장 안됨");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -41,7 +44,7 @@ public class RegisterSpotService {
 
     //목격 공고 수정
     @Transactional
-    public DefaultRes register_spot_update(final int registerIdx, final Register_spot register_spot){
+    public DefaultRes register_spot_update(final int userIdx, final int registerIdx, final Register_spot register_spot){
         if(registerSpotMapper.findByRegisterIdx_spot(registerIdx) != null){
             //gender,weight,age,protectPlace,findPlace,findDate,feature,tel,email,memo
             try{
@@ -54,8 +57,10 @@ public class RegisterSpotService {
                 if(register_spot.getFeature() != null) myRegisterSpot.setFeature(register_spot.getFeature());
                 if(register_spot.getEmail() != null) myRegisterSpot.setEmail(register_spot.getEmail());
                 if(register_spot.getMemo() != null) myRegisterSpot.setMemo(register_spot.getMemo());
-                registerSpotMapper.update_spot(registerIdx, myRegisterSpot);
-                return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_REGISTER_SPOT);
+                int update_registerIdx = registerSpotMapper.update_spot(userIdx, registerIdx, myRegisterSpot);
+                Register_spot returnedData = register_spot;
+                returnedData.setRegisterIdx(update_registerIdx);
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_REGISTER_SPOT, returnedData);
             } catch (Exception e){
                 log.info("목격 공고 수정 실패");
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -105,13 +110,13 @@ public class RegisterSpotService {
 
     //목격 공고 삭제
     @Transactional
-    public DefaultRes deleteByRegisterIdx_spot(final int registerIdx){
+    public DefaultRes deleteByRegisterIdx_spot(final int userIdx, final int registerIdx){
         final Register_spot registerSpot = registerSpotMapper.findByRegisterIdx_spot(registerIdx);
         if(registerSpot == null)
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
         try{
             log.info("목격 공고 삭제 성공");
-            registerSpotMapper.deleteRegister_spot(registerIdx);
+            registerSpotMapper.deleteRegister_spot(userIdx, registerIdx);
             return DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.DELETE_REGISTER);
         } catch (Exception e){
             log.info("목격 공고 삭제 실패");

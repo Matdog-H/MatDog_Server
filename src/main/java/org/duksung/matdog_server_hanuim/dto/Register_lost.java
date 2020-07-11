@@ -8,6 +8,7 @@ import java.util.Date;
 public class Register_lost {
     private int userIdx;
     private int registerIdx;
+    private int status;
     private String variety;
     private int gender;
     private int weight;

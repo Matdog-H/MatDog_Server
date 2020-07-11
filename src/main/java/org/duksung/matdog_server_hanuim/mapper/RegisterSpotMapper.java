@@ -28,21 +28,21 @@ public interface RegisterSpotMapper {
     Register_spot findByRegisterIdx_spot(@Param("registerIdx") final int registerIdx);
 
     //목격 공고 등록
-    @Insert("INSERT INTO register_spot(userIdx,registerIdx,variety,gender,weight,age,protectPlace,findPlace,findDate,feature,tel,email,memo)" +
-            "VALUES(#{register_spot.userIdx},#{register_spot.registerIdx},#{register_spot.variety},#{register_spot.gender},#{register_spot.weight}," +
+    @Insert("INSERT INTO register_spot(userIdx, status, variety,gender,weight,age,protectPlace,findPlace,findDate,feature,tel,email,memo)" +
+            "VALUES(#{userIdx},#{register_spot.status}, #{register_spot.variety},#{register_spot.gender},#{register_spot.weight}," +
             "#{register_spot.age},#{register_spot.protectPlace},#{register_spot.findPlace},#{register_spot.findDate},#{register_spot.feature}," +
             "#{register_spot.tel},#{register_spot.email},#{register_spot.memo})")
     @Options(useGeneratedKeys = true, keyColumn = "register_spot.registerIdx")
-    int save_spot(@Param("register_spot") final Register_spot register_spot);
+    int save_spot(@Param("userIdx") final int userIdx, @Param("register_spot") final Register_spot register_spot);
 
     //목격 공고 수정
     @Update("UPDATE register_spot SET variety=#{register_spot.variety},gender=#{register_spot.gender},weight=#{register_spot.weight}," +
             "age=#{register_spot.age},protectPlace=#{register_spot.protectPlace},findPlace=#{register_spot.findPlace},findDate=#{register_spot.findDate}," +
             "feature=#{register_spot.feature},tel=#{register_spot.tel},email=#{register_spot.email},memo=#{register_spot.memo} " +
-            "where registerIdx = #{registerIdx}")
-    void update_spot(@Param("registerIdx") final int registerIdx, @Param("register_spot") Register_spot register_spot);
+            "where userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
+    int update_spot(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx, @Param("register_spot") Register_spot register_spot);
 
     //목격 공고 삭제
-    @Delete("DELETE FROM register_spot WHERE registerIdx = #{registerIdx}")
-    void deleteRegister_spot(@Param("registerIdx") final int registerIdx);
+    @Delete("DELETE FROM register_spot WHERE userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
+    void deleteRegister_spot(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx);
 }

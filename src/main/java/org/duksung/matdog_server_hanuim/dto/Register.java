@@ -9,6 +9,7 @@ import java.sql.Date;
 public class Register {
     private int userIdx;
     private int registerIdx;
+    private int status;
     private String variety;
     private int gender;
     private int transGender;

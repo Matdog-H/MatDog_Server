@@ -1,7 +1,10 @@
 package org.duksung.matdog_server_hanuim.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.duksung.matdog_server_hanuim.dto.Register;
+import org.duksung.matdog_server_hanuim.dto.Register_like;
 import org.duksung.matdog_server_hanuim.dto.User;
+import org.duksung.matdog_server_hanuim.mapper.LikeMapper;
 import org.duksung.matdog_server_hanuim.mapper.UserMapper;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
 import org.duksung.matdog_server_hanuim.model.UserSignUpReq;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
@@ -18,15 +22,17 @@ import java.util.List;
 public class UserService {
 
     private final UserMapper userMapper;
+    private final LikeMapper likeMapper;
 
     /**
      * UserMapper 생성자 의존성 주입
      *
      * @param userMapper
      */
-    public UserService(final UserMapper userMapper) {
+    public UserService(final UserMapper userMapper, final LikeMapper likeMapper) {
         log.info("서비스");
         this.userMapper = userMapper;
+        this.likeMapper = likeMapper;
     }
 
     /**
@@ -100,8 +106,8 @@ public class UserService {
     }
 
     @Transactional
-    public DefaultRes user_update(final int userIdx, final User user){
-        if(userMapper.findByUidx(userIdx)!=null){
+    public DefaultRes user_update(final int userIdx, final User user) {
+        if (userMapper.findByUidx(userIdx) != null) {
             try {
                 User myUser = userMapper.findByUidx(userIdx);
                 if (myUser == null)
@@ -114,14 +120,25 @@ public class UserService {
                 if (user.getMemo() != null) myUser.setMemo(user.getMemo());
                 userMapper.updateUserInfo(userIdx, myUser);
                 return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_USER);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 log.error(e.getMessage());
                 return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
             }
         }
         return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
+    }
 
-            }
+
+//    @Transactional
+//    public DefaultRes findUserLikes(final int userIdx){
+//        if(userMapper.findByUidx(userIdx) != null){
+//            List<Register_like> listRegisterList = likeMapper.findRegisterLikeByUserIdx(userIdx);
+//            List<Register> listRegister = new LinkedList<>();
+//
+//            try{
+//
+//            }
+//        }
+//    }
 }

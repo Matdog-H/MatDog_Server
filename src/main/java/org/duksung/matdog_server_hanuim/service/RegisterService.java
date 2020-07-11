@@ -48,7 +48,6 @@ public class RegisterService {
     public DefaultRes saveRegister(final int userIdx, final Register register) {
         try {
             log.info("분양 공고 저장");
-            log.info(Integer.toString(registerMapper.save(userIdx, register)));
             int insertId = registerMapper.save(userIdx, register);
             Register returnedData = register;
             returnedData.setUserIdx(userIdx);
@@ -76,7 +75,7 @@ public class RegisterService {
 
     //공고 수정
     @Transactional
-    public DefaultRes register_update(final int registerIdx, final Register register) {
+    public DefaultRes register_update(final int userIdx, final int registerIdx, final Register register) {
         if (registerMapper.findByRegisterIdx(registerIdx) != null) {
             try {
                 Register myRegister = registerMapper.findByRegisterIdx(registerIdx);
@@ -93,7 +92,7 @@ public class RegisterService {
                 if(register.getEmail() != null) myRegister.setEmail(register.getEmail());
                 if(register.getMemo() != null) myRegister.setMemo(register.getMemo());
 
-                int update_registerIdx = registerMapper.update(registerIdx, myRegister);
+                int update_registerIdx = registerMapper.update(userIdx, registerIdx, myRegister);
                 log.info(Integer.toString(update_registerIdx));
                 Register returnedDate = register;
                 returnedDate.setRegisterIdx(registerIdx);
@@ -142,12 +141,12 @@ public class RegisterService {
 
     //공고 삭제
     @Transactional
-    public DefaultRes deleteByRegisterIdx(final int registerIdx){
+    public DefaultRes deleteByRegisterIdx(final int userIdx, final int registerIdx){
         final Register register = registerMapper.findByRegisterIdx(registerIdx);
         if(register == null)
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
         try{
-            registerMapper.deleteRegister(registerIdx);
+            registerMapper.deleteRegister(userIdx, registerIdx);
             return DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.DELETE_REGISTER);
         } catch (Exception e){
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();

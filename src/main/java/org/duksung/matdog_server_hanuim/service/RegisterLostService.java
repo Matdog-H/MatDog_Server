@@ -26,11 +26,14 @@ public class RegisterLostService {
 
     //실종 공고 등록
     @Transactional
-    public DefaultRes saveRegister_lost(final Register_lost register_lost) {
+    public DefaultRes saveRegister_lost(final int userIdx, final Register_lost register_lost) {
         try {
             log.info("실종 공고 저장");
-            registerLostMapper.save_lost(register_lost);
-            return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER_LOST);
+            int insertId = registerLostMapper.save_lost(userIdx, register_lost);
+            Register_lost returnedData = register_lost;
+            returnedData.setUserIdx(userIdx);
+            returnedData.setRegisterIdx(insertId);
+            return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER_LOST, returnedData);
         } catch (Exception e) {
             log.info("실종 공고 저장 안됨");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -42,7 +45,7 @@ public class RegisterLostService {
 
     //실종 공고 수정
     @Transactional
-    public DefaultRes register_lost_update(final int registerIdx, final Register_lost register_lost) {
+    public DefaultRes register_lost_update(final int userIdx, final int registerIdx, final Register_lost register_lost) {
         if (registerLostMapper.findByRegisterIdx_lost(registerIdx) != null) {
             try {
                 log.info("실종 공고 수정 성공");
@@ -60,7 +63,7 @@ public class RegisterLostService {
                 if (register_lost.getFeature() != null) myRegisterLost.setFeature(register_lost.getFeature());
                 if (register_lost.getEmail() != null) myRegisterLost.setEmail(register_lost.getEmail());
                 if (register_lost.getMemo() != null) myRegisterLost.setMemo(register_lost.getMemo());
-                registerLostMapper.update_lost(registerIdx, myRegisterLost);
+                registerLostMapper.update_lost(userIdx, registerIdx, myRegisterLost);
                 return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_REGISTER);
             } catch (Exception e) {
                 log.info("실종 공고 수정 실패");
@@ -108,12 +111,12 @@ public class RegisterLostService {
 
     //실종 공고 삭제
     @Transactional
-    public DefaultRes deleteByRegisterIdx_lost(final int registerIdx) {
+    public DefaultRes deleteByRegisterIdx_lost(final int userIdx, final int registerIdx) {
         final Register_lost registerLost = registerLostMapper.findByRegisterIdx_lost(registerIdx);
         if (registerLost == null)
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
         try {
-            registerLostMapper.deleteRegister_lost(registerIdx);
+            registerLostMapper.deleteRegister_lost(userIdx, registerIdx);
             return DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.DELETE_REGISTER);
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();

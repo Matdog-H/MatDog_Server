@@ -80,97 +80,59 @@ public class RegisterController {
         }
     }
 
-    //공고 수정
-//    @PutMapping("program/register/{registerIdx}")
-//    public ResponseEntity update_register(
-//            @PathVariable(value = "registerIdx") final int registerIdx,
-//            @RequestBody final Register register){
-//        try{
-//            return new ResponseEntity<>(registerService.register_update(registerIdx, register), HttpStatus.OK);
-//        } catch (Exception e){
-//            log.info("분양 공고 수정 실패");
-//            log.error(e.getMessage());
-//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-    //공고 수정
-//    @Auth
-//    @PutMapping("program/register")
-//    public ResponseEntity update_register(
-//            @RequestBody final Register register,
-//            @RequestHeader(value = "Authorization") String token){
-//        int registerIdx = jwtService.decode_register(token).getRegister_idx();
-//        DefaultRes myRegister = registerService.findRegister(registerIdx);
-//
-//        if(myRegister.getStatus() == 200){
-//            try{
-//                log.info("분양 공고 수정 성공");
-//                return new ResponseEntity<>(registerService.register_update(registerIdx, register), HttpStatus.OK);
-//            } catch (Exception e){
-//                log.info("분양 공고 수정 실패");
-//                log.error(e.getMessage());
-//                return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//            }
-//        }else {
-//            return new ResponseEntity(FAIL_DEFAULT_RES, HttpStatus.UNAUTHORIZED);
-//        }
-//    }
-//    @Auth
-//    @PutMapping("program/register")
-//    public ResponseEntity update_register(
-//            @RequestBody final Register register,
-//            @RequestHeader(value = "Authorization") String token){
-////        int registerIdx = jwtService.decode(token).getUser_idx();
-////        DefaultRes myRegister = registerService.findRegister(registerIdx);
-////        log.info(Integer.toString(registerIdx));
-//
-//        int userIdx = jwtService.decode(token).getUser_idx();
-//        DefaultRes <List<Register>> defaultRes = registerService.getUserWriteRegister(userIdx);
-//        log.info(Integer.toString(userIdx));
-//
-//        if(defaultRes.getStatus() == 200){
-//            try{
-//                log.info("분양 공고 수정 성공");
-//                return new ResponseEntity<>(registerService.register_update(registerIdx, register), HttpStatus.OK);
-//            } catch (Exception e){
-//                log.info("분양 공고 수정 실패");
-//                log.error(e.getMessage());
-//                return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//            }
-//        }else {
-//            return new ResponseEntity(FAIL_DEFAULT_RES, HttpStatus.UNAUTHORIZED);
-//        }
-//    }
-    //@PutMapping("program/
-    @Auth
+    /**
+     * 공고 수정
+     * @param register
+     * @param token
+     * @param registerIdx
+     * @return
+     */
     @PutMapping("program/register/{registerIdx}")
-    public ResponseEntity updateRegister(
-            @RequestHeader(value = "Authorization") final String toekn,
-            @PathVariable("registerIdx") final int registerIdx,
-            @RequestBody Register register) {
-        //DefaultRes myRegister = registerService.findByRegisterIdx(registerIdx);
-        try{
+    public ResponseEntity update_register(
+            @RequestBody final Register register,
+            @RequestHeader(value = "Authorization") String token,
+            @PathVariable(value = "registerIdx") final int registerIdx){
+        int userIdx = jwtService.decode(token).getUser_idx();
+        DefaultRes user = userService.findUser(userIdx);
 
-            if(registerService.checkAuth(jwtService.decode(toekn).getUser_idx(), registerIdx))
-                return new ResponseEntity<>(registerService.register_update(registerIdx, register), HttpStatus.OK);
-            return new ResponseEntity<>(UNAUTHORIZED_RES, HttpStatus.OK);
-        } catch (Exception e){
-            log.error(e.getMessage());
-            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+        if(user.getStatus() == 200){
+            try{
+                log.info("분양 공고 수정 성공");
+                return new ResponseEntity<>(registerService.register_update(userIdx, registerIdx, register), HttpStatus.OK);
+            } catch (Exception e){
+                log.info("분양 공고 수정 실패");
+                log.error(e.getMessage());
+                return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else{
+            return new ResponseEntity(FAIL_DEFAULT_RES, HttpStatus.UNAUTHORIZED);
         }
     }
 
-
-    //공고 삭제
+    /**
+     * 공고 삭제
+     * @param registerIdx
+     * @param token
+     * @return
+     */
     @DeleteMapping("program/register/{registerIdx}")
     public ResponseEntity delete_register(
-            @PathVariable(value = "registerIdx") final int registerIdx) {
-        try {
-            return new ResponseEntity<>(registerService.deleteByRegisterIdx(registerIdx), HttpStatus.OK);
-        } catch (Exception e) {
-            log.info("분양 공고 삭제 실패");
-            log.error(e.getMessage());
-            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+            @PathVariable(value = "registerIdx") final int registerIdx,
+            @RequestHeader(value = "Authorization") String token){
+        int userIdx = jwtService.decode(token).getUser_idx();
+        DefaultRes user = userService.findUser(userIdx);
+
+        if(user.getStatus() == 200){
+            try{
+                log.info("분양 공고 삭제 성공");
+                return new ResponseEntity<>(registerService.deleteByRegisterIdx(userIdx, registerIdx), HttpStatus.OK);
+            } catch (Exception e){
+                log.info("분양 공고 삭제 실패");
+                log.error(e.getMessage());
+                return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else{
+            return new ResponseEntity(FAIL_DEFAULT_RES, HttpStatus.UNAUTHORIZED);
         }
     }
 
