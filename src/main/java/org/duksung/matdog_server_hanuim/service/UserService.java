@@ -1,20 +1,15 @@
 package org.duksung.matdog_server_hanuim.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.duksung.matdog_server_hanuim.dto.Register;
-import org.duksung.matdog_server_hanuim.dto.Register_like;
 import org.duksung.matdog_server_hanuim.dto.User;
-import org.duksung.matdog_server_hanuim.mapper.LikeMapper;
 import org.duksung.matdog_server_hanuim.mapper.UserMapper;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
-import org.duksung.matdog_server_hanuim.model.UserSignUpReq;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
@@ -22,17 +17,15 @@ import java.util.List;
 public class UserService {
 
     private final UserMapper userMapper;
-    private final LikeMapper likeMapper;
 
     /**
      * UserMapper 생성자 의존성 주입
      *
      * @param userMapper
      */
-    public UserService(final UserMapper userMapper, final LikeMapper likeMapper) {
+    public UserService(final UserMapper userMapper) {
         log.info("서비스");
         this.userMapper = userMapper;
-        this.likeMapper = likeMapper;
     }
 
     /**
@@ -57,15 +50,21 @@ public class UserService {
      * @param id 아이디
      * @return DefaultRes
      */
+//    public DefaultRes findById(final String id) {
+//        final User user = userMapper.findById(id);
+//        if (user == null) {
+//            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
+//        }
+//        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_USER, user);
+//    }
     public DefaultRes findById(final String id) {
         final User user = userMapper.findById(id);
         if (user == null) {
-            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
-
+            return DefaultRes.res(StatusCode.OK, ResponseMessage.NOT_FOUND_USER, user);
+        } else{
+            return DefaultRes.res(StatusCode.FORBIDDEN, ResponseMessage.ALREADY_USER, user);
         }
-        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_USER, user);
     }
-
     /**
      * 회원 가입
      *
@@ -141,4 +140,20 @@ public class UserService {
 //            }
 //        }
 //    }
+
+    /**
+     * ID으로 회원 조회
+     *
+     * @param id 아이디
+     * @return DefaultRes
+     */
+    public DefaultRes findById_check(final String id) {
+        final String checkId = userMapper.findID(id);
+        if (checkId == null) {
+            //없음 -> 가입가능
+            return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_USER, checkId);
+        }
+        //있음 -> 가입불가능
+        return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
+    }
 }

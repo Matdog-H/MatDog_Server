@@ -13,10 +13,9 @@ public interface UserMapper {
     @Select("SELECT * FROM user")
     List<User> findAll();
 
-    //
-
-    @Select("SELECT id FROM user")
-    String findID();
+    //아이디 중복 조회
+    @Select("SELECT id FROM user WHERE id = #{id}")
+    String findID(@Param("id") final String id);
 
     //ID로 조회
     @Select("SELECT * FROM user WHERE id = #{id}")

@@ -81,6 +81,7 @@ public class RegisterService {
                 Register myRegister = registerMapper.findByRegisterIdx(registerIdx);
                 if(myRegister == null)
                     return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+
                 if(register.getVariety() != null) myRegister.setVariety(register.getVariety());
                 myRegister.setGender(register.getGender());
                 myRegister.setTransGender(register.getTransGender());
