@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.User;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
+import org.duksung.matdog_server_hanuim.model.SignUpReq;
 import org.duksung.matdog_server_hanuim.model.UserSignUpReq;
 import org.duksung.matdog_server_hanuim.service.JwtService;
 import org.duksung.matdog_server_hanuim.service.UserService;
@@ -11,6 +12,7 @@ import org.duksung.matdog_server_hanuim.utils.Auth;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -41,9 +43,10 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity signup(@RequestBody final User user) {
+    public ResponseEntity signup(SignUpReq signUpReq, @RequestPart(value="profile",required = false) final MultipartFile profile) {
         try {
-            return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
+            if(profile !=null) signUpReq.setProfile(profile);
+            return new ResponseEntity<>(userService.save(signUpReq), HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);

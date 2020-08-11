@@ -13,4 +13,5 @@ public class User {
     private String tel; // 휴대폰 번호
     private String email; // Email
     private String memo; // Memo
+    private String profileUrl; // 프로필이미지
 }

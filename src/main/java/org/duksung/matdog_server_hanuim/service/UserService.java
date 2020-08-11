@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.User;
 import org.duksung.matdog_server_hanuim.mapper.UserMapper;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
+import org.duksung.matdog_server_hanuim.model.SignUpReq;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.springframework.stereotype.Service;
@@ -17,15 +18,18 @@ import java.util.List;
 public class UserService {
 
     private final UserMapper userMapper;
+    private final S3FileUploadService s3FileUploadService;
 
     /**
      * UserMapper 생성자 의존성 주입
      *
      * @param userMapper
+     * @param s3FileUploadService
      */
-    public UserService(final UserMapper userMapper) {
+    public UserService(final UserMapper userMapper,final S3FileUploadService s3FileUploadService) {
         log.info("서비스");
         this.userMapper = userMapper;
+        this.s3FileUploadService=s3FileUploadService;
     }
 
     /**
@@ -68,13 +72,15 @@ public class UserService {
     /**
      * 회원 가입
      *
-     * @param user 회원 데이터
+     * @param  signUpReq 회원 데이터
      * @return DefaultRes
      */
     @Transactional
-    public DefaultRes save(final User user) {
+    public DefaultRes save(SignUpReq signUpReq) {
         try {
-            userMapper.save(user);
+            if(signUpReq.getProfile() !=null)
+                signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
+            userMapper.save(signUpReq);
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_USER);
         } catch (Exception e) {
             //Rollback
@@ -117,6 +123,7 @@ public class UserService {
                 if (user.getTel() != null) myUser.setTel(user.getTel());
                 if (user.getEmail() != null) myUser.setEmail(user.getEmail());
                 if (user.getMemo() != null) myUser.setMemo(user.getMemo());
+                if(user.getProfileUrl() !=null) myUser.setProfileUrl(user.getProfileUrl());
                 userMapper.updateUserInfo(userIdx, myUser);
                 return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_USER);
             } catch (Exception e) {
