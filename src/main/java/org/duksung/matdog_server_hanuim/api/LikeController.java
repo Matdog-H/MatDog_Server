@@ -27,12 +27,12 @@ public class LikeController {
         this.userService = userService;
     }
 
-    @PostMapping("like/{registerIdx}/{registerStatus}/{likeStatus}")
+    @PostMapping("like/{registeridx}/{registerstatus}/{likestatus}")
     public ResponseEntity like(
             @RequestHeader(value = "Authorization") String token,
-            @PathVariable(value = "likeStatus") final int likeStatus,
-            @PathVariable(value = "registerIdx") final int registerIdx,
-            @PathVariable(value = "registerStatus") final int registerStatus){
+            @PathVariable(value = "likestatus") final int likeStatus,
+            @PathVariable(value = "registeridx") final int registerIdx,
+            @PathVariable(value = "registerstatus") final int registerStatus){
         int userIndex = jwtService.decode(token).getUser_idx();
         DefaultRes user = userService.findUser(userIndex);
 

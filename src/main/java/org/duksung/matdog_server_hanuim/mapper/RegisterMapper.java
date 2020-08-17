@@ -2,9 +2,6 @@ package org.duksung.matdog_server_hanuim.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.duksung.matdog_server_hanuim.dto.Register;
-import org.duksung.matdog_server_hanuim.dto.Register_lost;
-import org.duksung.matdog_server_hanuim.dto.Register_spot;
-import org.duksung.matdog_server_hanuim.dto.User;
 import org.duksung.matdog_server_hanuim.model.RegisterRes;
 
 import java.util.List;
@@ -39,12 +36,17 @@ public interface RegisterMapper {
 
     //분양 공고 등록
     @Insert("INSERT INTO register(userIdx, registerStatus, variety, gender, transGender, weight, age, protectPlace, endDate, feature, tel, email, memo) " +
-            "VALUES(#{userIdx}, #{register.registerStatus}, #{register.variety}, #{register.gender}, #{register.transGender}, #{register.weight}, " +
-            "#{register.age}, #{register.protectPlace}, #{register.endDate}, " +
-            "#{register.feature}, #{register.tel}, " +
-            "#{register.email}, #{register.memo})")
-    @Options(useGeneratedKeys = true, keyColumn = "register.registerIdx")
-    int save(@Param("userIdx") final int userIdx, @Param("register") final Register register);
+            "VALUES(#{userIdx}, #{re.registerStatus}, #{re.variety}, #{re.gender}, #{re.transGender}, #{re.weight}, " +
+            "#{re.age}, #{re.protectPlace}, #{re.endDate}, " +
+            "#{re.feature}, #{re.tel}, " +
+            "#{re.email}, #{re.memo})")
+    @Options(useGeneratedKeys = true, keyColumn = "registerIdx", keyProperty = "re.registerIdx")
+    int save(@Param("userIdx") final int userIdx, @Param("re") final Register re);
+
+    //이미지 저장
+    @Insert("INSERT INTO dog_img(registerIdx, dogUrl, registerStatus) VALUES(#{registerIdx}, #{dogUrl}, #{registerStatus})")
+    @Options(useGeneratedKeys = true, keyColumn = "dog_img.urlIdx")
+    int save_img(@Param("registerIdx") final int registerIdx, @Param("dogUrl") final String dogUrl, @Param("registerStatus") final int registerStatus);
 
     //분양 공고 수정
     @Update("UPDATE register SET variety=#{register.variety}, gender=#{register.gender}, transGender=#{register.transGender},weight=#{register.weight},age=#{register.age}," +

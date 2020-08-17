@@ -13,6 +13,7 @@ import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.xml.ws.Response;
 import java.util.ArrayList;
@@ -46,14 +47,20 @@ public class RegisterController {
     //공고 등록
     @PostMapping("program/register")
     public ResponseEntity registerNotice(
-            @RequestBody final Register register,
-            @RequestHeader(value = "Authorization") String token) {
+            Register register,
+            @RequestHeader(value = "Authorization") String token,
+            @RequestPart(value = "dogimg") final MultipartFile[] dogimg) {
         int userIdx = jwtService.decode(token).getUser_idx();
+        System.out.println(userIdx);
         DefaultRes user = userService.findUser(userIdx);
 
         if (user.getStatus() == 200) {
             try {
-                return new ResponseEntity<>(registerService.saveRegister(jwtService.decode(token).getUser_idx(), register), HttpStatus.OK);
+                int size = dogimg.length;
+                String size_s = Integer.toString(size);
+                log.info(size_s);
+                System.out.println(jwtService.decode(token).getUser_idx());
+                return new ResponseEntity<>(registerService.saveRegister(jwtService.decode(token).getUser_idx(), register, dogimg), HttpStatus.OK);
             } catch (Exception e) {
                 log.info("분양 공고 등록 실패");
                 log.error(e.getMessage());
@@ -90,7 +97,7 @@ public class RegisterController {
      */
     @PutMapping("program/register/{registerIdx}")
     public ResponseEntity update_register(
-            @RequestBody final Register register,
+            Register register,
             @RequestHeader(value = "Authorization") String token,
             @PathVariable(value = "registerIdx") final int registerIdx){
         int userIdx = jwtService.decode(token).getUser_idx();

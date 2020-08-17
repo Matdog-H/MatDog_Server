@@ -1,6 +1,7 @@
 package org.duksung.matdog_server_hanuim.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.duksung.matdog_server_hanuim.dto.DogImgUrl;
 import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.User;
 import org.duksung.matdog_server_hanuim.mapper.RegisterMapper;
@@ -11,6 +12,7 @@ import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -20,10 +22,12 @@ import java.util.List;
 @Service
 public class RegisterService {
     private final RegisterMapper registerMapper;
+    private final S3FileUploadService s3FileUploadService;
 
-    public RegisterService(final RegisterMapper registerMapper) {
+    public RegisterService(final RegisterMapper registerMapper, final S3FileUploadService s3FileUploadService) {
         log.info("분양 서비스");
         this.registerMapper = registerMapper;
+        this.s3FileUploadService = s3FileUploadService;
     }
 
     /**
@@ -48,7 +52,7 @@ public class RegisterService {
 
     //분양공고 등록하기
     @Transactional
-    public DefaultRes saveRegister(final int userIdx, final Register register) {
+    public DefaultRes saveRegister(final int userIdx, final Register register, final MultipartFile[] dogimg) {
         try {
             log.info("분양 공고 저장");
 //
@@ -58,10 +62,23 @@ public class RegisterService {
 //
 //            register.setEndDate(endDate_d);
 
-            int insertId = registerMapper.save(userIdx, register);
+            registerMapper.save(userIdx, register);
             Register returnedData = register;
+            register.getRegisterIdx();
+            log.info(Integer.toString(register.getRegisterIdx()));
+
             returnedData.setUserIdx(userIdx);
-            returnedData.setRegisterIdx(insertId);
+            returnedData.setRegisterIdx(register.getRegisterIdx());
+
+            for(int i = 0; i<dogimg.length; i++){
+                log.info(Integer.toString(returnedData.getRegisterIdx())+"minjin");
+                MultipartFile img = dogimg[i];
+                String url = s3FileUploadService.upload(img);
+                log.info(Integer.toString(returnedData.getRegisterIdx())+"hi");
+                registerMapper.save_img(register.getRegisterIdx(), url, register.getRegisterStatus());
+                log.info(Integer.toString(returnedData.getRegisterIdx())+"hi3");
+            }
+            log.info(Integer.toString(returnedData.getRegisterIdx())+"hi2");
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER, returnedData);
         } catch (Exception e) {
             log.info("저장안됨");
@@ -70,6 +87,15 @@ public class RegisterService {
             return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
         }
     }
+
+//    @Transactional
+//    public DefaultRes img_save(final DogImgUrl dogImgUrl){
+//        try{
+//            registerMapper.save_img(dogImgUrl.getRegisterIdx(), dogImgUrl.getDogUrl(), dogImgUrl.getRegisterStatus());
+//
+//            return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER_IMG);
+//        }
+//    }
 
     //검색
     @Transactional
@@ -86,6 +112,7 @@ public class RegisterService {
     //공고 수정
     @Transactional
     public DefaultRes register_update(final int userIdx, final int registerIdx, final Register register) {
+
         if (registerMapper.findByRegisterIdx(registerIdx) != null) {
             try {
                 Register myRegister = registerMapper.findByRegisterIdx(registerIdx);
