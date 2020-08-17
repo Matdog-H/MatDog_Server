@@ -123,7 +123,11 @@ public class UserService {
                 if (user.getTel() != null) myUser.setTel(user.getTel());
                 if (user.getEmail() != null) myUser.setEmail(user.getEmail());
                 if (user.getMemo() != null) myUser.setMemo(user.getMemo());
-                if(user.getProfileUrl() !=null) myUser.setProfileUrl(user.getProfileUrl());
+//
+//                if(signUpReq.getProfile() != null)
+//                    signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
+
+//                if (user.getProfileUrl() !=null) myUser.setProfileUrl(s3FileUploadService.upload(user.getProfile()));
                 userMapper.updateUserInfo(userIdx, myUser);
                 return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_USER);
             } catch (Exception e) {

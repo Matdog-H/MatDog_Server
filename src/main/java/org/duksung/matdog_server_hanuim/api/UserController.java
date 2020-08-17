@@ -7,6 +7,7 @@ import org.duksung.matdog_server_hanuim.model.DefaultRes;
 import org.duksung.matdog_server_hanuim.model.SignUpReq;
 import org.duksung.matdog_server_hanuim.model.UserSignUpReq;
 import org.duksung.matdog_server_hanuim.service.JwtService;
+import org.duksung.matdog_server_hanuim.service.S3FileUploadService;
 import org.duksung.matdog_server_hanuim.service.UserService;
 import org.duksung.matdog_server_hanuim.utils.Auth;
 import org.springframework.http.HttpStatus;
@@ -24,9 +25,11 @@ import static org.duksung.matdog_server_hanuim.model.DefaultRes.FAIL_DEFAULT_RES
 public class UserController {
 
     private final UserService userService;
+    private final JwtService jwtService;
 
-    public UserController(final UserService userService) {
+    public UserController(final UserService userService, JwtService jwtService) {
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     @Auth
@@ -71,11 +74,18 @@ public class UserController {
 
     /* 회원 정보 수정 */
 
-    @PutMapping("/{userIdx}")
+    @PutMapping("")
     public ResponseEntity update_user(
-            @PathVariable(value = "userIdx") final int userIdx,
-            @RequestBody final User user) {
+            @RequestHeader(value = "Authorization") String token,
+            @RequestPart(value="profile",required = false) final MultipartFile profile,
+            User user) {
         try {
+            int userIdx = jwtService.decode(token).getUser_idx();
+
+            if(profile != null) user.setProfile(profile);
+            //if (user.getProfileUrl() !=null) user.setProfileUrl(s3FileUploadService.upload(profile));
+            log.info("test");
+            //userService.user_update(userIdx, user)
             return new ResponseEntity<>(userService.user_update(userIdx, user), HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
