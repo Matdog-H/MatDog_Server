@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.*;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
 import org.duksung.matdog_server_hanuim.model.RegisterReq;
+import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.service.*;
 import org.duksung.matdog_server_hanuim.utils.Auth;
 import org.duksung.matdog_server_hanuim.utils.AuthAspect;
@@ -149,7 +150,7 @@ public class RegisterController {
     public ResponseEntity getRegister() {
         try {
             log.info("최신순 분양 공고 가져오기 성공");
-            DefaultRes<List<Register>> defaultRes = registerService.getAllRegister();
+            DefaultRes<List<RegisterRes>> defaultRes = registerService.getAllRegister();
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e) {
             log.info("최신순 분양 공고 가져오기 실패");
@@ -176,7 +177,7 @@ public class RegisterController {
     public ResponseEntity getAll_register() {
         try {
             log.info("모든 공고 가져오기");
-            DefaultRes<List<Register>> defaultRes = registerService.getAllRegister();
+            DefaultRes<List<RegisterRes>> defaultRes = registerService.getAllRegister();
             DefaultRes<List<Register_lost>> defaultRes_lost = registerLostService.getAllRegister_lost();
             DefaultRes<List<Register_spot>> defaultRes_spot = registerSpotService.getAllRegister_spot();
             List<RegisterAll> registerAll = new ArrayList<RegisterAll>();
@@ -188,6 +189,21 @@ public class RegisterController {
             //return new ResponseEntity<>(defaultRes_spot, HttpStatus.OK);
         } catch (Exception e) {
             log.info("모든 공고 가져오기 실패");
+            log.error(e.getMessage());
+            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //공고 상세화면
+    @GetMapping("program/viewall/{registerStatus}/{registerIdx}")
+    public ResponseEntity viewAll_register(
+            @PathVariable(value = "registerStatus") final int registerStatus,
+            @PathVariable(value = "registerIdx") final int registerIdx){
+        try{
+            log.info("공고 상세보기 성공");
+            return new ResponseEntity<>(registerService.viewAllRegister(registerStatus, registerIdx), HttpStatus.OK);
+        } catch (Exception e){
+            log.info("공고 상세보기 실패");
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }

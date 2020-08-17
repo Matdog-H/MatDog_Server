@@ -8,14 +8,14 @@ import java.util.Date;
 public class Register_lost {
     private int userIdx;
     private int registerIdx;
-    private int status;
+    private int registerStatus;
     private String variety;
     private int gender;
     private int weight;
     private int age;
     private String protectPlace;
-    private String lostPlace;
     private Date lostDate;
+    private String lostPlace;
     private String feature;
     private String tel;
     private String email;

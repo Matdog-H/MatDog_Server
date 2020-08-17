@@ -23,6 +23,8 @@ public class ResponseMessage {
     public static final String CREATED_REGISTER_LOST = "실종 공고 등록 성공";
     public static final String CREATED_REGISTER_SPOT = "목격 공고 등록 성공";
 
+    public static final String CREATED_REGISTER_IMG = "공고 이미지 등록 성공";
+
     public static final String LIKE_CONTENT = "컨텐츠 좋아요/해제 성공";
 
     public static final String SEARCH_REGISTER = "분양 공고 검색 성공";

@@ -5,14 +5,17 @@ import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.Register_lost;
 import org.duksung.matdog_server_hanuim.dto.Register_spot;
 import org.duksung.matdog_server_hanuim.dto.User;
+import org.duksung.matdog_server_hanuim.model.RegisterRes;
 
 import java.util.List;
 
 @Mapper
 public interface RegisterMapper {
     //모든 분양 공고 리스트 조회(최신순 정렬)
-    @Select("SELECT * FROM register ORDER BY registerIdx ASC")
-    List<Register> findAll_register();
+//    @Select("SELECT * FROM register ORDER BY registerIdx ASC")
+//    List<Register> findAll_register();
+    @Select("SELECT * FROM register ORDER BY endDate")
+    List<RegisterRes> findAll_register();
 
     //모든 분양 공고 리스트 조회(나이순 정렬)
     @Select("SELECT * FROM register ORDER BY age DESC")
@@ -26,14 +29,18 @@ public interface RegisterMapper {
     @Select("SELECT * FROM register WHERE registerIdx = #{registerIdx}")
     Register findByRegisterIdx(@Param("registerIdx") final int registerIdx);
 
+    //공고 상세화면 보여주기
+    @Select("SELECT * FROM register WHERE registerStatus = #{registerStatus} AND registerIdx = #{registerIdx}")
+    Register viewAllRegister(@Param("registerStatus") final int registerStatus, @Param("registerIdx") final int registerIdx);
+
     //검색 기능 concat('%',#{userName},'%')
     @Select("SELECT * FROM register WHERE variety LIKE concat('%',#{variety},'%') OR protectPlace LIKE concat('%',#{protectPlace},'%')")
     List<Register> search_register(@Param("variety") final String variety, @Param("protectPlace") final String protectPlace);
 
     //분양 공고 등록
-    @Insert("INSERT INTO register(userIdx, status, variety, gender, transGender, weight, age, protectPlace, feature, tel, email, memo) " +
-            "VALUES(#{userIdx}, #{register.status}, #{register.variety}, #{register.gender}, #{register.transGender}, #{register.weight}, " +
-            "#{register.age}, #{register.protectPlace}, " +
+    @Insert("INSERT INTO register(userIdx, registerStatus, variety, gender, transGender, weight, age, protectPlace, endDate, feature, tel, email, memo) " +
+            "VALUES(#{userIdx}, #{register.registerStatus}, #{register.variety}, #{register.gender}, #{register.transGender}, #{register.weight}, " +
+            "#{register.age}, #{register.protectPlace}, #{register.endDate}, " +
             "#{register.feature}, #{register.tel}, " +
             "#{register.email}, #{register.memo})")
     @Options(useGeneratedKeys = true, keyColumn = "register.registerIdx")

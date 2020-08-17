@@ -78,7 +78,7 @@ public class UserService {
     @Transactional
     public DefaultRes save(SignUpReq signUpReq) {
         try {
-            if(signUpReq.getProfile() !=null)
+            if(signUpReq.getProfile() != null)
                 signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
             userMapper.save(signUpReq);
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_USER);

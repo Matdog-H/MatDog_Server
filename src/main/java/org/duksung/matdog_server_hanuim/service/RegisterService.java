@@ -5,12 +5,15 @@ import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.User;
 import org.duksung.matdog_server_hanuim.mapper.RegisterMapper;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
+import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Slf4j
@@ -48,6 +51,13 @@ public class RegisterService {
     public DefaultRes saveRegister(final int userIdx, final Register register) {
         try {
             log.info("분양 공고 저장");
+//
+//            String endDate_s = register.getEndDate();
+//            SimpleDateFormat transDate = new SimpleDateFormat("yyyy-mm-dd");
+//            Date endDate_d = (Date) transDate.parse(endDate_s);
+//
+//            register.setEndDate(endDate_d);
+
             int insertId = registerMapper.save(userIdx, register);
             Register returnedData = register;
             returnedData.setUserIdx(userIdx);
@@ -109,8 +119,8 @@ public class RegisterService {
 
     //모든 공고 조회
     @Transactional
-    public DefaultRes<List<Register>> getAllRegister() {
-        List<Register> registerList = registerMapper.findAll_register();
+    public DefaultRes<List<RegisterRes>> getAllRegister() {
+        List<RegisterRes> registerList = registerMapper.findAll_register();
         if (registerList.isEmpty())
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
         return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerList);
@@ -156,8 +166,18 @@ public class RegisterService {
         }
     }
 
-    //글 권한 확인
-    public boolean checkAuth(final int userIdx, final int registerIdx){
-        return userIdx == findByRegisterIdx(registerIdx).getData().getRegisterIdx();
+    //모든 공고 보여주기
+    public DefaultRes<Register> viewAllRegister(final int registerStatus, final int registerIdx) {
+        Register register = registerMapper.viewAllRegister(registerStatus, registerIdx);
+        if (register != null) {
+            try {
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, register);
+            } catch (Exception e) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                log.error(e.getMessage());
+                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+            }
+        }
+        return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.NOT_FOUND_REGISTER);
     }
 }
