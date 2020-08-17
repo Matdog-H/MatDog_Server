@@ -10,9 +10,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+
+
+import com.mortennobel.imagescaling.AdvancedResizeOp;
+import com.mortennobel.imagescaling.MultiStepRescaleOp;
+
+import javax.imageio.ImageIO;
+
 
 /**
  * Created by ds on 2018-11-19.
@@ -60,6 +68,50 @@ public class S3FileUploadService {
         }
         return url;
     }
+
+    public String resizeupload(MultipartFile uploadFile) throws IOException {
+        String origName = uploadFile.getOriginalFilename();
+        String url;
+        try {
+            //확장자
+            final String ext = origName.substring(origName.lastIndexOf('.'));
+            //파일이름 암호화
+            final String saveFileName = getUuid() + ext;
+            //파일 객체 생성
+            File file = new File(System.getProperty("user.dir") + saveFileName);
+            //파일 변환
+            uploadFile.transferTo(file);
+            // java-image-scaling 라이브러리
+
+            BufferedImage img = ImageIO.read(file);
+
+            MultiStepRescaleOp rescale = new MultiStepRescaleOp(600, 400);
+            rescale.setUnsharpenMask(AdvancedResizeOp.UnsharpenMask.Soft);
+
+            BufferedImage resizedImage = rescale.filter(img, null);
+
+            ImageIO.write(resizedImage,"jpg", file);
+
+            log.info("되나요?");
+
+            //S3 파일 업로드
+            uploadOnS3(saveFileName, file);
+            //주소 할당
+            url = defaultUrl + saveFileName;
+
+            log.info(url);
+
+            //파일 삭제
+            file.delete();
+
+        }catch (StringIndexOutOfBoundsException e) {
+            //파일이 없을 경우 예외 처리
+            url = null;
+        }
+        return url;
+    }
+
+
 
     private static String getUuid() {
         return UUID.randomUUID().toString().replaceAll("-", "");
