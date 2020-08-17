@@ -79,7 +79,7 @@ public class UserService {
     public DefaultRes save(SignUpReq signUpReq) {
         try {
             if(signUpReq.getProfile() != null)
-                signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
+                signUpReq.setProfileUrl(s3FileUploadService.resizeupload(signUpReq.getProfile()));
             userMapper.save(signUpReq);
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_USER);
         } catch (Exception e) {
