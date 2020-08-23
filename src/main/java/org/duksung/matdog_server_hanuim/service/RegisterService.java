@@ -61,32 +61,17 @@ public class RegisterService {
 //            Date endDate_d = (Date) transDate.parse(endDate_s);
 //
 //            register.setEndDate(endDate_d);
-//            System.out.println(dogimg[0]);
-//            System.out.println(s3FileUploadService.upload(dogimg[0]));
-//
-            //register.setDogUrl(s3FileUploadService.upload(dogimg[0]));
-//            System.out.println(register);
 
             registerMapper.save(userIdx, register);
             Register returnedData = register;
             register.getRegisterIdx();
-            //String s = s3FileUploadService.upload(dogimg[0]);
-            //System.out.println(s + "        민");
-            //returnedData.setDogUrl(s3FileUploadService.upload(dogimg[0]));
 
             returnedData.setUserIdx(userIdx);
             returnedData.setRegisterIdx(register.getRegisterIdx());
-//            System.out.println(dogimg[0]+"asdfsdfsd");
-//            System.out.println(s3FileUploadService.upload(dogimg[0]));
-//            System.out.println("여기2");
 
             for(int i = 0; i<dogimg.length; i++){
                 MultipartFile img = dogimg[i];
                 String url = s3FileUploadService.upload(img);
-
-                System.out.println(img);
-                System.out.println(url);
-
                 registerMapper.save_img(register.getRegisterIdx(), url, register.getRegisterStatus());
             }
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER, returnedData);

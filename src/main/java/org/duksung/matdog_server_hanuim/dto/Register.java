@@ -23,6 +23,6 @@ public class Register {
     private String email;
     private String memo;
 
-    private MultipartFile[] dogimg;
+    //private MultipartFile[] dogimg;
     private String dogUrl;
 }
