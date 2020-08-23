@@ -10,10 +10,15 @@ public class SignUpReq {
     private String name;
     private String addr;
     private String birth;
+    private String dm;
     private String tel;
+    private int telcheck;
     private String email;
+    private int emailcheck;
     private String memo;
+    private int memocheck;
 
-    private MultipartFile profile;
-    private String profileUrl;
+
+//    private MultipartFile profile;
+//    private String profileUrl;
 }

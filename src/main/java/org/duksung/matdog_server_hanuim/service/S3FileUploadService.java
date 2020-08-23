@@ -92,17 +92,17 @@ public class S3FileUploadService {
 
             ImageIO.write(resizedImage,"jpg", file);
 
-            log.info("되나요?");
+            //log.info("되나요?");
 
             //S3 파일 업로드
             uploadOnS3(saveFileName, file);
             //주소 할당
             url = defaultUrl + saveFileName;
 
-            log.info(url);
+            //log.info(url);
 
             //파일 삭제
-            file.delete();
+            //file.delete();
 
         }catch (StringIndexOutOfBoundsException e) {
             //파일이 없을 경우 예외 처리

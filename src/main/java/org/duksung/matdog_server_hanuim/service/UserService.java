@@ -78,8 +78,8 @@ public class UserService {
     @Transactional
     public DefaultRes save(SignUpReq signUpReq) {
         try {
-            if(signUpReq.getProfile() != null)
-                signUpReq.setProfileUrl(s3FileUploadService.resizeupload(signUpReq.getProfile()));
+//            if(signUpReq.getProfile() != null)
+//                signUpReq.setProfileUrl(s3FileUploadService.resizeupload(signUpReq.getProfile()));
             userMapper.save(signUpReq);
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_USER);
         } catch (Exception e) {
@@ -110,34 +110,47 @@ public class UserService {
         return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.NOT_FOUND_USER);
     }
 
-    @Transactional
-    public DefaultRes user_update(final int userIdx, final User user) {
-        if (userMapper.findByUidx(userIdx) != null) {
+    public User findUser_data(final int userIdx) {
+        final User user = userMapper.findByUidx(userIdx);
+        if (user != null) {
             try {
-                User myUser = userMapper.findByUidx(userIdx);
-                if (myUser == null)
-                    return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
-                if (user.getName() != null) myUser.setName(user.getName());
-                if (user.getAddr() != null) myUser.setAddr(user.getAddr());
-                if (user.getBirth() != null) myUser.setBirth(user.getBirth());
-                if (user.getTel() != null) myUser.setTel(user.getTel());
-                if (user.getEmail() != null) myUser.setEmail(user.getEmail());
-                if (user.getMemo() != null) myUser.setMemo(user.getMemo());
-//
-//                if(signUpReq.getProfile() != null)
-//                    signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
-
-//                if (user.getProfileUrl() !=null) myUser.setProfileUrl(s3FileUploadService.upload(user.getProfile()));
-                userMapper.updateUserInfo(userIdx, myUser);
-                return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_USER);
+                return user;
             } catch (Exception e) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 log.error(e.getMessage());
-                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
             }
         }
-        return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
+        return null;
     }
+
+    @Transactional
+//    public DefaultRes user_update(final int userIdx, final User user) {
+//        if (userMapper.findByUidx(userIdx) != null) {
+//            try {
+//                User myUser = userMapper.findByUidx(userIdx);
+//                if (myUser == null)
+//                    return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
+//                if (user.getName() != null) myUser.setName(user.getName());
+//                if (user.getAddr() != null) myUser.setAddr(user.getAddr());
+//                if (user.getBirth() != null) myUser.setBirth(user.getBirth());
+//                if (user.getTel() != null) myUser.setTel(user.getTel());
+//                if (user.getEmail() != null) myUser.setEmail(user.getEmail());
+//                if (user.getMemo() != null) myUser.setMemo(user.getMemo());
+////
+////                if(signUpReq.getProfile() != null)
+////                    signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
+//
+////                if (user.getProfileUrl() !=null) myUser.setProfileUrl(s3FileUploadService.upload(user.getProfile()));
+//                userMapper.updateUserInfo(userIdx, myUser);
+//                return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_USER);
+//            } catch (Exception e) {
+//                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//                log.error(e.getMessage());
+//                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+//            }
+//        }
+//        return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
+//    }
 
 
 //    @Transactional

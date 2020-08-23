@@ -27,14 +27,29 @@ public class LikeService {
 
         try{
             if(register_like == null){
-                log.info("좋아요 공고 생성");
-                likeMapper.save_like(userIdx, registerIdx, registerStatus, likeStatus);
+                if(registerStatus == 1){
+                    log.info("좋아요 공고 생성_일반");
+                    likeMapper.save_like(userIdx, registerIdx, registerStatus, likeStatus);
+                } else if(registerStatus == 2){
+                    log.info("좋아요 공고 생성_실종");
+                    likeMapper.save_like_lost(userIdx, registerIdx, registerStatus, likeStatus);
+                } else if(registerStatus == 3){
+                    log.info("좋아요 공고 생성_발견");
+                    likeMapper.save_like_spot(userIdx, registerIdx, registerStatus, likeStatus);
+                }
             } else{
-                log.info("좋아요 공고 상태 변경");
-                likeMapper.update_like(userIdx, registerIdx, registerStatus, likeStatus);
+                if(registerStatus == 1){
+                    log.info("좋아요 공고 상태 변경_일반");
+                    likeMapper.update_like(userIdx, registerIdx, registerStatus, likeStatus);
+                } else if(registerStatus == 2){
+                    log.info("좋아요 공고 상태 변경_실종");
+                    likeMapper.update_like_lost(userIdx, registerIdx, registerStatus, likeStatus);
+                } else if(registerStatus == 3){
+                    log.info("좋아요 공고 상태 변경_발견");
+                    likeMapper.update_like_spot(userIdx, registerIdx, registerStatus, likeStatus);
+                }
             }
-            log.info("들ㅈㅁ디ㅏㄹ읜ㄷㅇ르");
-            Register_like returnedData = register_like;
+            //Register_like returnedData = register_like;
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.LIKE_CONTENT, register_like);
         } catch (Exception e){
             log.info("좋아요 저장 실패");

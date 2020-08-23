@@ -1,6 +1,7 @@
 package org.duksung.matdog_server_hanuim.dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 
@@ -21,4 +22,7 @@ public class Register {
     private String tel;
     private String email;
     private String memo;
+
+    private MultipartFile[] dogimg;
+    private String dogUrl;
 }

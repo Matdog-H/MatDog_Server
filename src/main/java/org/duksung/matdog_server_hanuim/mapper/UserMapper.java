@@ -32,7 +32,7 @@ public interface UserMapper {
 
     //회원 등록, Auto Increment는 회원 고유 번호
     //Auto Increment 값을 받아오고 싶으면 리턴 타입을 int(Auto Increment 컬럼 타입)으로 하면 된다.
-    @Insert("INSERT INTO user(id, pw, name, addr, birth, tel, email, memo, profileUrl) VALUES(#{signUpReq.id}, #{signUpReq.pw}, #{signUpReq.name}, #{signUpReq.addr}, #{signUpReq.birth}, #{signUpReq.tel}, #{signUpReq.email}, #{signUpReq.memo}, #{signUpReq.profileUrl})")
+    @Insert("INSERT INTO user(id, pw, name, addr, birth, dm, tel, telcheck, email, emailcheck, memo, memocheck) VALUES(#{signUpReq.id}, #{signUpReq.pw}, #{signUpReq.name}, #{signUpReq.addr}, #{signUpReq.birth}, #{signUpReq.dm}, #{signUpReq.tel}, #{signUpReq.telcheck}, #{signUpReq.email}, #{signUpReq.emailcheck}, #{signUpReq.memo}, #{signUpReq.memocheck})")
     @Options(useGeneratedKeys = true, keyColumn = "user.userIdx")
     int save(@Param("signUpReq") final SignUpReq signUpReq);
 
@@ -42,7 +42,7 @@ public interface UserMapper {
      * @param user
      */
     @Update("UPDATE user SET name = #{user.name}, tel = #{user.tel}, addr = #{user.addr}," +
-            "birth = #{user.birth}, email = #{user.email}, memo = #{user.memo}, profileUrl = #{user.profileUrl} WHERE userIdx = #{userIdx}")
+            "birth = #{user.birth}, email = #{user.email}, dm = #{user.dm} WHERE userIdx = #{userIdx}")
     void updateUserInfo(@Param("userIdx") final int userIdx, @Param("user") final User user);
 
     // 아이디와 비밀번호로 조회

@@ -46,9 +46,9 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity signup(SignUpReq signUpReq, @RequestPart(value="profile",required = false) final MultipartFile profile) {
+    public ResponseEntity signup(SignUpReq signUpReq) {
         try {
-            if(profile !=null) signUpReq.setProfile(profile);
+            //if(profile !=null) signUpReq.setProfile(profile);
             return new ResponseEntity<>(userService.save(signUpReq), HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -74,24 +74,23 @@ public class UserController {
 
     /* 회원 정보 수정 */
 
-    @PutMapping("")
-    public ResponseEntity update_user(
-            @RequestHeader(value = "Authorization") String token,
-            @RequestPart(value="profile",required = false) final MultipartFile profile,
-            User user) {
-        try {
-            int userIdx = jwtService.decode(token).getUser_idx();
-
-            if(profile != null) user.setProfile(profile);
-            //if (user.getProfileUrl() !=null) user.setProfileUrl(s3FileUploadService.upload(profile));
-            log.info("test");
-            //userService.user_update(userIdx, user)
-            return new ResponseEntity<>(userService.user_update(userIdx, user), HttpStatus.OK);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @PutMapping("")
+//    public ResponseEntity update_user(
+//            @RequestHeader(value = "Authorization") String token,
+//            User user) {
+//        try {
+//            int userIdx = jwtService.decode(token).getUser_idx();
+//
+//            //if(profile != null) user.setProfile(profile);
+//            //if (user.getProfileUrl() !=null) user.setProfileUrl(s3FileUploadService.upload(profile));
+//            log.info("test");
+//            //userService.user_update(userIdx, user)
+//            return new ResponseEntity<>(userService.user_update(userIdx, user), HttpStatus.OK);
+//        } catch (Exception e) {
+//            log.error(e.getMessage());
+//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     //아이디 중복검사
     @PostMapping("/check/{id}")

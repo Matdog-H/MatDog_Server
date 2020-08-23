@@ -35,11 +35,11 @@ public interface RegisterMapper {
     List<Register> search_register(@Param("variety") final String variety, @Param("protectPlace") final String protectPlace);
 
     //분양 공고 등록
-    @Insert("INSERT INTO register(userIdx, registerStatus, variety, gender, transGender, weight, age, protectPlace, endDate, feature, tel, email, memo) " +
+    @Insert("INSERT INTO register(userIdx, registerStatus, variety, gender, transGender, weight, age, protectPlace, endDate, feature, tel, email, memo, dogUrl) " +
             "VALUES(#{userIdx}, #{re.registerStatus}, #{re.variety}, #{re.gender}, #{re.transGender}, #{re.weight}, " +
             "#{re.age}, #{re.protectPlace}, #{re.endDate}, " +
             "#{re.feature}, #{re.tel}, " +
-            "#{re.email}, #{re.memo})")
+            "#{re.email}, #{re.memo}, #{re.dogUrl})")
     @Options(useGeneratedKeys = true, keyColumn = "registerIdx", keyProperty = "re.registerIdx")
     int save(@Param("userIdx") final int userIdx, @Param("re") final Register re);
 
@@ -57,4 +57,7 @@ public interface RegisterMapper {
     //분양 공고 삭제
     @Delete("DELETE FROM register WHERE userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
     void deleteRegister(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx);
+
+    //썸네일 이미지 가져오기
+    //@Select("SELECT ")
 }
