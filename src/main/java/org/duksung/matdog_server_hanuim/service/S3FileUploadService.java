@@ -54,6 +54,7 @@ public class S3FileUploadService {
             final String saveFileName = getUuid() + ext;
             //파일 객체 생성
             File file = new File(System.getProperty("user.dir") + saveFileName);
+            System.out.println(file);
             //파일 변환
             uploadFile.transferTo(file);
             //S3 파일 업로드
@@ -79,13 +80,17 @@ public class S3FileUploadService {
             final String saveFileName = getUuid() + ext;
             //파일 객체 생성
             File file = new File(System.getProperty("user.dir") + saveFileName);
+            System.out.println(file);
             //파일 변환
             uploadFile.transferTo(file);
+            System.out.println("finish");
+
+
             // java-image-scaling 라이브러리
 
             BufferedImage img = ImageIO.read(file);
 
-            MultiStepRescaleOp rescale = new MultiStepRescaleOp(600, 400);
+            MultiStepRescaleOp rescale = new MultiStepRescaleOp(200, 200);
             rescale.setUnsharpenMask(AdvancedResizeOp.UnsharpenMask.Soft);
 
             BufferedImage resizedImage = rescale.filter(img, null);
@@ -102,7 +107,7 @@ public class S3FileUploadService {
             //log.info(url);
 
             //파일 삭제
-            //file.delete();
+            file.delete();
 
         }catch (StringIndexOutOfBoundsException e) {
             //파일이 없을 경우 예외 처리

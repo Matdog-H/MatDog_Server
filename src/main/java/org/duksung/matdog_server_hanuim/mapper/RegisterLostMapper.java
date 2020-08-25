@@ -3,6 +3,7 @@ package org.duksung.matdog_server_hanuim.mapper;
 import org.apache.ibatis.annotations.*;
 import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.Register_lost;
+import org.duksung.matdog_server_hanuim.model.dogImgUrlRes;
 
 import java.util.List;
 
@@ -16,8 +17,14 @@ public interface RegisterLostMapper {
     @Select("SELECT * FROM register_lost ORDER BY age DESC")
     List<Register_lost> findAll_lost_age();
 
+    //공고 상세 화면 조회
+    @Select("SELECT * FROM register_lost WHERE registerStatus = #{registerStatus} AND registerIdx = #{registerIdx}")
+    Register_lost viewAllRegister_lost(@Param("registerStatus") final int registerStatus, @Param("registerIdx") final int registerIdx);
+    @Select("SELECT dogUrl FROM dog_img_lost WHERE registerStatus = #{registerStatus} AND registerIdx = #{registerIdx}")
+    List<dogImgUrlRes> viewAllRegisterLost_img(@Param("registerStatus") final int registerStatus, @Param("registerIdx") final int registerIdx);
+
     //검색 기능
-    @Select("SELECT * FROM register_lost WHERE variety LIKE #{variety} OR protectPlace LIKE #{protectPlace}")
+    @Select("SELECT * FROM register_lost WHERE variety LIKE concat('%',#{variety},'%') OR protectPlace LIKE concat('%',#{protectPlace},'%')")
     List<Register_lost> search_lost(@Param("variety") final String variety, @Param("protectPlace") final String protectPlace);
 
     //registerIdx 조회
@@ -25,17 +32,25 @@ public interface RegisterLostMapper {
     Register_lost findByRegisterIdx_lost(@Param("registerIdx") final int registerIdx);
 
     //실종 공고 등록
-    @Insert("INSERT INTO register_lost(userIdx, status, variety, gender, weight, age, protectPlace, lostPlace,lostDate, feature, tel, email, memo) " +
-            "VALUES(#{userIdx},#{register_lost.variety}, #{register_lost.status}, #{register_lost.gender}, #{register_lost.weight}, #{register_lost.age}, #{register_lost.protectPlace}, " +
-            "#{register_lost.lostPlace},#{register_lost.lostDate},#{register_lost.feature}, #{register_lost.tel}, " +
-            "#{register_lost.email}, #{register_lost.memo})")
-    @Options(useGeneratedKeys = true, keyColumn = "register_lost.registerIdx")
-    int save_lost(@Param("userIdx") final int userIdx, @Param("register_lost") final Register_lost register_lost);
+    @Insert("INSERT INTO register_lost(userIdx, registerStatus, variety, gender, weight, age, protectPlace, registeDate,lostPlace, feature, tel, email, dm, dogUrl)" +
+            "VALUES(#{userIdx}, #{re_lost.registerStatus},#{re_lost.variety}, #{re_lost.gender}, #{re_lost.weight}, #{re_lost.age}, #{re_lost.protectPlace}, " +
+            "#{re_lost.registeDate},#{re_lost.lostPlace},#{re_lost.feature}, #{re_lost.tel}, " +
+            "#{re_lost.email}, #{re_lost.dm}, #{re_lost.dogUrl})")
+    @Options(useGeneratedKeys = true, keyColumn = "registerIdx", keyProperty = "re_lost.registerIdx")
+    int save_lost(@Param("userIdx") final int userIdx, @Param("re_lost") final Register_lost re_lost);
+
+    @Insert("INSERT INTO register_lost(dogUrl) VALUES(#{dogUrl})")
+    int url_lost(@Param("dogUrl") final String dogUrl);
+
+    //이미지 저장
+    @Insert("INSERT INTO dog_img_lost(registerIdx, dogUrl, registerStatus) VALUES(#{registerIdx}, #{dogUrl}, #{registerStatus})")
+    @Options(useGeneratedKeys = true, keyColumn = "dog_img.urlIdx")
+    int save_img_lost(@Param("registerIdx") final int registerIdx, @Param("dogUrl") final String dogUrl, @Param("registerStatus") final int registerStatus);
 
     //실종 공고 수정
     @Update("UPDATE register_lost SET variety=#{register_lost.variety}, gender=#{register_lost.gender}, weight=#{register_lost.weight},age=#{register_lost.age}," +
-            "protectPlace=#{register_lost.protectPlace},lostPlace=#{register_lost.lostPlace},lostDate=#{register_lost.lostDate},feature=#{register_lost.feature}, " +
-            "tel=#{register_lost.tel}, email=#{register_lost.email},memo=#{register_lost.memo} " +
+            "protectPlace=#{register_lost.protectPlace},lostPlace=#{register_lost.lostPlace},registeDate=#{register_lost.registeDate},feature=#{register_lost.feature}, " +
+            "tel=#{register_lost.tel}, email=#{register_lost.email},dm=#{register_lost.dm} " +
             "WHERE userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
     void update_lost(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx, @Param("register_lost") Register_lost register_lost);
 

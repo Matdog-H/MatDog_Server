@@ -48,4 +48,7 @@ public interface UserMapper {
     // 아이디와 비밀번호로 조회
     @Select("SELECT * FROM user WHERE id = #{loginReq.id} AND pw = #{loginReq.pw}")
     User findByIdAndPassword(@Param("loginReq") final LoginReq loginReq);
+
+    //찜한 공고 가져오기
+    //@Select("SELECT * FROM ")
 }

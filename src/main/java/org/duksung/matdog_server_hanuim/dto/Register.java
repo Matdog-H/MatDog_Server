@@ -17,11 +17,11 @@ public class Register {
     private int weight;
     private int age;
     private String protectPlace;
-    private Date endDate;
+    private Date registeDate;
     private String feature;
     private String tel;
     private String email;
-    private String memo;
+    private String dm;
 
     //private MultipartFile[] dogimg;
     private String dogUrl;

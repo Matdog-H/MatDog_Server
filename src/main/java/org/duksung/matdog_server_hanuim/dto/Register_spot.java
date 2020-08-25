@@ -1,6 +1,7 @@
 package org.duksung.matdog_server_hanuim.dto;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -15,9 +16,11 @@ public class Register_spot {
     private int age;
     private String protectPlace;
     private String findPlace;
-    private Date findDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date registeDate;
     private String feature;
     private String tel;
     private String email;
-    private String memo;
+    private String dm;
+    private String dogUrl;
 }

@@ -1,6 +1,7 @@
 package org.duksung.matdog_server_hanuim.dto;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -14,10 +15,12 @@ public class Register_lost {
     private int weight;
     private int age;
     private String protectPlace;
-    private Date lostDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date registeDate;
     private String lostPlace;
     private String feature;
     private String tel;
     private String email;
-    private String memo;
+    private String dm;
+    private String dogUrl;
 }

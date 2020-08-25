@@ -51,15 +51,10 @@ public class RegisterController {
             @RequestHeader(value = "Authorization") String token,
             @RequestPart(value = "dogimg") final MultipartFile[] dogimg) {
         int userIdx = jwtService.decode(token).getUser_idx();
-        System.out.println(userIdx);
         DefaultRes user = userService.findUser(userIdx);
 
         if (user.getStatus() == 200) {
             try {
-                int size = dogimg.length;
-                String size_s = Integer.toString(size);
-                log.info(size_s);
-                System.out.println(jwtService.decode(token).getUser_idx());
                 return new ResponseEntity<>(registerService.saveRegister(jwtService.decode(token).getUser_idx(), register, dogimg), HttpStatus.OK);
             } catch (Exception e) {
                 log.info("분양 공고 등록 실패");
@@ -79,7 +74,7 @@ public class RegisterController {
     ) {
         try {
             log.info("분양 검색 성공");
-            DefaultRes<List<Register>> defaultRes = registerService.search_register(variety, protectPlace);
+            DefaultRes<List<RegisterRes>> defaultRes = registerService.search_register(variety, protectPlace);
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e) {
             log.info("분양 검색 실패");
@@ -202,17 +197,62 @@ public class RegisterController {
     }
 
     //공고 상세화면
+//    @GetMapping("program/viewall/{registerStatus}/{registerIdx}")
+//    public ResponseEntity viewAll_register(
+//            @PathVariable(value = "registerStatus") final int registerStatus,
+//            @PathVariable(value = "registerIdx") final int registerIdx){
+//        try{
+//            log.info("공고 상세보기 성공");
+//            return new ResponseEntity<>(registerService.viewDetail(registerStatus, registerIdx), HttpStatus.OK);
+//        } catch (Exception e){
+//            log.info("공고 상세보기 실패");
+//            log.error(e.getMessage());
+//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
     @GetMapping("program/viewall/{registerStatus}/{registerIdx}")
     public ResponseEntity viewAll_register(
+            @RequestHeader(value = "Authorization") String token,
             @PathVariable(value = "registerStatus") final int registerStatus,
             @PathVariable(value = "registerIdx") final int registerIdx){
+        int userIdx = jwtService.decode(token).getUser_idx();
+
         try{
             log.info("공고 상세보기 성공");
-            return new ResponseEntity<>(registerService.viewAllRegister(registerStatus, registerIdx), HttpStatus.OK);
+            return new ResponseEntity<>(registerService.viewDetail(userIdx, registerStatus, registerIdx), HttpStatus.OK);
         } catch (Exception e){
             log.info("공고 상세보기 실패");
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+//    @GetMapping("program/viewall/{registerStatus}/{registerIdx}")
+//    public ResponseEntity viewAll_register(
+//            @PathVariable(value = "registerStatus") final int registerStatus,
+//            @PathVariable(value = "registerIdx") final int registerIdx){
+//        try{
+//            log.info("공고 상세보기 성공");
+//            return new ResponseEntity<>(registerService.viewAllRegister(registerStatus, registerIdx), HttpStatus.OK);
+//        } catch (Exception e){
+//            log.info("공고 상세보기 실패");
+//            log.error(e.getMessage());
+//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
+//    @GetMapping("program/viewallimg/{registerStatus}/{registerIdx}")
+//    public ResponseEntity viewAll_register_img(
+//            @PathVariable(value = "registerStatus") final int registerStatus,
+//            @PathVariable(value = "registerIdx") final int registerIdx){
+//        try{
+//            log.info("공고 상세보기 성공_이미지");
+//            return new ResponseEntity<>(registerService.viewAllRegister_img(registerStatus, registerIdx), HttpStatus.OK);
+//        } catch (Exception e){
+//            log.info("공고 상세보기 실패_이미지");
+//            log.error(e.getMessage());
+//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 }

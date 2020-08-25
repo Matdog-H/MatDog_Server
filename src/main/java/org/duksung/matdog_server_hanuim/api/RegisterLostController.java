@@ -11,6 +11,7 @@ import org.duksung.matdog_server_hanuim.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -34,15 +35,16 @@ public class RegisterLostController {
     //실종 공고 등록
     @PostMapping("program/lost")
     public ResponseEntity registerNotice_lost(
-            @RequestBody final Register_lost registerLost,
-            @RequestHeader(value = "Authorization") String token){
+            Register_lost registerLost,
+            @RequestHeader(value = "Authorization") String token,
+            @RequestPart(value = "dogimg") final MultipartFile[] dogimg){
         int userIdx = jwtService.decode(token).getUser_idx();
         DefaultRes user = userService.findUser(userIdx);
 
         if(user.getStatus() == 200){
             try{
                 log.info("실종 공고 등록 성공");
-                return new ResponseEntity<>(registerLostService.saveRegister_lost(userIdx, registerLost), HttpStatus.OK);
+                return new ResponseEntity<>(registerLostService.saveRegister_lost(jwtService.decode(token).getUser_idx(), registerLost, dogimg), HttpStatus.OK);
             } catch (Exception e){
                 log.info("실종 공고 등록 실패");
                 log.error(e.getMessage());
@@ -138,6 +140,49 @@ public class RegisterLostController {
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e){
             log.info("실종 공고 검색 실패");
+            log.error(e.getMessage());
+            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //공고 상세화면
+//    @GetMapping("program/viewalllost/{registerStatus}/{registerIdx}")
+//    public ResponseEntity viewAll_register(
+//            @PathVariable(value = "registerStatus") final int registerStatus,
+//            @PathVariable(value = "registerIdx") final int registerIdx){
+//        try{
+//            log.info("공고 상세보기 성공");
+//            return new ResponseEntity<>(registerLostService.viewAllRegisterLost(registerStatus, registerIdx), HttpStatus.OK);
+//        } catch (Exception e){
+//            log.info("공고 상세보기 실패");
+//            log.error(e.getMessage());
+//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//    @GetMapping("program/viewalllostimg/{registerStatus}/{registerIdx}")
+//    public ResponseEntity viewAll_register_img(
+//            @PathVariable(value = "registerStatus") final int registerStatus,
+//            @PathVariable(value = "registerIdx") final int registerIdx){
+//        try{
+//            log.info("공고 상세보기 성공_이미지");
+//            return new ResponseEntity<>(registerLostService.viewAllRegisterLost_img(registerStatus, registerIdx), HttpStatus.OK);
+//        } catch (Exception e){
+//            log.info("공고 상세보기 실패_이미지");
+//            log.error(e.getMessage());
+//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+    @GetMapping("program/viewalllost/{registerStatus}/{registerIdx}")
+    public ResponseEntity viewAll_register(
+            @RequestHeader(value = "Authorization") String token,
+            @PathVariable(value = "registerStatus") final int registerStatus,
+            @PathVariable(value = "registerIdx") final int registerIdx){
+        int userIdx = jwtService.decode(token).getUser_idx();
+        try{
+            log.info("공고 상세보기 성공");
+            return new ResponseEntity<>(registerLostService.viewDetail_lost(userIdx, registerStatus, registerIdx), HttpStatus.OK);
+        } catch (Exception e){
+            log.info("공고 상세보기 실패");
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }

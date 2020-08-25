@@ -3,6 +3,7 @@ package org.duksung.matdog_server_hanuim.api;
 import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.User;
+import org.duksung.matdog_server_hanuim.dto.ViewAllResLike;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
 import org.duksung.matdog_server_hanuim.model.SignUpReq;
 import org.duksung.matdog_server_hanuim.model.UserSignUpReq;
@@ -74,23 +75,23 @@ public class UserController {
 
     /* 회원 정보 수정 */
 
-//    @PutMapping("")
-//    public ResponseEntity update_user(
-//            @RequestHeader(value = "Authorization") String token,
-//            User user) {
-//        try {
-//            int userIdx = jwtService.decode(token).getUser_idx();
-//
-//            //if(profile != null) user.setProfile(profile);
-//            //if (user.getProfileUrl() !=null) user.setProfileUrl(s3FileUploadService.upload(profile));
-//            log.info("test");
-//            //userService.user_update(userIdx, user)
-//            return new ResponseEntity<>(userService.user_update(userIdx, user), HttpStatus.OK);
-//        } catch (Exception e) {
-//            log.error(e.getMessage());
-//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @PutMapping("")
+    public ResponseEntity update_user(
+            @RequestHeader(value = "Authorization") String token,
+            User user) {
+        try {
+            int userIdx = jwtService.decode(token).getUser_idx();
+
+            //if(profile != null) user.setProfile(profile);
+            //if (user.getProfileUrl() !=null) user.setProfileUrl(s3FileUploadService.upload(profile));
+            log.info("test");
+            //userService.user_update(userIdx, user)
+            return new ResponseEntity<>(userService.user_update(userIdx, user), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     //아이디 중복검사
     @PostMapping("/check/{id}")
@@ -99,5 +100,32 @@ public class UserController {
         DefaultRes defaultRes = userService.findById(id);
         return new ResponseEntity<>(defaultRes, HttpStatus.OK);
     }
-    // change
+
+    //찜공고 리스트 조회
+    @GetMapping("likes")
+    public ResponseEntity getUserLike(
+            @RequestHeader(value = "Authorization") String token){
+        int userIdx = jwtService.decode(token).getUser_idx();
+        try{
+            ViewAllResLike defaultRes = userService.findUserLikes(userIdx);
+            return new ResponseEntity<>(defaultRes, HttpStatus.OK);
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //내가 쓴 공고 리스트 조회
+    @GetMapping("write")
+    public ResponseEntity getUserWrite(
+            @RequestHeader(value = "Authorization") String token){
+        int userIdx = jwtService.decode(token).getUser_idx();
+        try{
+            ViewAllResLike defaultRes = userService.findUserWrite(userIdx);
+            return new ResponseEntity<>(defaultRes, HttpStatus.OK);
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

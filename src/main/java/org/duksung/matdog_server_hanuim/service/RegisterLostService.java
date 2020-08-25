@@ -1,16 +1,19 @@
 package org.duksung.matdog_server_hanuim.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.duksung.matdog_server_hanuim.dto.Register;
-import org.duksung.matdog_server_hanuim.dto.Register_lost;
+import org.duksung.matdog_server_hanuim.dto.*;
+import org.duksung.matdog_server_hanuim.mapper.LikeMapper;
 import org.duksung.matdog_server_hanuim.mapper.RegisterLostMapper;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
+import org.duksung.matdog_server_hanuim.model.LikeReq;
+import org.duksung.matdog_server_hanuim.model.dogImgUrlRes;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,21 +21,48 @@ import java.util.List;
 @Service
 public class RegisterLostService {
     private final RegisterLostMapper registerLostMapper;
+    private final S3FileUploadService s3FileUploadService;
+    private final UserService userService;
+    private final LikeMapper likeMapper;
 
-    public RegisterLostService(final RegisterLostMapper registerLostMapper) {
+    public RegisterLostService(final RegisterLostMapper registerLostMapper, final S3FileUploadService s3FileUploadService, final UserService userService, final LikeMapper likeMapper) {
         log.info("실종 서비스");
         this.registerLostMapper = registerLostMapper;
+        this.s3FileUploadService = s3FileUploadService;
+        this.userService = userService;
+        this.likeMapper = likeMapper;
     }
 
     //실종 공고 등록
     @Transactional
-    public DefaultRes saveRegister_lost(final int userIdx, final Register_lost register_lost) {
+    public DefaultRes saveRegister_lost(final int userIdx, final Register_lost register_lost, final MultipartFile[] dogimg) {
         try {
             log.info("실종 공고 저장");
-            int insertId = registerLostMapper.save_lost(userIdx, register_lost);
+            User user = userService.findUser_data(userIdx);
+
+            if (register_lost.getTel() == null) register_lost.setTel(user.getTel());
+            if (register_lost.getEmail() == null) register_lost.setEmail(user.getEmail());
+            if (register_lost.getDm() == null) register_lost.setDm(user.getDm());
+
+            //registerLostMapper.save_lost(userIdx, register_lost);
             Register_lost returnedData = register_lost;
+            register_lost.getRegisterIdx();
+
             returnedData.setUserIdx(userIdx);
-            returnedData.setRegisterIdx(insertId);
+            returnedData.setRegisterIdx(register_lost.getRegisterIdx());
+
+            for (int i = 0; i < dogimg.length; i++) {
+                if(i == 0){
+                    MultipartFile img_resize = dogimg[i];
+                    String url_resize = s3FileUploadService.resizeupload(img_resize);
+                    register_lost.setDogUrl(url_resize);
+                    registerLostMapper.save_lost(userIdx, register_lost);
+                } else {
+                MultipartFile img = dogimg[i];
+                String url = s3FileUploadService.upload(img);
+                registerLostMapper.save_img_lost(register_lost.getRegisterIdx(), url, register_lost.getRegisterStatus());
+                }
+            }
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER_LOST, returnedData);
         } catch (Exception e) {
             log.info("실종 공고 저장 안됨");
@@ -59,10 +89,10 @@ public class RegisterLostService {
                 if (register_lost.getProtectPlace() != null)
                     myRegisterLost.setProtectPlace(register_lost.getProtectPlace());
                 if (register_lost.getLostPlace() != null) myRegisterLost.setLostPlace(register_lost.getLostPlace());
-                if (register_lost.getLostDate() != null) myRegisterLost.setLostDate(register_lost.getLostDate());
+                if (register_lost.getRegisteDate() != null) myRegisterLost.setRegisteDate(register_lost.getRegisteDate());
                 if (register_lost.getFeature() != null) myRegisterLost.setFeature(register_lost.getFeature());
                 if (register_lost.getEmail() != null) myRegisterLost.setEmail(register_lost.getEmail());
-                if (register_lost.getMemo() != null) myRegisterLost.setMemo(register_lost.getMemo());
+                if (register_lost.getDm() != null) myRegisterLost.setDm(register_lost.getDm());
                 registerLostMapper.update_lost(userIdx, registerIdx, myRegisterLost);
                 return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_REGISTER);
             } catch (Exception e) {
@@ -99,9 +129,9 @@ public class RegisterLostService {
 
     //실종 공고 검색
     @Transactional
-    public DefaultRes search_lost(final String variety, final String protectPlace){
+    public DefaultRes search_lost(final String variety, final String protectPlace) {
         List<Register_lost> registerLostList = registerLostMapper.search_lost(variety, protectPlace);
-        if(registerLostList.isEmpty()){
+        if (registerLostList.isEmpty()) {
             log.info("검색 실패");
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
         }
@@ -123,5 +153,70 @@ public class RegisterLostService {
             log.error(e.getMessage());
             return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
         }
+    }
+
+    //모든 공고 보여주기
+//    public DefaultRes<Register_lost> viewAllRegisterLost(final int registerStatus, final int registerIdx) {
+//        Register_lost registerLost = registerLostMapper.viewAllRegister_lost(registerStatus, registerIdx);
+//        if (registerLost != null) {
+//            try {
+//                log.info("1");
+//                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLost);
+//            } catch (Exception e) {
+//                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//                log.info("2");
+//                log.error(e.getMessage());
+//                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+//            }
+//        }
+//        log.info("3");
+//        return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.NOT_FOUND_REGISTER);
+//    }
+//
+//    public DefaultRes<List<dogImgUrlRes>> viewAllRegisterLost_img(final int registerStatus, final int registerIdx){
+//        List<dogImgUrlRes> dogImgUrl = registerLostMapper.viewAllRegisterLost_img(registerStatus, registerIdx);
+//
+//        if(dogImgUrl != null){
+//            try{
+//                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogImgUrl);
+//            } catch (Exception e) {
+//                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//                log.error(e.getMessage());
+//                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+//            }
+//        }
+//        return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.NOT_FOUND_REGISTER);
+//    }
+    @Transactional
+//    public ViewAllDetailRes<Object> viewDetail_lost(final int registerStatus, final int registerIdx){
+//        Register_lost registerLost = registerLostMapper.viewAllRegister_lost(registerStatus, registerIdx);
+//        List<dogImgUrlRes> dogImgUrl = registerLostMapper.viewAllRegisterLost_img(registerStatus, registerIdx);
+//
+//        if(registerLost != null && dogImgUrl != null){
+//            try{
+//                return ViewAllDetailRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLost, dogImgUrl);
+//            }catch (Exception e){
+//                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//                log.error(e.getMessage());
+//                return ViewAllDetailRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+//            }
+//        }
+//        return ViewAllDetailRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+//    }
+    public DetailLikeRes<Object> viewDetail_lost(final int userIdx, final int registerStatus, final int registerIdx){
+        Register_lost registerLost = registerLostMapper.viewAllRegister_lost(registerStatus, registerIdx);
+        List<dogImgUrlRes> dogImgUrl = registerLostMapper.viewAllRegisterLost_img(registerStatus, registerIdx);
+        LikeReq likeStatus = likeMapper.showStatus_lost(userIdx, registerStatus, registerIdx);
+
+        if(registerLost != null && dogImgUrl != null){
+            try{
+                return DetailLikeRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLost, dogImgUrl, likeStatus.getLikeStatus());
+            }catch (Exception e){
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                log.error(e.getMessage());
+                return DetailLikeRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+            }
+        }
+        return DetailLikeRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
     }
 }

@@ -35,5 +35,13 @@ public class DefaultRes<T> {
                 .build();
     }
 
+//    public static <T> DefaultRes<T> res_two(final int status, final String message, final T t, final T t2) {
+//        return DefaultRes.<T>builder()
+//                .data()
+//                .status(status)
+//                .message(message)
+//                .build();
+//    }
+
     public static final DefaultRes FAIL_DEFAULT_RES = new DefaultRes(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.INTERNAL_SERVER_ERROR);
 }
