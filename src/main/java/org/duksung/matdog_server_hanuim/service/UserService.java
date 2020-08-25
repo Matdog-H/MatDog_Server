@@ -135,7 +135,7 @@ public class UserService {
 //                if (user.getBirth() != null) myUser.setBirth(user.getBirth());
 //                if (user.getTel() != null) myUser.setTel(user.getTel());
 //                if (user.getEmail() != null) myUser.setEmail(user.getEmail());
-//                if (user.getMemo() != null) myUser.setMemo(user.getMemo());
+//                if (user.getdm() != null) myUser.setdm(user.getdm());
 ////
 ////                if(signUpReq.getProfile() != null)
 ////                    signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));

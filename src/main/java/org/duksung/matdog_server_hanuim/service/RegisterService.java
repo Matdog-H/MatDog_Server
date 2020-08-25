@@ -6,6 +6,7 @@ import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.User;
 import org.duksung.matdog_server_hanuim.mapper.RegisterMapper;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
+import org.duksung.matdog_server_hanuim.model.RegisterReq;
 import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
@@ -61,17 +62,47 @@ public class RegisterService {
 //            Date endDate_d = (Date) transDate.parse(endDate_s);
 //
 //            register.setEndDate(endDate_d);
+//            System.out.println(dogimg[0]);
+//            System.out.println(s3FileUploadService.upload(dogimg[0]));
+//
+            //register.setDogUrl(s3FileUploadService.upload(dogimg[0]));
+//            System.out.println(register);
 
             registerMapper.save(userIdx, register);
             Register returnedData = register;
             register.getRegisterIdx();
+            //String s = s3FileUploadService.upload(dogimg[0]);
+            //System.out.println(s + "        민");
+            //returnedData.setDogUrl(s3FileUploadService.upload(dogimg[0]));
 
             returnedData.setUserIdx(userIdx);
             returnedData.setRegisterIdx(register.getRegisterIdx());
+//            System.out.println(dogimg[0]+"asdfsdfsd");
+//            System.out.println(s3FileUploadService.upload(dogimg[0]));
+//            System.out.println("여기2");
+
+//            for(int i = 0; i<dogimg.length; i++){
+//
+//                MultipartFile img = dogimg[0];
+//                String thumnailurl = s3FileUploadService.resizeupload(img);
+//
+//                System.out.println(img);
+//                System.out.println(thumnailurl);
+//
+//                registerMapper.save(userIdx, register);
+//            }
+
+            register.setDogUrl(s3FileUploadService.resizeupload(dogimg[0]));
+
 
             for(int i = 0; i<dogimg.length; i++){
+
                 MultipartFile img = dogimg[i];
                 String url = s3FileUploadService.upload(img);
+
+                System.out.println(img);
+                System.out.println(url);
+
                 registerMapper.save_img(register.getRegisterIdx(), url, register.getRegisterStatus());
             }
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER, returnedData);
@@ -123,7 +154,7 @@ public class RegisterService {
                 if(register.getFeature() != null) myRegister.setFeature(register.getFeature());
                 if(register.getTel() != null) myRegister.setTel(register.getTel());
                 if(register.getEmail() != null) myRegister.setEmail(register.getEmail());
-                if(register.getMemo() != null) myRegister.setMemo(register.getMemo());
+                if(register.getDm() != null) myRegister.setDm(register.getDm());
 
                 int update_registerIdx = registerMapper.update(userIdx, registerIdx, myRegister);
                 log.info(Integer.toString(update_registerIdx));

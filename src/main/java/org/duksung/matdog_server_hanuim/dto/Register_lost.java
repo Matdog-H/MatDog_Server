@@ -19,5 +19,5 @@ public class Register_lost {
     private String feature;
     private String tel;
     private String email;
-    private String memo;
+    private String dm;
 }

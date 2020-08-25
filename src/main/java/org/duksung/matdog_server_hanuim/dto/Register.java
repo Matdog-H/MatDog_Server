@@ -21,7 +21,7 @@ public class Register {
     private String feature;
     private String tel;
     private String email;
-    private String memo;
+    private String dm;
 
     //private MultipartFile[] dogimg;
     private String dogUrl;

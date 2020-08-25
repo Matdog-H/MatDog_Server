@@ -19,7 +19,7 @@ public class RegisterReq {
     private String feature;
     private String tel;
     private String email;
-    private String memo;
+    private String dm;
 
     private int registerIdx;
     private String dogUrl;

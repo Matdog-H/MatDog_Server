@@ -11,13 +11,12 @@ public class User {
     private String name; // Name
     private String addr; // Address
     private String birth; // 생일
-    private String dm;
     private String tel; // 휴대폰 번호
     private int telcheck;
     private String email; // Email
     private int emailcheck;
-    private String memo; // Memo
-    private int memocheck;
+    private String dm; // Memo
+    private int dmcheck;
 
 
 //    private String profileUrl; // 프로필이미지

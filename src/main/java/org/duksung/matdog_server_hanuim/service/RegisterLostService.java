@@ -62,7 +62,7 @@ public class RegisterLostService {
                 if (register_lost.getLostDate() != null) myRegisterLost.setLostDate(register_lost.getLostDate());
                 if (register_lost.getFeature() != null) myRegisterLost.setFeature(register_lost.getFeature());
                 if (register_lost.getEmail() != null) myRegisterLost.setEmail(register_lost.getEmail());
-                if (register_lost.getMemo() != null) myRegisterLost.setMemo(register_lost.getMemo());
+                if (register_lost.getDm() != null) myRegisterLost.setDm(register_lost.getDm());
                 registerLostMapper.update_lost(userIdx, registerIdx, myRegisterLost);
                 return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_REGISTER);
             } catch (Exception e) {

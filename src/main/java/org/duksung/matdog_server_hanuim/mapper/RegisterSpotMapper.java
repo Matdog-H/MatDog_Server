@@ -28,17 +28,17 @@ public interface RegisterSpotMapper {
     Register_spot findByRegisterIdx_spot(@Param("registerIdx") final int registerIdx);
 
     //목격 공고 등록
-    @Insert("INSERT INTO register_spot(userIdx, status, variety,gender,weight,age,protectPlace,findPlace,findDate,feature,tel,email,memo)" +
+    @Insert("INSERT INTO register_spot(userIdx, status, variety,gender,weight,age,protectPlace,findPlace,findDate,feature,tel,email,dm)" +
             "VALUES(#{userIdx},#{register_spot.status}, #{register_spot.variety},#{register_spot.gender},#{register_spot.weight}," +
             "#{register_spot.age},#{register_spot.protectPlace},#{register_spot.findPlace},#{register_spot.findDate},#{register_spot.feature}," +
-            "#{register_spot.tel},#{register_spot.email},#{register_spot.memo})")
+            "#{register_spot.tel},#{register_spot.email},#{register_spot.dm})")
     @Options(useGeneratedKeys = true, keyColumn = "register_spot.registerIdx")
     int save_spot(@Param("userIdx") final int userIdx, @Param("register_spot") final Register_spot register_spot);
 
     //목격 공고 수정
     @Update("UPDATE register_spot SET variety=#{register_spot.variety},gender=#{register_spot.gender},weight=#{register_spot.weight}," +
             "age=#{register_spot.age},protectPlace=#{register_spot.protectPlace},findPlace=#{register_spot.findPlace},findDate=#{register_spot.findDate}," +
-            "feature=#{register_spot.feature},tel=#{register_spot.tel},email=#{register_spot.email},memo=#{register_spot.memo} " +
+            "feature=#{register_spot.feature},tel=#{register_spot.tel},email=#{register_spot.email},dm=#{register_spot.dm} " +
             "where userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
     int update_spot(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx, @Param("register_spot") Register_spot register_spot);
 
