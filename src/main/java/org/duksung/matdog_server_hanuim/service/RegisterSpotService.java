@@ -75,7 +75,7 @@ public class RegisterSpotService {
     @Transactional
     public DefaultRes register_spot_update(final int userIdx, final int registerIdx, final Register_spot register_spot){
         if(registerSpotMapper.findByRegisterIdx_spot(registerIdx) != null){
-            //gender,weight,age,protectPlace,findPlace,findDate,feature,tel,email,memo
+            //gender,weight,age,protectPlace,findPlace,findDate,feature,tel,email,dm
             try{
                 Register_spot myRegisterSpot = registerSpotMapper.findByRegisterIdx_spot(registerIdx);
                 if(register_spot.getVariety() != null) myRegisterSpot.setVariety(register_spot.getVariety());

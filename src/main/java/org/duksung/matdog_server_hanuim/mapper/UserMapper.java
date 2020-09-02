@@ -26,13 +26,13 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE userIdx = #{userIdx}")
     User findByUidx(@Param("userIdx") final int userIdx);
 
-    //@Update("UPDATE user SET memo = #{userDescriptionReq.u_description} WHERE u_idx = #{userIdx}")
+    //@Update("UPDATE user SET dm = #{userDescriptionReq.u_description} WHERE u_idx = #{userIdx}")
     //void saveUserDescription(@Param("userIdx") final int userIdx, @Param("userDescriptionReq") final UserDescriptionReq userDescriptionReq);
 
 
     //회원 등록, Auto Increment는 회원 고유 번호
     //Auto Increment 값을 받아오고 싶으면 리턴 타입을 int(Auto Increment 컬럼 타입)으로 하면 된다.
-    @Insert("INSERT INTO user(id, pw, name, addr, birth, dm, tel, telcheck, email, emailcheck, memo, memocheck) VALUES(#{signUpReq.id}, #{signUpReq.pw}, #{signUpReq.name}, #{signUpReq.addr}, #{signUpReq.birth}, #{signUpReq.dm}, #{signUpReq.tel}, #{signUpReq.telcheck}, #{signUpReq.email}, #{signUpReq.emailcheck}, #{signUpReq.memo}, #{signUpReq.memocheck})")
+    @Insert("INSERT INTO user(id, pw, name, addr, birth, tel, telcheck, email, emailcheck, dm, dmcheck) VALUES(#{signUpReq.id}, #{signUpReq.pw}, #{signUpReq.name}, #{signUpReq.addr}, #{signUpReq.birth}, 000000#{signUpReq.tel}, #{signUpReq.telcheck}, #{signUpReq.email}, #{signUpReq.emailcheck}, #{signUpReq.dm}, #{signUpReq.dmch0eck})")
     @Options(useGeneratedKeys = true, keyColumn = "user.userIdx")
     int save(@Param("signUpReq") final SignUpReq signUpReq);
 

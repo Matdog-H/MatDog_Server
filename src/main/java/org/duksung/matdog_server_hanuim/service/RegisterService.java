@@ -5,6 +5,9 @@ import org.duksung.matdog_server_hanuim.dto.*;
 import org.duksung.matdog_server_hanuim.mapper.LikeMapper;
 import org.duksung.matdog_server_hanuim.mapper.RegisterMapper;
 import org.duksung.matdog_server_hanuim.model.*;
+import org.duksung.matdog_server_hanuim.model.DefaultRes;
+import org.duksung.matdog_server_hanuim.model.RegisterReq;
+import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Slf4j
@@ -62,6 +67,17 @@ public class RegisterService {
         try {
             log.info("분양 공고 저장");
             User user = userService.findUser_data(userIdx);
+//
+//            String endDate_s = register.getEndDate();
+//            SimpleDateFormat transDate = new SimpleDateFormat("yyyy-mm-dd");
+//            Date endDate_d = (Date) transDate.parse(endDate_s);
+//
+//            register.setEndDate(endDate_d);
+//            System.out.println(dogimg[0]);
+//            System.out.println(s3FileUploadService.upload(dogimg[0]));
+//
+            //register.setDogUrl(s3FileUploadService.upload(dogimg[0]));
+//            System.out.println(register);
 
             if(register.getTel() == null) register.setTel(user.getTel());
             if(register.getEmail() == null) register.setEmail(user.getEmail());
@@ -69,6 +85,9 @@ public class RegisterService {
 
             Register returnedData = register;
             register.getRegisterIdx();
+            //String s = s3FileUploadService.upload(dogimg[0]);
+            //System.out.println(s + "        민");
+            //returnedData.setDogUrl(s3FileUploadService.upload(dogimg[0]));
 
             returnedData.setUserIdx(userIdx);
             returnedData.setRegisterIdx(register.getRegisterIdx());
@@ -191,61 +210,6 @@ public class RegisterService {
     }
 
     //모든 공고 보여주기
-//    public DefaultRes<Register> viewAllRegister(final int registerStatus, final int registerIdx) {
-//        Register register = registerMapper.viewAllRegister(registerStatus, registerIdx);
-//        if (register != null) {
-//            try {
-//                log.info("1");
-//                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, register);
-//            } catch (Exception e) {
-//                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//                log.info("2");
-//                log.error(e.getMessage());
-//                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
-//            }
-//        }
-//        log.info("3");
-//        return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.NOT_FOUND_REGISTER);
-//    }
-
-//    public DefaultRes<List<dogImgUrlRes>> viewAllRegister_img(final int registerStatus, final int registerIdx){
-//        List<dogImgUrlRes> dogImgUrl = registerMapper.viewAllRegister_img(registerStatus, registerIdx);
-//
-//        if(dogImgUrl != null){
-//            try{
-//                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogImgUrl);
-//            } catch (Exception e) {
-//                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//                log.error(e.getMessage());
-//                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
-//            }
-//        }
-//        return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.NOT_FOUND_REGISTER);
-//    }
-
-    /**
-     * 모든 공고 보여주기
-     * @param registerStatus
-     * @param registerIdx
-     * @return
-     */
-    @Transactional
-//    public ViewAllDetailRes<Object> viewDetail(final int registerStatus, final int registerIdx){
-//        Register register = registerMapper.viewAllRegister(registerStatus, registerIdx);
-//        List<dogImgUrlRes> dogImgUrl = registerMapper.viewAllRegister_img(registerStatus, registerIdx);
-//
-//        if(register != null && dogImgUrl != null){
-//            try{
-//                return ViewAllDetailRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, register, dogImgUrl);
-//            } catch (Exception e){
-//                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//                log.error(e.getMessage());
-//                return ViewAllDetailRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
-//            }
-//        }
-//        return ViewAllDetailRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
-//    }
-
     public DetailLikeRes<Object> viewDetail(final int userIdx, final int registerStatus, final int registerIdx){
         Register register = registerMapper.viewAllRegister(registerStatus, registerIdx);
         List<dogImgUrlRes> dogImgUrl = registerMapper.viewAllRegister_img(registerStatus, registerIdx);

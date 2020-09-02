@@ -105,4 +105,7 @@ public interface RegisterMapper {
     //분양 공고 삭제
     @Delete("DELETE FROM register WHERE userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
     void deleteRegister(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx);
+
+    //썸네일 이미지 가져오기
+    //@Select("SELECT ")
 }
