@@ -32,7 +32,7 @@ public interface UserMapper {
 
     //회원 등록, Auto Increment는 회원 고유 번호
     //Auto Increment 값을 받아오고 싶으면 리턴 타입을 int(Auto Increment 컬럼 타입)으로 하면 된다.
-    @Insert("INSERT INTO user(id, pw, name, addr, birth, tel, telcheck, email, emailcheck, dm, dmcheck) VALUES(#{signUpReq.id}, #{signUpReq.pw}, #{signUpReq.name}, #{signUpReq.addr}, #{signUpReq.birth}, 000000#{signUpReq.tel}, #{signUpReq.telcheck}, #{signUpReq.email}, #{signUpReq.emailcheck}, #{signUpReq.dm}, #{signUpReq.dmch0eck})")
+    @Insert("INSERT INTO user(id, pw, name, addr, birth, tel, telcheck, email, emailcheck, dm, dmcheck) VALUES(#{signUpReq.id}, #{signUpReq.pw}, #{signUpReq.name}, #{signUpReq.addr}, #{signUpReq.birth}, #{signUpReq.tel}, #{signUpReq.telcheck}, #{signUpReq.email}, #{signUpReq.emailcheck}, #{signUpReq.dm}, #{signUpReq.dmcheck})")
     @Options(useGeneratedKeys = true, keyColumn = "user.userIdx")
     int save(@Param("signUpReq") final SignUpReq signUpReq);
 
