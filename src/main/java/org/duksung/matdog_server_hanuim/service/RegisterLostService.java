@@ -6,6 +6,7 @@ import org.duksung.matdog_server_hanuim.mapper.LikeMapper;
 import org.duksung.matdog_server_hanuim.mapper.RegisterLostMapper;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
 import org.duksung.matdog_server_hanuim.model.LikeReq;
+import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.model.dogImgUrlRes;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
@@ -57,6 +58,7 @@ public class RegisterLostService {
                     String url_resize = s3FileUploadService.resizeupload(img_resize);
                     register_lost.setDogUrl(url_resize);
                     registerLostMapper.save_lost(userIdx, register_lost);
+                    likeMapper.save_like_lost(userIdx, register_lost.getRegisterIdx(), register_lost.getRegisterStatus(), 0);
                 } else {
                 MultipartFile img = dogimg[i];
                 String url = s3FileUploadService.upload(img);
@@ -130,13 +132,27 @@ public class RegisterLostService {
     //실종 공고 검색
     @Transactional
     public DefaultRes search_lost(final String variety, final String protectPlace) {
-        List<Register_lost> registerLostList = registerLostMapper.search_lost(variety, protectPlace);
+        List<RegisterRes> registerLostList = registerLostMapper.search_lost(variety, protectPlace);
         if (registerLostList.isEmpty()) {
             log.info("검색 실패");
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
         }
         log.info("검색 성공");
         return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLostList);
+    }
+
+    //품종 검색
+    @Transactional
+    public DefaultRes findDogList_lost(final String variety){
+        List<RegisterRes> dogList_lost = registerLostMapper.findDogList_lost(variety);
+
+        if(dogList_lost.isEmpty()){
+            log.info("원하는 품종의 리스트 없음_실종");
+            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+        }
+
+        log.info("원하는 품종의 리스트 검색 성공_실종");
+        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogList_lost);
     }
 
     //실종 공고 삭제
@@ -206,11 +222,13 @@ public class RegisterLostService {
     public DetailLikeRes<Object> viewDetail_lost(final int userIdx, final int registerStatus, final int registerIdx){
         Register_lost registerLost = registerLostMapper.viewAllRegister_lost(registerStatus, registerIdx);
         List<dogImgUrlRes> dogImgUrl = registerLostMapper.viewAllRegisterLost_img(registerStatus, registerIdx);
-        LikeReq likeStatus = likeMapper.showStatus_lost(userIdx, registerStatus, registerIdx);
+        LikeReq likeStatus = likeMapper.showStatus_lost(userIdx, registerIdx, registerStatus);
 
-        if(registerLost != null && dogImgUrl != null){
+        int i = likeStatus.getLikeStatus();
+
+        if(registerLost != null || dogImgUrl != null){
             try{
-                return DetailLikeRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLost, dogImgUrl, likeStatus.getLikeStatus());
+                return DetailLikeRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLost, dogImgUrl, i);
             }catch (Exception e){
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 log.error(e.getMessage());

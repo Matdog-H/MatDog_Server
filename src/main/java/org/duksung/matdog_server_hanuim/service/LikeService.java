@@ -16,42 +16,26 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 public class LikeService {
     private final LikeMapper likeMapper;
 
-    public LikeService(final LikeMapper likeMapper){
+    public LikeService(final LikeMapper likeMapper) {
         log.info("좋아요 서비스");
         this.likeMapper = likeMapper;
     }
 
     @Transactional
-    public DefaultRes setLike(final int userIdx, final int registerIdx, final int registerStatus, final int likeStatus){
-        Register_like register_like = likeMapper.findLikeRegister(userIdx, registerIdx, registerStatus);
-
-        try{
-            if(register_like == null){
-                if(registerStatus == 1){
-                    log.info("좋아요 공고 생성_일반");
-                    likeMapper.save_like(userIdx, registerIdx, registerStatus, likeStatus);
-                } else if(registerStatus == 2){
-                    log.info("좋아요 공고 생성_실종");
-                    likeMapper.save_like_lost(userIdx, registerIdx, registerStatus, likeStatus);
-                } else if(registerStatus == 3){
-                    log.info("좋아요 공고 생성_발견");
-                    likeMapper.save_like_spot(userIdx, registerIdx, registerStatus, likeStatus);
-                }
-            } else{
-                if(registerStatus == 1){
-                    log.info("좋아요 공고 상태 변경_일반");
-                    likeMapper.update_like(userIdx, registerIdx, registerStatus, likeStatus);
-                } else if(registerStatus == 2){
-                    log.info("좋아요 공고 상태 변경_실종");
-                    likeMapper.update_like_lost(userIdx, registerIdx, registerStatus, likeStatus);
-                } else if(registerStatus == 3){
-                    log.info("좋아요 공고 상태 변경_발견");
-                    likeMapper.update_like_spot(userIdx, registerIdx, registerStatus, likeStatus);
-                }
+    public DefaultRes setLike(final int userIdx, final int registerIdx, final int registerStatus, final int likeStatus) {
+        try {
+            if (registerStatus == 1) {
+                log.info("좋아요 공고 상태 변경_일반");
+                likeMapper.update_like(userIdx, registerIdx, registerStatus, likeStatus);
+            } else if (registerStatus == 2) {
+                log.info("좋아요 공고 상태 변경_실종");
+                likeMapper.update_like_lost(userIdx, registerIdx, registerStatus, likeStatus);
+            } else if (registerStatus == 3) {
+                log.info("좋아요 공고 상태 변경_발견");
+                likeMapper.update_like_spot(userIdx, registerIdx, registerStatus, likeStatus);
             }
-            //Register_like returnedData = register_like;
-            return DefaultRes.res(StatusCode.CREATED, ResponseMessage.LIKE_CONTENT, register_like);
-        } catch (Exception e){
+            return DefaultRes.res(StatusCode.CREATED, ResponseMessage.LIKE_CONTENT);
+        } catch (Exception e) {
             log.info("좋아요 저장 실패");
             log.error(e.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();

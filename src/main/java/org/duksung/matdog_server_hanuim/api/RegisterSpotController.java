@@ -4,9 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.Register_spot;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
+import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.service.JwtService;
 import org.duksung.matdog_server_hanuim.service.RegisterSpotService;
 import org.duksung.matdog_server_hanuim.service.UserService;
+import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -145,34 +147,20 @@ public class RegisterSpotController {
         }
     }
 
-    //공고 상세화면
-//    @GetMapping("program/viewallspot/{registerStatus}/{registerIdx}")
-//    public ResponseEntity viewAll_register(
-//            @PathVariable(value = "registerStatus") final int registerStatus,
-//            @PathVariable(value = "registerIdx") final int registerIdx){
-//        try{
-//            log.info("공고 상세보기 성공");
-//            return new ResponseEntity<>(registerSpotService.viewAllRegister(registerStatus, registerIdx), HttpStatus.OK);
-//        } catch (Exception e){
-//            log.info("공고 상세보기 실패");
-//            log.error(e.getMessage());
-//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-//
-//    @GetMapping("program/viewallspotimg/{registerStatus}/{registerIdx}")
-//    public ResponseEntity viewAll_register_img(
-//            @PathVariable(value = "registerStatus") final int registerStatus,
-//            @PathVariable(value = "registerIdx") final int registerIdx){
-//        try{
-//            log.info("공고 상세보기 성공_이미지");
-//            return new ResponseEntity<>(registerSpotService.viewAllRegister_img(registerStatus, registerIdx), HttpStatus.OK);
-//        } catch (Exception e){
-//            log.info("공고 상세보기 실패_이미지");
-//            log.error(e.getMessage());
-//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    //원하는 품종 리스트 검색
+    @GetMapping("program/spot/finddog")
+    public ResponseEntity findDogList_spot(@RequestParam(value = "variety") final String variety){
+        try{
+            log.info("품종 리스트 검색 성공_발견");
+            DefaultRes<List<RegisterRes>> defaultRes = registerSpotService.findDogList_spot(variety);
+            return new ResponseEntity<>(defaultRes, HttpStatus.OK);
+        } catch(Exception e){
+            log.info("품종 리스트 검색 실패_발견");
+            log.error(e.getMessage());
+            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("program/viewallspot/{registerStatus}/{registerIdx}")
     public ResponseEntity viewAll_register(
             @RequestHeader(value = "Authorization") String token,

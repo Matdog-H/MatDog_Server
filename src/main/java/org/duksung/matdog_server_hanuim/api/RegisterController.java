@@ -83,6 +83,20 @@ public class RegisterController {
         }
     }
 
+    @GetMapping("program/register/finddog")
+    public ResponseEntity findDogList(
+            @RequestParam(value = "variety") final String variety){
+        try{
+            log.info("품종 리스트 검색 성공");
+            DefaultRes<List<RegisterRes>> defaultRes = registerService.findDogList(variety);
+            return new ResponseEntity<>(defaultRes, HttpStatus.OK);
+        } catch (Exception e){
+            log.info("품종 리스트 검색 실패");
+            log.error(e.getMessage());
+            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     /**
      * 공고 수정
      * @param register
@@ -166,7 +180,7 @@ public class RegisterController {
     public ResponseEntity getRegister_age() {
         try {
             log.info("나이순 공고 가져오기 성공");
-            DefaultRes<List<Register>> defaultRes = registerService.getAllRegister_age();
+            DefaultRes<List<RegisterRes>> defaultRes = registerService.getAllRegister_age();
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e) {
             log.info("나이순 분양 공고 가져오기 실패");

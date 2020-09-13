@@ -33,18 +33,23 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
-    @Auth
-    @GetMapping("")
-    public ResponseEntity getUser(@RequestParam("id") final Optional<String> id) {
-        try {
-            //id가 null일 경우 false, null이 아닐 경우 true
-            if (id.isPresent()) return new ResponseEntity<>(userService.findById(id.get()), HttpStatus.OK);
-            return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @Auth
+//    @GetMapping("/{id}")
+//    public ResponseEntity getUser(@PathVariable("id") final String id) {
+//        DefaultRes user = userService.findById(id);
+//        if (user != null) {
+//            try {
+//                return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
+//            } catch (Exception e) {
+//                log.info("없음");
+//                log.error(e.getMessage());
+//                return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//        }
+//        else
+//            log.info("없음");
+//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.NOT_FOUND);
+//    }
 
     @PostMapping("/signup")
     public ResponseEntity signup(SignUpReq signUpReq) {
@@ -57,17 +62,27 @@ public class UserController {
         }
     }
 
-    /**
-     * @param userIdx
-     * @return User 객체
-     */
-    @GetMapping("/{userIdx}")
-    public ResponseEntity getUserInfo(
-            @PathVariable("userIdx") final int userIdx) {
-        try {
+
+//    @GetMapping("/{userIdx}")
+//    public ResponseEntity getUserInfo(
+//            @PathVariable("userIdx") final int userIdx) {
+//        try {
+//            DefaultRes defaultRes = userService.findUser(userIdx);
+//            return new ResponseEntity<>(defaultRes, HttpStatus.OK);
+//        } catch (Exception e) {
+//            log.error(e.getMessage());
+//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+    @GetMapping("/my")
+    public ResponseEntity getMyData(
+            @RequestHeader(value = "Authorization") String token){
+        int userIdx = jwtService.decode(token).getUser_idx();
+
+        try{
             DefaultRes defaultRes = userService.findUser(userIdx);
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
-        } catch (Exception e) {
+        }catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -104,12 +119,12 @@ public class UserController {
     //찜공고 리스트 조회
     @GetMapping("likes")
     public ResponseEntity getUserLike(
-            @RequestHeader(value = "Authorization") String token){
+            @RequestHeader(value = "Authorization") String token) {
         int userIdx = jwtService.decode(token).getUser_idx();
-        try{
+        try {
             ViewAllResLike defaultRes = userService.findUserLikes(userIdx);
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -118,12 +133,12 @@ public class UserController {
     //내가 쓴 공고 리스트 조회
     @GetMapping("write")
     public ResponseEntity getUserWrite(
-            @RequestHeader(value = "Authorization") String token){
+            @RequestHeader(value = "Authorization") String token) {
         int userIdx = jwtService.decode(token).getUser_idx();
-        try{
+        try {
             ViewAllResLike defaultRes = userService.findUserWrite(userIdx);
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }

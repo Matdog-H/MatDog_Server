@@ -3,6 +3,7 @@ package org.duksung.matdog_server_hanuim.mapper;
 import org.apache.ibatis.annotations.*;
 import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.Register_lost;
+import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.model.dogImgUrlRes;
 
 import java.util.List;
@@ -25,7 +26,11 @@ public interface RegisterLostMapper {
 
     //검색 기능
     @Select("SELECT * FROM register_lost WHERE variety LIKE concat('%',#{variety},'%') OR protectPlace LIKE concat('%',#{protectPlace},'%')")
-    List<Register_lost> search_lost(@Param("variety") final String variety, @Param("protectPlace") final String protectPlace);
+    List<RegisterRes> search_lost(@Param("variety") final String variety, @Param("protectPlace") final String protectPlace);
+
+    //원하는 품종 리스트 검색
+    @Select("SELECT * FROM register_lost WHERE variety LIKE concat('%',#{variety},'%')")
+    List<RegisterRes> findDogList_lost(@Param("variety") final String variety);
 
     //registerIdx 조회
     @Select("SELECT * FROM register_lost WHERE registerIdx = #{registerIdx}")

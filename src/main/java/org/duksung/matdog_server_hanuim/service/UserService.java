@@ -149,7 +149,7 @@ public class UserService {
 
 //                if (user.getProfileUrl() !=null) myUser.setProfileUrl(s3FileUploadService.upload(user.getProfile()));
                 userMapper.updateUserInfo(userIdx, myUser);
-                return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_USER);
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_USER, myUser);
             } catch (Exception e) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 log.error(e.getMessage());

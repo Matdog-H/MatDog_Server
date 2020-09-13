@@ -39,7 +39,7 @@ public interface RegisterMapper {
 
     //모든 분양 공고 리스트 조회(나이순 정렬)
     @Select("SELECT * FROM register ORDER BY age DESC")
-    List<Register> findAll_age();
+    List<RegisterRes> findAll_age();
 
     //userIdx에 따른 registerIdx 조회
     @Select("SELECT * FROM register WHERE userIdx = #{userIdx}")
@@ -82,6 +82,10 @@ public interface RegisterMapper {
     @Select("SELECT * FROM register WHERE variety LIKE concat('%',#{variety},'%') OR protectPlace LIKE concat('%',#{protectPlace},'%')")
     List<RegisterRes> search_register(@Param("variety") final String variety, @Param("protectPlace") final String protectPlace);
 
+    //원하는 품종 리스트 검색
+    @Select("SELECT * FROM register WHERE variety LIKE concat('%', #{variety}, '%')")
+    List<RegisterRes> findDogList(@Param("variety") final String variety);
+
     //분양 공고 등록
     @Insert("INSERT INTO register(userIdx, registerStatus, variety, gender, transGender, weight, age, protectPlace, registeDate, feature, tel, email, dm, dogUrl) " +
             "VALUES(#{userIdx}, #{re.registerStatus}, #{re.variety}, #{re.gender}, #{re.transGender}, #{re.weight}, " +
@@ -105,7 +109,4 @@ public interface RegisterMapper {
     //분양 공고 삭제
     @Delete("DELETE FROM register WHERE userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
     void deleteRegister(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx);
-
-    //썸네일 이미지 가져오기
-    //@Select("SELECT ")
 }

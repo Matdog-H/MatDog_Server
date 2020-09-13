@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.Register_lost;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
+import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.service.JwtService;
 import org.duksung.matdog_server_hanuim.service.RegisterLostService;
 import org.duksung.matdog_server_hanuim.service.UserService;
@@ -140,6 +141,20 @@ public class RegisterLostController {
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e){
             log.info("실종 공고 검색 실패");
+            log.error(e.getMessage());
+            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("program/lost/finddog")
+    public ResponseEntity findDogList_lost(
+            @RequestParam(value = "variety") final String variety){
+        try{
+            log.info("품종 리스트 검색 성공_실종");
+            DefaultRes<List<RegisterRes>> defaultRes = registerLostService.findDogList_lost(variety);
+            return new ResponseEntity<>(defaultRes, HttpStatus.OK);
+        } catch (Exception e){
+            log.info("품종 리스트 검색 실패_실종");
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }

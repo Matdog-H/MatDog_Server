@@ -11,9 +11,7 @@ import org.duksung.matdog_server_hanuim.utils.StatusCode;
 public class DefaultRes<T> {
 
     private int status;
-
     private String message;
-
     private T data;
 
     public DefaultRes(final int status, final String message) {

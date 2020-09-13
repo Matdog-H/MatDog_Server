@@ -1,5 +1,6 @@
 package org.duksung.matdog_server_hanuim.service;
 
+import jdk.net.SocketFlow;
 import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.*;
 import org.duksung.matdog_server_hanuim.mapper.LikeMapper;
@@ -85,9 +86,6 @@ public class RegisterService {
 
             Register returnedData = register;
             register.getRegisterIdx();
-            //String s = s3FileUploadService.upload(dogimg[0]);
-            //System.out.println(s + "        민");
-            //returnedData.setDogUrl(s3FileUploadService.upload(dogimg[0]));
 
             returnedData.setUserIdx(userIdx);
             returnedData.setRegisterIdx(register.getRegisterIdx());
@@ -98,6 +96,7 @@ public class RegisterService {
                     String url_resize = s3FileUploadService.resizeupload(img_resize);
                     register.setDogUrl(url_resize);
                     registerMapper.save(userIdx, register);
+                    likeMapper.save_like(userIdx, register.getRegisterIdx(), register.getRegisterStatus(), 0);
                 } else {
                     MultipartFile img = dogimg[i];
                     String url = s3FileUploadService.upload(img);
@@ -123,6 +122,20 @@ public class RegisterService {
         }
         log.info("검색 성공");
         return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerList);
+    }
+
+    //품종 검색
+    @Transactional
+    public DefaultRes findDogList(final String variety){
+        List<RegisterRes> dogList = registerMapper.findDogList(variety);
+
+        if(dogList.isEmpty()){
+            log.info("원하는 품종의 리스트 없음");
+            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+        }
+
+        log.info("원하는 품종의 리스트 검색 성공");
+        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogList);
     }
 
     //공고 수정
@@ -171,8 +184,8 @@ public class RegisterService {
 
     //나이순 공고 조회
     @Transactional
-    public DefaultRes<List<Register>> getAllRegister_age(){
-        List<Register> registerList = registerMapper.findAll_age();
+    public DefaultRes<List<RegisterRes>> getAllRegister_age(){
+        List<RegisterRes> registerList = registerMapper.findAll_age();
         if(registerList.isEmpty()){
             log.info("나이순 공고 조회 실패");
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
@@ -217,7 +230,7 @@ public class RegisterService {
 
         int i = likeStatus.getLikeStatus();
 
-        if(register != null && dogImgUrl != null){
+        if(register != null || dogImgUrl != null){
             try{
                 return DetailLikeRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, register, dogImgUrl, i);
             } catch (Exception e){
