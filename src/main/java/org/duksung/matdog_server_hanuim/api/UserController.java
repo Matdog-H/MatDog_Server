@@ -62,7 +62,6 @@ public class UserController {
         }
     }
 
-
 //    @GetMapping("/{userIdx}")
 //    public ResponseEntity getUserInfo(
 //            @PathVariable("userIdx") final int userIdx) {
