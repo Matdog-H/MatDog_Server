@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class dogImgUrlRes {
-    private String dogUrl;
+    private String popfile;
 }

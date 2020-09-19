@@ -8,18 +8,20 @@ import java.sql.Date;
 public class RegisterAll {
     private int userIdx;
     private int registerIdx;
-    private String variety;
-    private int gender;
-    private int transGender;
-    private int weight;
-    private int age;
-    private String protectPlace;
+    private String kindCd;
+    private String sexCd;
+    private String neuterYn;
+    private String weight;
+    private String age;
+    private String orgNm;
+    private String careAddr;
     private String lostPlace;
     private Date lostDate;
+    private Date happenDt;
     private String findPlace;
     private String findDate;
-    private String feature;
-    private String tel;
+    private String specialMark;
+    private String careTel;
     private String email;
     private String dm;
 }

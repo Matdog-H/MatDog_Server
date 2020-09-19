@@ -1,7 +1,6 @@
 package org.duksung.matdog_server_hanuim.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Select;
 import org.duksung.matdog_server_hanuim.dto.*;
 import org.duksung.matdog_server_hanuim.mapper.LikeMapper;
 import org.duksung.matdog_server_hanuim.mapper.RegisterSpotMapper;
@@ -41,9 +40,14 @@ public class RegisterSpotService {
             log.info("목격 공고 저장");
             User user = userService.findUser_data(userIdx);
 
-            if(register_spot.getTel() == null) register_spot.setTel(user.getTel());
+            if(register_spot.getCareTel() == null) register_spot.setCareTel(user.getTel());
             if(register_spot.getEmail() == null) register_spot.setEmail(user.getEmail());
             if(register_spot.getDm() == null) register_spot.setDm(user.getDm());
+            if(register_spot.getWeight() == null) register_spot.setWeight("모름");
+            if(register_spot.getAge() == null) register_spot.setAge("모름");
+            if(register_spot.getCareAddr() == null) register_spot.setCareAddr("없음");
+            if(register_spot.getSpecialMark() == null) register_spot.setSpecialMark("없음");
+
 
             Register_spot returnedData = register_spot;
             register_spot.getRegisterIdx();
@@ -55,7 +59,7 @@ public class RegisterSpotService {
                 if(i == 0){
                     MultipartFile img_resize = dogimg[i];
                     String url_resize = s3FileUploadService.resizeupload(img_resize);
-                    register_spot.setDogUrl(url_resize);
+                    register_spot.setFilename(url_resize);
                     registerSpotMapper.save_spot(userIdx, register_spot);
                     likeMapper.save_like_spot(userIdx, register_spot.getRegisterIdx(), register_spot.getRegisterStatus(), 0);
                 } else {
@@ -80,12 +84,12 @@ public class RegisterSpotService {
             //gender,weight,age,protectPlace,findPlace,findDate,feature,tel,email,dm
             try{
                 Register_spot myRegisterSpot = registerSpotMapper.findByRegisterIdx_spot(registerIdx);
-                if(register_spot.getVariety() != null) myRegisterSpot.setVariety(register_spot.getVariety());
-                myRegisterSpot.setGender(register_spot.getGender());
+                if(register_spot.getKindCd() != null) myRegisterSpot.setKindCd(register_spot.getKindCd());
+                myRegisterSpot.setSexCd(register_spot.getSexCd());
                 myRegisterSpot.setAge(register_spot.getAge());
-                if(register_spot.getProtectPlace() != null) myRegisterSpot.setProtectPlace(register_spot.getProtectPlace());
-                if(register_spot.getRegisteDate() != null) myRegisterSpot.setRegisteDate(register_spot.getRegisteDate());
-                if(register_spot.getFeature() != null) myRegisterSpot.setFeature(register_spot.getFeature());
+                if(register_spot.getCareAddr() != null) myRegisterSpot.setCareAddr(register_spot.getCareAddr());
+                if(register_spot.getHappenDt() != null) myRegisterSpot.setHappenDt(register_spot.getHappenDt());
+                if(register_spot.getSpecialMark() != null) myRegisterSpot.setSpecialMark(register_spot.getSpecialMark());
                 if(register_spot.getEmail() != null) myRegisterSpot.setEmail(register_spot.getEmail());
                 if(register_spot.getDm() != null) myRegisterSpot.setDm(register_spot.getDm());
                 int update_registerIdx = registerSpotMapper.update_spot(userIdx, registerIdx, myRegisterSpot);
@@ -105,8 +109,8 @@ public class RegisterSpotService {
 
     //모든 목격 공고 조회_최신순
     @Transactional
-    public DefaultRes<List<Register_spot>> getAllRegister_spot(){
-        List<Register_spot> registerSpotList = registerSpotMapper.findAll_spot();
+    public DefaultRes<List<RegisterRes>> getAllRegister_spot(){
+        List<RegisterRes> registerSpotList = registerSpotMapper.findAll_spot();
         if(registerSpotList.isEmpty()){
             log.info("모든 목격 공고 조회 실패");
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
@@ -117,8 +121,8 @@ public class RegisterSpotService {
 
     //나이순 목격 공고 조회
     @Transactional
-    public DefaultRes<List<Register_spot>> getAllRegister_spot_age(){
-        List<Register_spot> registerSpotList = registerSpotMapper.findAll_spot_age();
+    public DefaultRes<List<RegisterRes>> getAllRegister_spot_age(){
+        List<RegisterRes> registerSpotList = registerSpotMapper.findAll_spot_age();
         if(registerSpotList.isEmpty()){
             log.info("나이순 목격 공고 조회 실패");
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
@@ -129,8 +133,8 @@ public class RegisterSpotService {
 
     //목격 공고 검색
     @Transactional
-    public DefaultRes search_spot(final String variety, final String protectPlace){
-        List<Register_spot> registerSpotList = registerSpotMapper.search_spot(variety, protectPlace);
+    public DefaultRes search_spot(final String kindCd, final String careAddr){
+        List<RegisterRes> registerSpotList = registerSpotMapper.search_spot(kindCd, careAddr);
         if(registerSpotList.isEmpty()){
             log.info("목격 공고 검색 실패");
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
@@ -141,15 +145,28 @@ public class RegisterSpotService {
 
     //원하는 품종 리스트 검색
     @Transactional
-    public DefaultRes findDogList_spot(final String variety){
-        List<RegisterRes> dogList_spot = registerSpotMapper.findDogList_spot(variety);
+    public DefaultRes findDogList_spot(final String kindCd, final int sort){
+        List<RegisterRes> dogList_age = registerSpotMapper.findDogList_spot_age(kindCd);
+        List<RegisterRes> dogList_date = registerSpotMapper.findDogList_spot_date(kindCd);
 
-        if(dogList_spot.isEmpty()){
-            log.info("원하는 품종의 리스트 없음_발견");
-            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+        if(sort == 1){
+            if(dogList_age.isEmpty()){
+                log.info("원하는 품종의 리스트 없음_발견_나이");
+                return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+            } else{
+                log.info("원하는 품종의 리스트 검색 성공_나이");
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogList_age);
+            }
+        } else if(sort == 2){
+            if(dogList_date.isEmpty()){
+                log.info("원하는 품종의 리스트 없음_발견_등록일순");
+                return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+            } else{
+                log.info("원하는 품종의 리스트 검색 성공_등록일순");
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogList_date);
+            }
         }
-        log.info("원하는 품종의 리스트 검색 성공_발견");
-        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogList_spot);
+        return DefaultRes.res(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.NOT_CORRECT_REQUEST);
     }
 
     //목격 공고 삭제
@@ -205,14 +222,18 @@ public class RegisterSpotService {
     @Transactional
     public DetailLikeRes<Object> viewDetail_spot(final int userIdx, final int registerStatus, final int registerIdx){
         Register_spot registerSpot = registerSpotMapper.viewAllRegister_spot(registerStatus, registerIdx);
-        List<dogImgUrlRes> dogImgUrl = registerSpotMapper.viewAllRegisterSpot_img(registerStatus, registerIdx);
+        dogImgUrlRes dogImgUrl = registerSpotMapper.viewAllRegisterSpot_img(registerStatus, registerIdx);
         LikeReq likeStatus = likeMapper.showStatus_spot(userIdx, registerIdx, registerStatus);
 
-        int i = likeStatus.getLikeStatus();
-
-        if(registerSpot != null || dogImgUrl != null){
+        if(registerSpot != null || dogImgUrl != null ){
             try{
-                return DetailLikeRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerSpot, dogImgUrl, i);
+                if(likeStatus == null) {
+                    likeMapper.save_like_spot(userIdx, registerIdx, registerStatus, 0);
+                    LikeReq now_likeStatus = likeMapper.showStatus_spot(userIdx, registerIdx, registerStatus);
+
+                    return DetailLikeRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerSpot, dogImgUrl, now_likeStatus.getLikeStatus());
+                } else
+                    return DetailLikeRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerSpot, dogImgUrl, likeStatus.getLikeStatus());
             } catch (Exception e){
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 log.error(e.getMessage());

@@ -41,5 +41,10 @@ public class ResponseMessage {
 
     public static final String UNAUTHORIZED = "인증 실패";
 
+    public static final String NOT_CORRECT_REQUEST = "올바른 명령을 입력하세요";
+
+    public static final String IMG_TRANSFER = "이미지 전송 완료";
+
+    public static final String READ_API = "api 가져오기";
 }
 

@@ -1,13 +1,12 @@
 package org.duksung.matdog_server_hanuim.service;
 
-import jdk.net.SocketFlow;
+import javafx.animation.Animation;
 import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.*;
 import org.duksung.matdog_server_hanuim.mapper.LikeMapper;
 import org.duksung.matdog_server_hanuim.mapper.RegisterMapper;
 import org.duksung.matdog_server_hanuim.model.*;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
-import org.duksung.matdog_server_hanuim.model.RegisterReq;
 import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
@@ -16,8 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -42,12 +42,12 @@ public class RegisterService {
      * @param registerIdx
      * @return DefaultRes
      */
-    public DefaultRes<Register> findByRegisterIdx(final int registerIdx){
+    public DefaultRes<Register> findByRegisterIdx(final int registerIdx) {
         Register register = registerMapper.findByRegisterIdx(registerIdx);
-        if(register != null){
-            try{
+        if (register != null) {
+            try {
                 return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, register);
-            } catch (Exception e){
+            } catch (Exception e) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 log.error(e.getMessage());
                 return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
@@ -58,6 +58,7 @@ public class RegisterService {
 
     /**
      * 분양 공고 저장
+     *
      * @param userIdx
      * @param register
      * @param dogimg
@@ -80,9 +81,18 @@ public class RegisterService {
             //register.setDogUrl(s3FileUploadService.upload(dogimg[0]));
 //            System.out.println(register);
 
-            if(register.getTel() == null) register.setTel(user.getTel());
-            if(register.getEmail() == null) register.setEmail(user.getEmail());
-            if(register.getDm() == null) register.setDm(user.getDm());
+            if (register.getCareTel() == null) register.setCareTel(user.getTel());
+            if (register.getEmail() == null) register.setEmail(user.getEmail());
+            if (register.getDm() == null) register.setDm(user.getDm());
+
+            if (register.getSpecialMark() == null) register.setSpecialMark("없음");
+
+//            java.sql.Date date = (java.sql.Date) new Date();
+//            SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+//            String now = format.format(date);
+//            java.sql.Date nowDate = (java.sql.Date) format.parse(now);
+//
+//            if(register.getHappenDt() == null) register.setHappenDt(nowDate);
 
             Register returnedData = register;
             register.getRegisterIdx();
@@ -90,11 +100,11 @@ public class RegisterService {
             returnedData.setUserIdx(userIdx);
             returnedData.setRegisterIdx(register.getRegisterIdx());
 
-            for (int i = 0; i<dogimg.length; i++){
-                if(i == 0){
+            for (int i = 0; i < dogimg.length; i++) {
+                if (i == 0) {
                     MultipartFile img_resize = dogimg[i];
                     String url_resize = s3FileUploadService.resizeupload(img_resize);
-                    register.setDogUrl(url_resize);
+                    register.setFilename(url_resize);
                     registerMapper.save(userIdx, register);
                     likeMapper.save_like(userIdx, register.getRegisterIdx(), register.getRegisterStatus(), 0);
                 } else {
@@ -114,9 +124,9 @@ public class RegisterService {
 
     //검색
     @Transactional
-    public DefaultRes search_register(final String variety, final String protectPlace){
-        List<RegisterRes> registerList = registerMapper.search_register(variety, protectPlace);
-        if(registerList.isEmpty()){
+    public DefaultRes search_register(final String kindCd, final String careAddr) {
+        List<RegisterRes> registerList = registerMapper.search_register(kindCd, careAddr);
+        if (registerList.isEmpty()) {
             log.info("검색 실패");
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
         }
@@ -126,16 +136,31 @@ public class RegisterService {
 
     //품종 검색
     @Transactional
-    public DefaultRes findDogList(final String variety){
-        List<RegisterRes> dogList = registerMapper.findDogList(variety);
+    public DefaultRes findDogList(final String kindCd, final int sort) {
+        List<RegisterRes> dogList_age = registerMapper.findDogList_age(kindCd);
+        List<RegisterRes> dogList_date = registerMapper.findDogList_date(kindCd);
 
-        if(dogList.isEmpty()){
-            log.info("원하는 품종의 리스트 없음");
-            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+        if (sort == 1) {
+            if (dogList_age.isEmpty()) {
+                log.info("원하는 품종의 리스트 없음_나이");
+                return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+            } else {
+                log.info("원하는 품종의 리스트 검색 성공_나이");
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogList_age);
+            }
+        } else if (sort == 2) {
+
+            if (dogList_date.isEmpty()) {
+                log.info("원하는 품종의 리스트 없음_등록일순");
+                return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+
+            } else {
+                log.info("원하는 품종의 리스트 검색 성공_등록일순");
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogList_date);
+            }
+
         }
-
-        log.info("원하는 품종의 리스트 검색 성공");
-        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogList);
+        return DefaultRes.res(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.NOT_CORRECT_REQUEST);
     }
 
     //공고 수정
@@ -145,19 +170,19 @@ public class RegisterService {
         if (registerMapper.findByRegisterIdx(registerIdx) != null) {
             try {
                 Register myRegister = registerMapper.findByRegisterIdx(registerIdx);
-                if(myRegister == null)
+                if (myRegister == null)
                     return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
 
-                if(register.getVariety() != null) myRegister.setVariety(register.getVariety());
-                myRegister.setGender(register.getGender());
-                myRegister.setTransGender(register.getTransGender());
+                if (register.getKindCd() != null) myRegister.setKindCd(register.getKindCd());
+                myRegister.setSexCd(register.getSexCd());
+                myRegister.setNeuterYn(register.getNeuterYn());
                 myRegister.setWeight(register.getWeight());
                 myRegister.setAge(register.getAge());
-                if(register.getProtectPlace() != null) myRegister.setProtectPlace(register.getProtectPlace());
-                if(register.getFeature() != null) myRegister.setFeature(register.getFeature());
-                if(register.getTel() != null) myRegister.setTel(register.getTel());
-                if(register.getEmail() != null) myRegister.setEmail(register.getEmail());
-                if(register.getDm() != null) myRegister.setDm(register.getDm());
+                if (register.getCareAddr() != null) myRegister.setCareAddr(register.getCareAddr());
+                if (register.getSpecialMark() != null) myRegister.setSpecialMark(register.getSpecialMark());
+                if (register.getCareTel() != null) myRegister.setCareTel(register.getCareTel());
+                if (register.getEmail() != null) myRegister.setEmail(register.getEmail());
+                if (register.getDm() != null) myRegister.setDm(register.getDm());
 
                 int update_registerIdx = registerMapper.update(userIdx, registerIdx, myRegister);
                 log.info(Integer.toString(update_registerIdx));
@@ -184,9 +209,9 @@ public class RegisterService {
 
     //나이순 공고 조회
     @Transactional
-    public DefaultRes<List<RegisterRes>> getAllRegister_age(){
+    public DefaultRes<List<RegisterRes>> getAllRegister_age() {
         List<RegisterRes> registerList = registerMapper.findAll_age();
-        if(registerList.isEmpty()){
+        if (registerList.isEmpty()) {
             log.info("나이순 공고 조회 실패");
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
         }
@@ -196,9 +221,9 @@ public class RegisterService {
 
     //userIdx가 쓴 공고 반환
     @Transactional
-    public DefaultRes<List<Register>> getUserWriteRegister(final int userIdx){
+    public DefaultRes<List<Register>> getUserWriteRegister(final int userIdx) {
         List<Register> registerList = registerMapper.findByuserIdx(userIdx);
-        if(registerList.isEmpty()){
+        if (registerList.isEmpty()) {
             log.info("유저가 쓴 분양 공고 리스트 반환");
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
         }
@@ -208,32 +233,40 @@ public class RegisterService {
 
     //공고 삭제
     @Transactional
-    public DefaultRes deleteByRegisterIdx(final int userIdx, final int registerIdx){
+    public DefaultRes deleteByRegisterIdx(final int userIdx, final int registerIdx) {
         final Register register = registerMapper.findByRegisterIdx(registerIdx);
-        if(register == null)
+        if (register == null)
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
-        try{
-            registerMapper.deleteRegister(userIdx, registerIdx);
-            return DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.DELETE_REGISTER);
-        } catch (Exception e){
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            log.error(e.getMessage());
-            return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+        else {
+            try {
+                registerMapper.deleteRegister(userIdx, registerIdx);
+                registerMapper.deleteRegister_img(registerIdx);
+                registerMapper.deleteRegister_like(userIdx, registerIdx);
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.DELETE_REGISTER);
+            } catch (Exception e) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                log.error(e.getMessage());
+                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+            }
         }
     }
 
     //모든 공고 보여주기
-    public DetailLikeRes<Object> viewDetail(final int userIdx, final int registerStatus, final int registerIdx){
+    public DetailLikeRes<Object> viewDetail(final int userIdx, final int registerStatus, final int registerIdx) {
         Register register = registerMapper.viewAllRegister(registerStatus, registerIdx);
-        List<dogImgUrlRes> dogImgUrl = registerMapper.viewAllRegister_img(registerStatus, registerIdx);
+        dogImgUrlRes dogImgUrl = registerMapper.viewAllRegister_img(registerStatus, registerIdx);
         LikeReq likeStatus = likeMapper.showStatus(userIdx, registerIdx, registerStatus);
 
-        int i = likeStatus.getLikeStatus();
+        if (register != null || dogImgUrl != null) {
+            try {
+                if (likeStatus == null) {
+                    likeMapper.save_like(userIdx, registerIdx, registerStatus, 0);
+                    LikeReq now_likeStatus = likeMapper.showStatus(userIdx, registerIdx, registerStatus);
 
-        if(register != null || dogImgUrl != null){
-            try{
-                return DetailLikeRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, register, dogImgUrl, i);
-            } catch (Exception e){
+                    return DetailLikeRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, register, dogImgUrl, now_likeStatus.getLikeStatus());
+                } else
+                    return DetailLikeRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, register, dogImgUrl, likeStatus.getLikeStatus());
+            } catch (Exception e) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 log.error(e.getMessage());
                 return DetailLikeRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);

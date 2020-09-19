@@ -107,7 +107,7 @@ public class RegisterSpotController {
     public ResponseEntity getSpotRegister(){
         try{
             log.info("모든 목격 공고 가져오기 성공");
-            DefaultRes<List<Register_spot>> defaultRes = registerSpotService.getAllRegister_spot();
+            DefaultRes<List<RegisterRes>> defaultRes = registerSpotService.getAllRegister_spot();
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e){
             log.info("모든 목격 공고 가져오기 실패");
@@ -121,7 +121,7 @@ public class RegisterSpotController {
     public ResponseEntity getSpotRegister_age(){
         try{
             log.info("나이순 목격 공고 가져오기 성공");
-            DefaultRes<List<Register_spot>> defaultRes = registerSpotService.getAllRegister_spot_age();
+            DefaultRes<List<RegisterRes>> defaultRes = registerSpotService.getAllRegister_spot_age();
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e){
             log.info("나이순 목격 공고 가져오기 실패");
@@ -133,12 +133,12 @@ public class RegisterSpotController {
     //목격 공고 검색
     @GetMapping("program/spot/search")
     public ResponseEntity searchSpot(
-            @RequestParam(value = "variety") final String variety,
-            @RequestParam(value = "protectPlace") final String protectPlace
+            @RequestParam(value = "kindCd", defaultValue = "") final String kindCd,
+            @RequestParam(value = "careAddr", defaultValue = "") final String careAddr
     ) {
         try {
             log.info("목격 공고 검색 성공");
-            DefaultRes<List<Register_spot>> defaultRes = registerSpotService.search_spot(variety, protectPlace);
+            DefaultRes<List<Register_spot>> defaultRes = registerSpotService.search_spot(kindCd, careAddr);
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e) {
             log.info("분양 검색 실패");
@@ -148,11 +148,13 @@ public class RegisterSpotController {
     }
 
     //원하는 품종 리스트 검색
-    @GetMapping("program/spot/finddog")
-    public ResponseEntity findDogList_spot(@RequestParam(value = "variety") final String variety){
+    @GetMapping("program/spot/finddog/{sort}")
+    public ResponseEntity findDogList_spot(
+            @RequestParam(value = "kindCd") final String kindCd,
+            @PathVariable(value = "sort") final int sort){
         try{
             log.info("품종 리스트 검색 성공_발견");
-            DefaultRes<List<RegisterRes>> defaultRes = registerSpotService.findDogList_spot(variety);
+            DefaultRes<List<RegisterRes>> defaultRes = registerSpotService.findDogList_spot(kindCd, sort);
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch(Exception e){
             log.info("품종 리스트 검색 실패_발견");

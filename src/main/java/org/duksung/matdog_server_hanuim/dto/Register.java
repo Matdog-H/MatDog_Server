@@ -1,7 +1,6 @@
 package org.duksung.matdog_server_hanuim.dto;
 
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 
@@ -11,18 +10,19 @@ public class Register {
     private int userIdx;
     private int registerIdx;
     private int registerStatus;
-    private String variety;
-    private int gender;
-    private int transGender;
-    private int weight;
-    private int age;
-    private String protectPlace;
-    private Date registeDate;
-    private String feature;
-    private String tel;
+    private String kindCd;
+    private String sexCd;
+    private String neuterYn;
+    private String weight;
+    private String age;
+    private String orgNm;
+    private String careAddr;
+    private Date happenDt;
+    private String specialMark;
+    private String careTel;
     private String email;
     private String dm;
 
     //private MultipartFile[] dogimg;
-    private String dogUrl;
+    private String filename;
 }

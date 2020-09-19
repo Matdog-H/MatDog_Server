@@ -42,7 +42,9 @@ public interface UserMapper {
      * @param user
      */
     @Update("UPDATE user SET name = #{user.name}, tel = #{user.tel}, addr = #{user.addr}," +
-            "birth = #{user.birth}, email = #{user.email}, dm = #{user.dm} WHERE userIdx = #{userIdx}")
+            "birth = #{user.birth}, email = #{user.email}, dm = #{user.dm}," +
+            " telcheck = #{user.telcheck}, emailcheck = #{user.emailcheck}, dmcheck = #{user.dmcheck}" +
+            " WHERE userIdx = #{userIdx}")
     void updateUserInfo(@Param("userIdx") final int userIdx, @Param("user") final User user);
 
     // 아이디와 비밀번호로 조회

@@ -106,7 +106,7 @@ public class RegisterLostController {
     public ResponseEntity getLostRegister(){
         try{
             log.info("모든 실종 공고 가져오기 성공");
-            DefaultRes<List<Register_lost>> defaultRes = registerLostService.getAllRegister_lost();
+            DefaultRes<List<RegisterRes>> defaultRes = registerLostService.getAllRegister_lost();
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e){
             log.info("모든 실종 공고 가져오기 실패");
@@ -120,7 +120,7 @@ public class RegisterLostController {
     public ResponseEntity getLostRegister_age(){
         try{
             log.info("나이순 실종 공고 가져오기 성공");
-            DefaultRes<List<Register_lost>> defaultRes = registerLostService.getAllRegister_lost_age();
+            DefaultRes<List<RegisterRes>> defaultRes = registerLostService.getAllRegister_lost_age();
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e){
             log.info("나이순 실종 공고 가쟈오기 실패");
@@ -132,12 +132,12 @@ public class RegisterLostController {
     //실종 공고 검색
     @GetMapping("program/lost/search")
     public ResponseEntity searchLost(
-            @RequestParam(value = "variety") final String variety,
-            @RequestParam(value = "protectPlace") final String protectPlace
+            @RequestParam(value = "kindCd", defaultValue = "") final String kindCd,
+            @RequestParam(value = "lostPlace", defaultValue = "") final String lostPlace
     ){
         try{
             log.info("실종 공고 검색 성공");
-            DefaultRes<List<Register_lost>> defaultRes = registerLostService.search_lost(variety, protectPlace);
+            DefaultRes<List<RegisterRes>> defaultRes = registerLostService.search_lost(kindCd, lostPlace);
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e){
             log.info("실종 공고 검색 실패");
@@ -146,12 +146,13 @@ public class RegisterLostController {
         }
     }
 
-    @GetMapping("program/lost/finddog")
+    @GetMapping("program/lost/finddog/{sort}")
     public ResponseEntity findDogList_lost(
-            @RequestParam(value = "variety") final String variety){
+            @RequestParam(value = "kindCd") final String kindCd,
+            @PathVariable(value = "sort") final int sort){
         try{
             log.info("품종 리스트 검색 성공_실종");
-            DefaultRes<List<RegisterRes>> defaultRes = registerLostService.findDogList_lost(variety);
+            DefaultRes<List<RegisterRes>> defaultRes = registerLostService.findDogList_lost(kindCd, sort);
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e){
             log.info("품종 리스트 검색 실패_실종");

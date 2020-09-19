@@ -116,6 +116,31 @@ public class S3FileUploadService {
         return url;
     }
 
+    public String dogImgTransfer(MultipartFile uploadFile) throws IOException {
+        String origName = uploadFile.getOriginalFilename();
+        String url;
+        try {
+            //확장자
+            final String ext = origName.substring(origName.lastIndexOf('.'));
+            //파일이름 암호화
+            final String saveFileName = getUuid() + ext;
+            //파일 객체 생성
+            File file = new File(System.getProperty("user.dir") + saveFileName);
+            System.out.println(file);
+            //파일 변환
+            uploadFile.transferTo(file);
+            //S3 파일 업로드
+            //uploadOnS3(saveFileName, file);
+            //주소 할당
+            url = defaultUrl + saveFileName;
+            //파일 삭제
+            file.delete();
+        }catch (StringIndexOutOfBoundsException e) {
+            //파일이 없을 경우 예외 처리
+            url = null;
+        }
+        return url;
+    }
 
 
     private static String getUuid() {

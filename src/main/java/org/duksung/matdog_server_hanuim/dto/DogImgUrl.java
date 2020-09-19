@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 public class DogImgUrl {
     private int registerIdx;
-    private String dogUrl;
+    private String popfile;
     private int registerStatus;
 
     private MultipartFile dogImg;

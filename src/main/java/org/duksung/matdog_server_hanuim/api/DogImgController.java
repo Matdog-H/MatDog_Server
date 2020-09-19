@@ -1,7 +1,6 @@
 package org.duksung.matdog_server_hanuim.api;
 
 import lombok.extern.slf4j.Slf4j;
-import org.duksung.matdog_server_hanuim.dto.DogImgUrl;
 import org.duksung.matdog_server_hanuim.service.DogImgService;
 import org.duksung.matdog_server_hanuim.service.JwtService;
 import org.duksung.matdog_server_hanuim.service.UserService;
@@ -16,28 +15,23 @@ import static org.duksung.matdog_server_hanuim.model.DefaultRes.FAIL_DEFAULT_RES
 @RestController
 public class DogImgController {
     private final DogImgService dogImgService;
-    private final JwtService jwtService;
-    private final UserService userService;
 
-    public DogImgController(final DogImgService dogImgService, JwtService jwtService, UserService userService)
-    {
+    public DogImgController(DogImgService dogImgService){
         this.dogImgService = dogImgService;
-        this.jwtService = jwtService;
-        this.userService = userService;
     }
-
-//    @PostMapping("dogimg")
-//    public ResponseEntity save_img(
-//            DogImgUrl dogImgUrl,
-//            @RequestPart(value = "dogImg", required = false) final MultipartFile dogImg){
-//        try{
-//            log.info("이미지 등록 성공 12312");
-//            if(dogImg != null) dogImgUrl.setDogImg(dogImg);
-//            return new ResponseEntity<>(dogImgService.save(dogImgUrl), HttpStatus.OK);
-//        } catch (Exception e){
-//            log.info("이미지 등록 실패 12312");
-//            log.error(e.getMessage());
-//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    /**
+     * 품종분석을 위한 이미지 전달
+     * @param dogimg
+     * @return
+     */
+    @PostMapping("imgTransfer")
+    public ResponseEntity dogImgTransfer(
+            @RequestPart(value = "dogimg") final MultipartFile dogimg){
+        try{
+            return new ResponseEntity<>(dogImgService.dogImgTransfer(dogimg), HttpStatus.OK);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

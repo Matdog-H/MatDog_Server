@@ -3,22 +3,16 @@ package org.duksung.matdog_server_hanuim.api;
 import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.*;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
-import org.duksung.matdog_server_hanuim.model.RegisterReq;
 import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.service.*;
-import org.duksung.matdog_server_hanuim.utils.Auth;
-import org.duksung.matdog_server_hanuim.utils.AuthAspect;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.xml.ws.Response;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.duksung.matdog_server_hanuim.model.DefaultRes.FAIL_DEFAULT_RES;
 
@@ -69,12 +63,12 @@ public class RegisterController {
     //분양 검색
     @GetMapping("program/register/search")
     public ResponseEntity searchRegister(
-            @RequestParam(value = "variety", defaultValue = "") final String variety,
-            @RequestParam(value = "protectPlace", defaultValue = "") final String protectPlace
+            @RequestParam(value = "kindCd", defaultValue = "") final String kindCd,
+            @RequestParam(value = "careAddr", defaultValue = "") final String careAddr
     ) {
         try {
             log.info("분양 검색 성공");
-            DefaultRes<List<RegisterRes>> defaultRes = registerService.search_register(variety, protectPlace);
+            DefaultRes<List<RegisterRes>> defaultRes = registerService.search_register(kindCd, careAddr);
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e) {
             log.info("분양 검색 실패");
@@ -83,12 +77,13 @@ public class RegisterController {
         }
     }
 
-    @GetMapping("program/register/finddog")
+    @GetMapping("program/register/finddog/{sort}")
     public ResponseEntity findDogList(
-            @RequestParam(value = "variety") final String variety){
+            @RequestParam(value = "kindCd") final String kindCd,
+            @PathVariable(value = "sort") final int sort){
         try{
             log.info("품종 리스트 검색 성공");
-            DefaultRes<List<RegisterRes>> defaultRes = registerService.findDogList(variety);
+            DefaultRes<List<RegisterRes>> defaultRes = registerService.findDogList(kindCd, sort);
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e){
             log.info("품종 리스트 검색 실패");
@@ -194,8 +189,8 @@ public class RegisterController {
         try {
             log.info("모든 공고 가져오기");
             DefaultRes<List<RegisterRes>> defaultRes = registerService.getAllRegister();
-            DefaultRes<List<Register_lost>> defaultRes_lost = registerLostService.getAllRegister_lost();
-            DefaultRes<List<Register_spot>> defaultRes_spot = registerSpotService.getAllRegister_spot();
+            DefaultRes<List<RegisterRes>> defaultRes_lost = registerLostService.getAllRegister_lost();
+            DefaultRes<List<RegisterRes>> defaultRes_spot = registerSpotService.getAllRegister_spot();
             List<RegisterAll> registerAll = new ArrayList<RegisterAll>();
             //registerAll.addAll(defaultRes);
 
@@ -209,21 +204,6 @@ public class RegisterController {
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    //공고 상세화면
-//    @GetMapping("program/viewall/{registerStatus}/{registerIdx}")
-//    public ResponseEntity viewAll_register(
-//            @PathVariable(value = "registerStatus") final int registerStatus,
-//            @PathVariable(value = "registerIdx") final int registerIdx){
-//        try{
-//            log.info("공고 상세보기 성공");
-//            return new ResponseEntity<>(registerService.viewDetail(registerStatus, registerIdx), HttpStatus.OK);
-//        } catch (Exception e){
-//            log.info("공고 상세보기 실패");
-//            log.error(e.getMessage());
-//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 
     @GetMapping("program/viewall/{registerStatus}/{registerIdx}")
     public ResponseEntity viewAll_register(
@@ -241,32 +221,4 @@ public class RegisterController {
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-//    @GetMapping("program/viewall/{registerStatus}/{registerIdx}")
-//    public ResponseEntity viewAll_register(
-//            @PathVariable(value = "registerStatus") final int registerStatus,
-//            @PathVariable(value = "registerIdx") final int registerIdx){
-//        try{
-//            log.info("공고 상세보기 성공");
-//            return new ResponseEntity<>(registerService.viewAllRegister(registerStatus, registerIdx), HttpStatus.OK);
-//        } catch (Exception e){
-//            log.info("공고 상세보기 실패");
-//            log.error(e.getMessage());
-//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-//    @GetMapping("program/viewallimg/{registerStatus}/{registerIdx}")
-//    public ResponseEntity viewAll_register_img(
-//            @PathVariable(value = "registerStatus") final int registerStatus,
-//            @PathVariable(value = "registerIdx") final int registerIdx){
-//        try{
-//            log.info("공고 상세보기 성공_이미지");
-//            return new ResponseEntity<>(registerService.viewAllRegister_img(registerStatus, registerIdx), HttpStatus.OK);
-//        } catch (Exception e){
-//            log.info("공고 상세보기 실패_이미지");
-//            log.error(e.getMessage());
-//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 }

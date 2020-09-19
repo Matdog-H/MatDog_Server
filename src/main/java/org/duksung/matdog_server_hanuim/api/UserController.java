@@ -52,7 +52,7 @@ public class UserController {
 //    }
 
     @PostMapping("/signup")
-    public ResponseEntity signup(SignUpReq signUpReq) {
+    public ResponseEntity signup(@RequestBody final SignUpReq signUpReq) {
         try {
             //if(profile !=null) signUpReq.setProfile(profile);
             return new ResponseEntity<>(userService.save(signUpReq), HttpStatus.OK);

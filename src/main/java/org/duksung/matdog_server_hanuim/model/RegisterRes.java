@@ -9,9 +9,9 @@ public class RegisterRes {
     private int userIdx;
     private int registerIdx;
     private int registerStatus;
-    private String variety;
-    private int gender;
-    private int age;
-    private String protectPlace;
-    private Date registeDate;
+    private String kindCd;
+    private String sexCd;
+    private String age;
+    private Date happenDt;
+    private String filename;
 }

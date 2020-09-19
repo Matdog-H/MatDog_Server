@@ -69,10 +69,16 @@ public class UserService {
 //    }
     public DefaultRes findById(final String id) {
         final User user = userMapper.findById(id);
-        if (user == null) {
-            return DefaultRes.res(StatusCode.OK, ResponseMessage.NOT_FOUND_USER, user);
-        } else {
-            return DefaultRes.res(StatusCode.FORBIDDEN, ResponseMessage.ALREADY_USER, user);
+        try{
+            if (user == null) {
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.NOT_FOUND_USER);
+            } else {
+                return DefaultRes.res(StatusCode.FORBIDDEN, ResponseMessage.ALREADY_USER);
+            }
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            log.error(e.getMessage());
+            return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
         }
     }
 
@@ -83,7 +89,7 @@ public class UserService {
      * @return DefaultRes
      */
     @Transactional
-    public DefaultRes save(SignUpReq signUpReq) {
+    public DefaultRes save(final SignUpReq signUpReq) {
         try {
 //            if(signUpReq.getProfile() != null)
 //                signUpReq.setProfileUrl(s3FileUploadService.resizeupload(signUpReq.getProfile()));
@@ -91,6 +97,7 @@ public class UserService {
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_USER);
         } catch (Exception e) {
             //Rollback
+            //String data = "필수입력값을 입력하세요!";
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             log.error(e.getMessage());
             return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);

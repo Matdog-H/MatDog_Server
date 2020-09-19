@@ -8,15 +8,15 @@ import java.sql.Date;
 public class viewAllRes {
     private int registerIdx;
     private int registerStatus;
-    private String variety;
-    private int gender;
-    private int transGender;
-    private int weight;
-    private int age;
-    private String protectPlace;
-    private Date endDate;
-    private String feature;
-    private String tel;
+    private String kindCd;
+    private String sexCd;
+    private String neuterYn;
+    private String weight;
+    private String age;
+    private String careAddr;
+    private Date happenDt;
+    private String specialMark;
+    private String careTel;
     private String email;
     private String memo;
 
