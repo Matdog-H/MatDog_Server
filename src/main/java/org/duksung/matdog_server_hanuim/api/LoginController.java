@@ -41,6 +41,7 @@ public class LoginController {
     public ResponseEntity login(@RequestBody final LoginReq loginReq) {
         //final User user = userMapper.findByIdAndPassword(loginReq);
         try {
+            log.info(loginReq.toString());
             return new ResponseEntity<>(authService.login(loginReq), HttpStatus.OK);
         } catch (Exception e) {
                 log.error(e.getMessage());

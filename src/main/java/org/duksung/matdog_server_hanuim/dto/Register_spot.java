@@ -2,21 +2,24 @@ package org.duksung.matdog_server_hanuim.dto;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.sql.Date;
 
 @Data
 public class Register_spot {
     private int userIdx;
     private int registerIdx;
-    private String variety;
-    private int gender;
-    private int weight;
-    private int age;
-    private String protectPlace;
+    private int registerStatus;
+    private String kindCd;
+    private String sexCd;
+    private String weight;
+    private String age;
+    private String careAddr;
     private String findPlace;
     private Date findDate;
-    private String feature;
-    private String tel;
+    private Date happenDt;
+    private String specialMark;
+    private String careTel;
     private String email;
-    private String memo;
+    private String dm;
+    private String filename;
 }

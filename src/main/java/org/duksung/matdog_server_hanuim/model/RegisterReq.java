@@ -1,21 +1,19 @@
-package org.duksung.matdog_server_hanuim.dto;
+package org.duksung.matdog_server_hanuim.model;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 
 @Data
-//분양공고 등록하기
-public class Register {
+public class RegisterReq {
     private int userIdx;
-    private int registerIdx;
     private int registerStatus;
     private String kindCd;
     private String sexCd;
     private String neuterYn;
     private String weight;
     private String age;
-    private String orgNm;
     private String careAddr;
     private Date happenDt;
     private String specialMark;
@@ -23,6 +21,8 @@ public class Register {
     private String email;
     private String dm;
 
-    //private MultipartFile[] dogimg;
-    private String filename;
+    private int registerIdx;
+    private String popfile;
+
+    private MultipartFile dogImg;
 }

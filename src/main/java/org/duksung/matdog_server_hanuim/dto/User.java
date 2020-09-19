@@ -1,6 +1,7 @@
 package org.duksung.matdog_server_hanuim.dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class User {
@@ -11,6 +12,13 @@ public class User {
     private String addr; // Address
     private String birth; // 생일
     private String tel; // 휴대폰 번호
+    private int telcheck;
     private String email; // Email
-    private String memo; // Memo
+    private int emailcheck;
+    private String dm; // Memo
+    private int dmcheck;
+
+
+//    private String profileUrl; // 프로필이미지
+//    private MultipartFile profile;
 }
