@@ -61,14 +61,13 @@ public class RegisterController {
     }
 
     //분양 검색
-    @GetMapping("program/register/search")
+    @GetMapping("program/register/search/{sort}")
     public ResponseEntity searchRegister(
-            @RequestParam(value = "kindCd", defaultValue = "") final String kindCd,
-            @RequestParam(value = "careAddr", defaultValue = "") final String careAddr
-    ) {
+            @RequestParam(value = "keyword", defaultValue = "") final String keyword,
+            @PathVariable(value = "sort") final int sort) {
         try {
             log.info("분양 검색 성공");
-            DefaultRes<List<RegisterRes>> defaultRes = registerService.search_register(kindCd, careAddr);
+            DefaultRes<List<RegisterRes>> defaultRes = registerService.search_register(keyword, sort);
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e) {
             log.info("분양 검색 실패");

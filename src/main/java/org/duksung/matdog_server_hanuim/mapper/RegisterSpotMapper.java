@@ -24,16 +24,28 @@ public interface RegisterSpotMapper {
     //공고 상세화면 조회
     @Select("SELECT * FROM register_spot WHERE registerStatus = #{registerStatus} AND registerIdx = #{registerIdx}")
     Register_spot viewAllRegister_spot(@Param("registerStatus") final int registerStatus, @Param("registerIdx") final int registerIdx);
+
     @Select("SELECT popfile FROM dog_img_spot WHERE registerStatus = #{registerStatus} AND registerIdx = #{registerIdx}")
     dogImgUrlRes viewAllRegisterSpot_img(@Param("registerStatus") final int registerStatus, @Param("registerIdx") final int registerIdx);
 
-    //검색 기능
-    @Select("SELECT * FROM register_spot WHERE kindCd LIKE concat('%',#{kindCd},'%') AND careAddr LIKE concat('%',#{careAddr},'%')")
-    List<RegisterRes> search_spot(@Param("kindCd") final String kindCd, @Param("careAddr") final String careAddr);
+    //    //검색 기능_나이
+//    @Select("SELECT * FROM register_spot WHERE kindCd LIKE concat('%',#{kindCd},'%') AND careAddr LIKE concat('%',#{careAddr},'%') ORDER BY age")
+//    List<RegisterRes> search_spot_age(@Param("kindCd") final String kindCd, @Param("careAddr") final String careAddr);
+//    //검색 기능_등록일
+//    @Select("SELECT * FROM register_spot WHERE kindCd LIKE concat('%',#{kindCd},'%') AND careAddr LIKE concat('%',#{careAddr},'%') ORDER BY happenDt")
+//    List<RegisterRes> search_spot_date(@Param("kindCd") final String kindCd, @Param("careAddr") final String careAddr);
+
+    //검색 기능_나이
+    @Select("SELECT * FROM register_spot WHERE kindCd LIKE concat('%',#{keyword},'%') OR careAddr LIKE concat('%',#{keyword},'%') ORDER BY age DESC")
+    List<RegisterRes> search_spot_age(@Param("keyword") final String keyword);
+    //검색 기능_등록일
+    @Select("SELECT * FROM register_spot WHERE kindCd LIKE concat('%',#{keyword},'%') OR careAddr LIKE concat('%',#{keyword},'%') ORDER BY happenDt")
+    List<RegisterRes> search_spot_date(@Param("keyword") final String keyword);
 
     //원하는 품종 리스트 검색_나이
     @Select("SELECT * FROM register_spot WHERE kindCd LIKE concat('%', #{kindCd}, '%') ORDER BY age")
     List<RegisterRes> findDogList_spot_age(@Param("kindCd") final String kindCd);
+
     //원하는 품종 리스트 검색_나이
     @Select("SELECT * FROM register_spot WHERE kindCd LIKE concat('%', #{kindCd}, '%') ORDER BY happenDt")
     List<RegisterRes> findDogList_spot_date(@Param("kindCd") final String kindCd);
@@ -51,9 +63,9 @@ public interface RegisterSpotMapper {
     int save_spot(@Param("userIdx") final int userIdx, @Param("re_spot") final Register_spot re_spot);
 
     //이미지 저장
-    @Insert("INSERT INTO dog_img_spot(registerIdx, popfile, registerStatus) VALUES(#{registerIdx}, #{popfile}, #{registerStatus})")
+    @Insert("INSERT INTO dog_img_spot(userIdx, registerIdx, popfile, registerStatus) VALUES(#{userIdx}, #{registerIdx}, #{popfile}, #{registerStatus})")
     @Options(useGeneratedKeys = true, keyColumn = "dog_img_spot.urlIdx")
-    int save_img_spot(@Param("registerIdx") final int registerIdx, @Param("popfile") final String popfile, @Param("registerStatus") final int registerStatus);
+    int save_img_spot(@Param("userIdx") final int userIdx,@Param("registerIdx") final int registerIdx, @Param("popfile") final String popfile, @Param("registerStatus") final int registerStatus);
 
     //목격 공고 수정
     @Update("UPDATE register_spot SET kindCd=#{register_spot.kindCd},sexCd=#{register_spot.sexCd},weight=#{register_spot.weight}," +
@@ -65,4 +77,8 @@ public interface RegisterSpotMapper {
     //목격 공고 삭제
     @Delete("DELETE FROM register_spot WHERE userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
     void deleteRegister_spot(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx);
+    @Delete("DELETE FROM dog_img_spot WHERE userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
+    void deleteRegister_spot_img(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx);
+    @Delete("DELETE FROM register_like_spot WHERE userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
+    void deleteRegister_spot_like(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx);
 }

@@ -5,20 +5,24 @@ import lombok.Data;
 import java.sql.Date;
 
 @Data
-public class Register_lost {
+public class ApiDto {
     private int userIdx;
     private int registerIdx;
     private int registerStatus;
     private String kindCd;
     private String sexCd;
+    private String neuterYn;
     private String weight;
     private String age;
+    private String orgNm;
+    private String careAddr;
     private Date happenDt;
-    private Date lostDate;
-    private String lostPlace;
     private String specialMark;
+    private String creTel;
     private String careTel;
     private String email;
     private String dm;
     private String filename;
+
+    private String popfile;
 }

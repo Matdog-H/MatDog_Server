@@ -64,7 +64,7 @@ public class RegisterLostService {
                 } else {
                 MultipartFile img = dogimg[i];
                 String url = s3FileUploadService.upload(img);
-                registerLostMapper.save_img_lost(register_lost.getRegisterIdx(), url, register_lost.getRegisterStatus());
+                registerLostMapper.save_img_lost(userIdx, register_lost.getRegisterIdx(), url, register_lost.getRegisterStatus());
                 }
             }
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER_LOST, returnedData);
@@ -131,14 +131,28 @@ public class RegisterLostService {
 
     //실종 공고 검색
     @Transactional
-    public DefaultRes search_lost(final String kindCd, final String lostPlace) {
-        List<RegisterRes> registerLostList = registerLostMapper.search_lost(kindCd, lostPlace);
-        if (registerLostList.isEmpty()) {
-            log.info("검색 실패");
-            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+    public DefaultRes search_lost(final String keyword, final int sort) {
+        List<RegisterRes> dogSearch_age = registerLostMapper.search_lost_age(keyword);
+        List<RegisterRes> dogSearch_date = registerLostMapper.search_lost_date(keyword);
+
+        if(sort == 1){
+            if(dogSearch_age.isEmpty()){
+                log.info("실종 공고 검색 없음_나이");
+                return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+            } else{
+                log.info("실종 공고 검색 성공_나이");
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogSearch_age);
+            }
+        } else if(sort == 2){
+            if(dogSearch_date.isEmpty()){
+                log.info("실종 공고 검색 없음_등록일");
+                return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+            } else {
+                log.info("실종 공고 검색 성공_등록일순");
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogSearch_date);
+            }
         }
-        log.info("검색 성공");
-        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLostList);
+        return DefaultRes.res(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.NOT_CORRECT_REQUEST);
     }
 
     //품종 검색
@@ -173,13 +187,17 @@ public class RegisterLostService {
         final Register_lost registerLost = registerLostMapper.findByRegisterIdx_lost(registerIdx);
         if (registerLost == null)
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
-        try {
-            registerLostMapper.deleteRegister_lost(userIdx, registerIdx);
-            return DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.DELETE_REGISTER);
-        } catch (Exception e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            log.error(e.getMessage());
-            return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+        else{
+            try {
+                registerLostMapper.deleteRegister_lost_img(userIdx, registerIdx);
+                registerLostMapper.deleteRegister_lost_like(userIdx, registerIdx);
+                registerLostMapper.deleteRegister_lost(userIdx, registerIdx);
+                return DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.DELETE_REGISTER);
+            } catch (Exception e) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                log.error(e.getMessage());
+                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+            }
         }
     }
 

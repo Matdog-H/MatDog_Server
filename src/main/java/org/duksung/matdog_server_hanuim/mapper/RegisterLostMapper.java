@@ -24,9 +24,19 @@ public interface RegisterLostMapper {
     @Select("SELECT popfile FROM dog_img_lost WHERE registerStatus = #{registerStatus} AND registerIdx = #{registerIdx}")
     dogImgUrlRes viewAllRegisterLost_img(@Param("registerStatus") final int registerStatus, @Param("registerIdx") final int registerIdx);
 
-    //검색 기능
-    @Select("SELECT * FROM register_lost WHERE kindCd LIKE concat('%',#{kindCd},'%') AND lostPlace LIKE concat('%',#{lostPlace},'%')")
-    List<RegisterRes> search_lost(@Param("kindCd") final String kindCd, @Param("lostPlace") final String lostPlace);
+    //검색 기능_나이
+//    @Select("SELECT * FROM register_lost WHERE kindCd LIKE concat('%',#{kindCd},'%') AND lostPlace LIKE concat('%',#{lostPlace},'%') ORDER BY age")
+//    List<RegisterRes> search_lost_age(@Param("kindCd") final String kindCd, @Param("lostPlace") final String lostPlace);
+//    //검색 기능_등록일
+//    @Select("SELECT * FROM register_lost WHERE kindCd LIKE concat('%',#{kindCd},'%') AND lostPlace LIKE concat('%',#{lostPlace},'%') ORDER BY happenDt")
+//    List<RegisterRes> search_lost_date(@Param("kindCd") final String kindCd, @Param("lostPlace") final String lostPlace);
+
+    //검색 기능_나이
+    @Select("SELECT * FROM register_lost WHERE kindCd LIKE concat('%',#{keyword},'%') OR lostPlace LIKE concat('%',#{keyword},'%') ORDER BY age DESC")
+    List<RegisterRes> search_lost_age(@Param("keyword") final String keyword);
+    //검색 기능_등록일
+    @Select("SELECT * FROM register_lost WHERE kindCd LIKE concat('%',#{keyword},'%') OR lostPlace LIKE concat('%',#{keyword},'%') ORDER BY happenDt")
+    List<RegisterRes> search_lost_date(@Param("keyword") final String keyword);
 
     //원하는 품종 리스트 검색_나이
     @Select("SELECT * FROM register_lost WHERE kindCd LIKE concat('%',#{kindCd},'%') ORDER BY age")
@@ -51,9 +61,9 @@ public interface RegisterLostMapper {
     int url_lost(@Param("filename") final String filename);
 
     //이미지 저장
-    @Insert("INSERT INTO dog_img_lost(registerIdx, popfile, registerStatus) VALUES(#{registerIdx}, #{popfile}, #{registerStatus})")
+    @Insert("INSERT INTO dog_img_lost(userIdx, registerIdx, popfile, registerStatus) VALUES(#{userIdx}, #{registerIdx}, #{popfile}, #{registerStatus})")
     @Options(useGeneratedKeys = true, keyColumn = "dog_img.popfile")
-    int save_img_lost(@Param("registerIdx") final int registerIdx, @Param("popfile") final String popfile, @Param("registerStatus") final int registerStatus);
+    int save_img_lost(@Param("userIdx") final int userIdx,@Param("registerIdx") final int registerIdx, @Param("popfile") final String popfile, @Param("registerStatus") final int registerStatus);
 
     //실종 공고 수정
     @Update("UPDATE register_lost SET kindCd=#{register_lost.kindCd}, sexCd=#{register_lost.sexCd}, weight=#{register_lost.weight},age=#{register_lost.age}," +
@@ -65,4 +75,8 @@ public interface RegisterLostMapper {
     //실종 공고 삭제
     @Delete("DELETE FROM register_lost WHERE userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
     void deleteRegister_lost(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx);
+    @Delete("DELETE FROM dog_img_lost WHERE  userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
+    void deleteRegister_lost_img(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx);
+    @Delete("DELETE FROM register_like_lost WHERE  userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
+    void deleteRegister_lost_like(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx);
 }

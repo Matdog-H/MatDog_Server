@@ -110,7 +110,7 @@ public class RegisterService {
                 } else {
                     MultipartFile img = dogimg[i];
                     String url = s3FileUploadService.upload(img);
-                    registerMapper.save_img(register.getRegisterIdx(), url, register.getRegisterStatus());
+                    registerMapper.save_img(userIdx, register.getRegisterIdx(), url, register.getRegisterStatus());
                 }
             }
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER, returnedData);
@@ -124,14 +124,28 @@ public class RegisterService {
 
     //검색
     @Transactional
-    public DefaultRes search_register(final String kindCd, final String careAddr) {
-        List<RegisterRes> registerList = registerMapper.search_register(kindCd, careAddr);
-        if (registerList.isEmpty()) {
-            log.info("검색 실패");
-            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+    public DefaultRes search_register(final String keyword, final int sort) {
+        List<RegisterRes> dogSearch_age = registerMapper.search_register_age(keyword);
+        List<RegisterRes> dogSearch_date = registerMapper.search_register_date(keyword);
+
+        if(sort == 1){
+            if(dogSearch_age.isEmpty()){
+                log.info("보호소 공고 검색 없음_나이");
+                return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+            } else{
+                log.info("보호소 공고 검색 성공_나이");
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogSearch_age);
+            }
+        } else if(sort==2){
+            if(dogSearch_date.isEmpty()){
+                log.info("보호소 공고 검색 없음_등록일");
+                return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+            } else{
+                log.info("보호소 공고 검색 성공_등록일순");
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogSearch_date);
+            }
         }
-        log.info("검색 성공");
-        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerList);
+        return DefaultRes.res(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.NOT_CORRECT_REQUEST);
     }
 
     //품종 검색
@@ -239,9 +253,9 @@ public class RegisterService {
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
         else {
             try {
-                registerMapper.deleteRegister(userIdx, registerIdx);
-                registerMapper.deleteRegister_img(registerIdx);
+                registerMapper.deleteRegister_img(userIdx, registerIdx);
                 registerMapper.deleteRegister_like(userIdx, registerIdx);
+                registerMapper.deleteRegister(userIdx, registerIdx);
                 return DefaultRes.res(StatusCode.OK, ResponseMessage.DELETE_REGISTER);
             } catch (Exception e) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();

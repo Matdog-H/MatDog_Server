@@ -65,7 +65,7 @@ public class RegisterSpotService {
                 } else {
                     MultipartFile img = dogimg[i];
                     String url = s3FileUploadService.upload(img);
-                    registerSpotMapper.save_img_spot(register_spot.getRegisterIdx(), url, register_spot.getRegisterStatus());
+                    registerSpotMapper.save_img_spot(userIdx, register_spot.getRegisterIdx(), url, register_spot.getRegisterStatus());
                 }
             }
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_REGISTER_SPOT, returnedData);
@@ -132,15 +132,51 @@ public class RegisterSpotService {
     }
 
     //목격 공고 검색
+//    @Transactional
+//    public DefaultRes search_spot(final String kindCd, final String careAddr, final int sort){
+//        List<RegisterRes> dogSearch_age = registerSpotMapper.search_spot_age(kindCd, careAddr);
+//        List<RegisterRes> dogSearch_date = registerSpotMapper.search_spot_age(kindCd, careAddr);
+//
+//        if(sort==1){
+//            if(dogSearch_age.isEmpty()){
+//                log.info("임시보호 공고 검색 없음_나이");
+//                return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+//            } else{
+//                log.info("임시보호 공고 검색 성공_나이");
+//                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogSearch_age);
+//            }
+//        } else if(sort==2){
+//            if(dogSearch_date.isEmpty()){
+//                log.info("임시보호 공고 검색 없음_등록일");
+//                return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+//            } else{
+//                log.info("임시보호 공고 검색 성공_등록일순");
+//                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogSearch_date);
+//            }
+//        }return DefaultRes.res(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.NOT_CORRECT_REQUEST);
+//    }
     @Transactional
-    public DefaultRes search_spot(final String kindCd, final String careAddr){
-        List<RegisterRes> registerSpotList = registerSpotMapper.search_spot(kindCd, careAddr);
-        if(registerSpotList.isEmpty()){
-            log.info("목격 공고 검색 실패");
-            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
-        }
-        log.info("목격 공고 검색 성공");
-        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerSpotList);
+    public DefaultRes search_spot(final String keyword, final int sort){
+        List<RegisterRes> dogSearch_age = registerSpotMapper.search_spot_age(keyword);
+        List<RegisterRes> dogSearch_date = registerSpotMapper.search_spot_date(keyword);
+
+        if(sort==1){
+            if(dogSearch_age.isEmpty()){
+                log.info("임시보호 공고 검색 없음_나이");
+                return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+            } else{
+                log.info("임시보호 공고 검색 성공_나이");
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogSearch_age);
+            }
+        } else if(sort==2){
+            if(dogSearch_date.isEmpty()){
+                log.info("임시보호 공고 검색 없음_등록일");
+                return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+            } else{
+                log.info("임시보호 공고 검색 성공_등록일순");
+                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogSearch_date);
+            }
+        }return DefaultRes.res(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.NOT_CORRECT_REQUEST);
     }
 
     //원하는 품종 리스트 검색
@@ -175,15 +211,19 @@ public class RegisterSpotService {
         final Register_spot registerSpot = registerSpotMapper.findByRegisterIdx_spot(registerIdx);
         if(registerSpot == null)
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
-        try{
-            log.info("목격 공고 삭제 성공");
-            registerSpotMapper.deleteRegister_spot(userIdx, registerIdx);
-            return DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.DELETE_REGISTER);
-        } catch (Exception e){
-            log.info("목격 공고 삭제 실패");
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            log.error(e.getMessage());
-            return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+        else{
+            try{
+                log.info("목격 공고 삭제 성공");
+                registerSpotMapper.deleteRegister_spot_img(userIdx, registerIdx);
+                registerSpotMapper.deleteRegister_spot_like(userIdx, registerIdx);
+                registerSpotMapper.deleteRegister_spot(userIdx, registerIdx);
+                return DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.DELETE_REGISTER);
+            } catch (Exception e){
+                log.info("목격 공고 삭제 실패");
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                log.error(e.getMessage());
+                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+            }
         }
     }
 

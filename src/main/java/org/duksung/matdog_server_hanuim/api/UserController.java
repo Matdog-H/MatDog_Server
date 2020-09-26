@@ -92,7 +92,7 @@ public class UserController {
     @PutMapping("")
     public ResponseEntity update_user(
             @RequestHeader(value = "Authorization") String token,
-            User user) {
+            @RequestBody final User user) {
         try {
             int userIdx = jwtService.decode(token).getUser_idx();
 

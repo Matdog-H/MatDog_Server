@@ -130,14 +130,28 @@ public class RegisterLostController {
     }
 
     //실종 공고 검색
-    @GetMapping("program/lost/search")
+//    @GetMapping("program/lost/search/{sort}")
+//    public ResponseEntity searchLost(
+//            @RequestParam(value = "kindCd") final String kindCd,
+//            @RequestParam(value = "lostPlace") final String lostPlace,
+//            @PathVariable(value = "sort") final int sort){
+//        try{
+//            log.info("실종 공고 검색 성공");
+//            DefaultRes<List<RegisterRes>> defaultRes = registerLostService.search_lost(kindCd, lostPlace, sort);
+//            return new ResponseEntity<>(defaultRes, HttpStatus.OK);
+//        } catch (Exception e){
+//            log.info("실종 공고 검색 실패");
+//            log.error(e.getMessage());
+//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+    @GetMapping("program/lost/search/{sort}")
     public ResponseEntity searchLost(
-            @RequestParam(value = "kindCd", defaultValue = "") final String kindCd,
-            @RequestParam(value = "lostPlace", defaultValue = "") final String lostPlace
-    ){
+            @RequestParam(value = "keyword", defaultValue = "") final String keyword,
+            @PathVariable(value = "sort") final int sort){
         try{
             log.info("실종 공고 검색 성공");
-            DefaultRes<List<RegisterRes>> defaultRes = registerLostService.search_lost(kindCd, lostPlace);
+            DefaultRes<List<RegisterRes>> defaultRes = registerLostService.search_lost(keyword, sort);
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e){
             log.info("실종 공고 검색 실패");

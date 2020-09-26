@@ -78,9 +78,13 @@ public interface RegisterMapper {
     @Select("SELECT popfile FROM dog_img_lost WHERE registerStatus = #{registerStatus} AND registerIdx = #{registerIdx}")
     List<dogImgUrlRes> viewAllRegisterLost_img(@Param("registerStatus") final int registerStatus, @Param("registerIdx") final int registerIdx);
 
+    //검색_나이순
     //검색 기능 concat('%',#{userName},'%')
-    @Select("SELECT * FROM register WHERE kindCd LIKE concat('%',#{kindCd},'%') AND careAddr LIKE concat('%',#{careAddr},'%')")
-    List<RegisterRes> search_register(@Param("kindCd") final String kindCd, @Param("careAddr") final String careAddr);
+    @Select("SELECT * FROM register WHERE kindCd LIKE concat('%',#{keyword},'%') OR careAddr LIKE concat('%',#{keyword},'%') ORDER BY age DESC")
+    List<RegisterRes> search_register_age(@Param("keyword") final String keyword);
+    //검색_등록일순
+    @Select("SELECT * FROM register WHERE kindCd LIKE concat('%',#{keyword},'%') OR careAddr LIKE concat('%',#{keyword},'%') ORDER BY happenDt")
+    List<RegisterRes> search_register_date(@Param("keyword") final String keyword);
 
     //원하는 품종 리스트 검색_나이
     @Select("SELECT * FROM register WHERE kindCd LIKE concat('%', #{kindCd}, '%') ORDER BY age")
@@ -99,9 +103,9 @@ public interface RegisterMapper {
     int save(@Param("userIdx") final int userIdx, @Param("re") final Register re);
 
     //이미지 저장
-    @Insert("INSERT INTO dog_img(registerIdx, popfile, registerStatus) VALUES(#{registerIdx}, #{popfile}, #{registerStatus})")
+    @Insert("INSERT INTO dog_img(userIdx, registerIdx, popfile, registerStatus) VALUES(#{userIdx},#{registerIdx}, #{popfile}, #{registerStatus})")
     @Options(useGeneratedKeys = true, keyColumn = "dog_img.urlIdx")
-    int save_img(@Param("registerIdx") final int registerIdx, @Param("popfile") final String popfile, @Param("registerStatus") final int registerStatus);
+    int save_img(@Param("userIdx") final int userIdx,@Param("registerIdx") final int registerIdx, @Param("popfile") final String popfile, @Param("registerStatus") final int registerStatus);
 
     //분양 공고 수정
     @Update("UPDATE register SET kindCd=#{register.kindCd}, sexCd=#{register.sexCd}, neuterYn=#{register.neuterYn},weight=#{register.weight},age=#{register.age}," +
@@ -113,7 +117,7 @@ public interface RegisterMapper {
     @Delete("DELETE FROM register WHERE userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
     void deleteRegister(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx);
     @Delete("DELETE FROM dog_img WHERE userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
-    void deleteRegister_img(@Param("registerIdx") final int registerIdx);
+    void deleteRegister_img(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx);
     @Delete("DELETE FROM register_like WHERE userIdx = #{userIdx} AND registerIdx = #{registerIdx}")
     void deleteRegister_like(@Param("userIdx") final int userIdx, @Param("registerIdx") final int registerIdx);
 }
