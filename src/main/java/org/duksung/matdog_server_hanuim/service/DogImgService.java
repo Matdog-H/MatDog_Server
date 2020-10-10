@@ -21,7 +21,12 @@ public class DogImgService {
         this.s3FileUploadService=s3FileUploadService;
     }
 
-    //공고 이미지 등록
+    /**
+     * 공고 이미지 등록
+     * @param dogimg
+     * @return
+     * @throws IOException
+     */
     @Transactional
     public DefaultRes dogImgTransfer(final MultipartFile dogimg) throws IOException {
         String url =  s3FileUploadService.dogImgTransfer(dogimg);

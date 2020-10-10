@@ -29,6 +29,11 @@ public class apiService {
         this.registerMapper = registerMapper;
     }
 
+    /**
+     * open api db 저장
+     * @param xmlJSONObj
+     * @return
+     */
     @Transactional
     public DefaultRes save_api(final String xmlJSONObj) {
         if(xmlJSONObj == null){
