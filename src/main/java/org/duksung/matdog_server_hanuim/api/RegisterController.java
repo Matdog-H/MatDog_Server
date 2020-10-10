@@ -5,13 +5,10 @@ import org.duksung.matdog_server_hanuim.dto.*;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
 import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.service.*;
-import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
-import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.duksung.matdog_server_hanuim.model.DefaultRes.FAIL_DEFAULT_RES;
@@ -19,21 +16,13 @@ import static org.duksung.matdog_server_hanuim.model.DefaultRes.FAIL_DEFAULT_RES
 @RestController
 @Slf4j
 public class RegisterController {
-    private static final DefaultRes UNAUTHORIZED_RES = new DefaultRes(StatusCode.UNAUTHORIZED, ResponseMessage.UNAUTHORIZED);
-
     private final RegisterService registerService;
-    private final RegisterLostService registerLostService;
-    private final RegisterSpotService registerSpotService;
-    //private final AuthAspect authAspect;
     private final JwtService jwtService;
     private final UserService userService;
 
-    public RegisterController(RegisterService registerService, RegisterLostService registerLostService,
-                              RegisterSpotService registerSpotService, JwtService jwtService, UserService userService) {
+    public RegisterController(RegisterService registerService, JwtService jwtService, UserService userService) {
         log.info("분양 컨트롤러");
         this.registerService = registerService;
-        this.registerLostService = registerLostService;
-        this.registerSpotService = registerSpotService;
         this.jwtService = jwtService;
         this.userService = userService;
     }
@@ -188,15 +177,8 @@ public class RegisterController {
         try {
             log.info("모든 공고 가져오기");
             DefaultRes<List<RegisterRes>> defaultRes = registerService.getAllRegister();
-            DefaultRes<List<RegisterRes>> defaultRes_lost = registerLostService.getAllRegister_lost();
-            DefaultRes<List<RegisterRes>> defaultRes_spot = registerSpotService.getAllRegister_spot();
-            List<RegisterAll> registerAll = new ArrayList<RegisterAll>();
-            //registerAll.addAll(defaultRes);
-
 
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
-            //return new ResponseEntity<>(defaultRes_lost, HttpStatus.OK);
-            //return new ResponseEntity<>(defaultRes_spot, HttpStatus.OK);
         } catch (Exception e) {
             log.info("모든 공고 가져오기 실패");
             log.error(e.getMessage());
@@ -210,7 +192,6 @@ public class RegisterController {
             @PathVariable(value = "registerStatus") final int registerStatus,
             @PathVariable(value = "registerIdx") final int registerIdx){
         int userIdx = jwtService.decode(token).getUser_idx();
-
         try{
             log.info("공고 상세보기 성공");
             return new ResponseEntity<>(registerService.viewDetail(userIdx, registerStatus, registerIdx), HttpStatus.OK);
