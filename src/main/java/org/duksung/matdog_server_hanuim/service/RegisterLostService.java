@@ -33,7 +33,13 @@ public class RegisterLostService {
         this.likeMapper = likeMapper;
     }
 
-    //실종 공고 등록
+    /**
+     * 실종 공고 등록
+     * @param userIdx
+     * @param register_lost
+     * @param dogimg
+     * @return
+     */
     @Transactional
     public DefaultRes saveRegister_lost(final int userIdx, final Register_lost register_lost, final MultipartFile[] dogimg) {
         try {
@@ -76,8 +82,13 @@ public class RegisterLostService {
         }
     }
 
-
-    //실종 공고 수정
+    /**
+     * 실종 공고 수정
+     * @param userIdx
+     * @param registerIdx
+     * @param register_lost
+     * @return
+     */
     @Transactional
     public DefaultRes register_lost_update(final int userIdx, final int registerIdx, final Register_lost register_lost) {
         if (registerLostMapper.findByRegisterIdx_lost(registerIdx) != null) {
@@ -107,8 +118,10 @@ public class RegisterLostService {
         return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
     }
 
-
-    //모든 실종 공고 조회
+    /**
+     * 모든 실종 공고 조회
+     * @return
+     */
     @Transactional
     public DefaultRes<List<RegisterRes>> getAllRegister_lost() {
         List<RegisterRes> registerLostList = registerLostMapper.findAll_lost();
@@ -117,7 +130,10 @@ public class RegisterLostService {
         return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLostList);
     }
 
-    //나이순 공고 조회
+    /**
+     * 나이순 공고 조회
+     * @return
+     */
     @Transactional
     public DefaultRes<List<RegisterRes>> getAllRegister_lost_age() {
         List<RegisterRes> registerLostList = registerLostMapper.findAll_lost_age();
@@ -129,7 +145,12 @@ public class RegisterLostService {
         return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLostList);
     }
 
-    //실종 공고 검색
+    /**
+     * 실종 공고 검색
+     * @param keyword
+     * @param sort
+     * @return
+     */
     @Transactional
     public DefaultRes search_lost(final String keyword, final int sort) {
         List<RegisterRes> dogSearch_age = registerLostMapper.search_lost_age(keyword);
@@ -155,7 +176,12 @@ public class RegisterLostService {
         return DefaultRes.res(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.NOT_CORRECT_REQUEST);
     }
 
-    //품종 검색
+    /**
+     * 품종 검색
+     * @param kindCd
+     * @param sort
+     * @return
+     */
     @Transactional
     public DefaultRes findDogList_lost(final String kindCd, final int sort){
         List<RegisterRes> dogList_age = registerLostMapper.findDogList_lost_age(kindCd);
@@ -181,7 +207,12 @@ public class RegisterLostService {
         return DefaultRes.res(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.NOT_CORRECT_REQUEST);
     }
 
-    //실종 공고 삭제
+    /**
+     * 실종 공고 삭제
+     * @param userIdx
+     * @param registerIdx
+     * @return
+     */
     @Transactional
     public DefaultRes deleteByRegisterIdx_lost(final int userIdx, final int registerIdx) {
         final Register_lost registerLost = registerLostMapper.findByRegisterIdx_lost(registerIdx);
@@ -201,6 +232,13 @@ public class RegisterLostService {
         }
     }
 
+    /**
+     * 실종 공고 상세보기
+     * @param userIdx
+     * @param registerStatus
+     * @param registerIdx
+     * @return
+     */
     public DetailLikeRes<Object> viewDetail_lost(final int userIdx, final int registerStatus, final int registerIdx){
         Register_lost registerLost = registerLostMapper.viewAllRegister_lost(registerStatus, registerIdx);
         dogImgUrlRes dogImgUrl = registerLostMapper.viewAllRegisterLost_img(registerStatus, registerIdx);
