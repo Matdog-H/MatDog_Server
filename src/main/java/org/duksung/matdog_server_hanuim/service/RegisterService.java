@@ -1,6 +1,5 @@
 package org.duksung.matdog_server_hanuim.service;
 
-import javafx.animation.Animation;
 import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.*;
 import org.duksung.matdog_server_hanuim.mapper.LikeMapper;
@@ -14,10 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -69,30 +64,11 @@ public class RegisterService {
         try {
             log.info("분양 공고 저장");
             User user = userService.findUser_data(userIdx);
-//
-//            String endDate_s = register.getEndDate();
-//            SimpleDateFormat transDate = new SimpleDateFormat("yyyy-mm-dd");
-//            Date endDate_d = (Date) transDate.parse(endDate_s);
-//
-//            register.setEndDate(endDate_d);
-//            System.out.println(dogimg[0]);
-//            System.out.println(s3FileUploadService.upload(dogimg[0]));
-//
-            //register.setDogUrl(s3FileUploadService.upload(dogimg[0]));
-//            System.out.println(register);
 
             if (register.getCareTel() == null) register.setCareTel(user.getTel());
             if (register.getEmail() == null) register.setEmail(user.getEmail());
             if (register.getDm() == null) register.setDm(user.getDm());
-
             if (register.getSpecialMark() == null) register.setSpecialMark("없음");
-
-//            java.sql.Date date = (java.sql.Date) new Date();
-//            SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-//            String now = format.format(date);
-//            java.sql.Date nowDate = (java.sql.Date) format.parse(now);
-//
-//            if(register.getHappenDt() == null) register.setHappenDt(nowDate);
 
             Register returnedData = register;
             register.getRegisterIdx();
