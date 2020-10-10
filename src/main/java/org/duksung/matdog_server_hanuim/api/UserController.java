@@ -1,23 +1,15 @@
 package org.duksung.matdog_server_hanuim.api;
 
 import lombok.extern.slf4j.Slf4j;
-import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.User;
 import org.duksung.matdog_server_hanuim.dto.ViewAllResLike;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
 import org.duksung.matdog_server_hanuim.model.SignUpReq;
-import org.duksung.matdog_server_hanuim.model.UserSignUpReq;
 import org.duksung.matdog_server_hanuim.service.JwtService;
-import org.duksung.matdog_server_hanuim.service.S3FileUploadService;
 import org.duksung.matdog_server_hanuim.service.UserService;
-import org.duksung.matdog_server_hanuim.utils.Auth;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Optional;
-
 import static org.duksung.matdog_server_hanuim.model.DefaultRes.FAIL_DEFAULT_RES;
 
 @Slf4j
@@ -33,28 +25,10 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
-//    @Auth
-//    @GetMapping("/{id}")
-//    public ResponseEntity getUser(@PathVariable("id") final String id) {
-//        DefaultRes user = userService.findById(id);
-//        if (user != null) {
-//            try {
-//                return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
-//            } catch (Exception e) {
-//                log.info("없음");
-//                log.error(e.getMessage());
-//                return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//            }
-//        }
-//        else
-//            log.info("없음");
-//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.NOT_FOUND);
-//    }
 
     @PostMapping("/signup")
     public ResponseEntity signup(@RequestBody final SignUpReq signUpReq) {
         try {
-            //if(profile !=null) signUpReq.setProfile(profile);
             return new ResponseEntity<>(userService.save(signUpReq), HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -62,17 +36,6 @@ public class UserController {
         }
     }
 
-//    @GetMapping("/{userIdx}")
-//    public ResponseEntity getUserInfo(
-//            @PathVariable("userIdx") final int userIdx) {
-//        try {
-//            DefaultRes defaultRes = userService.findUser(userIdx);
-//            return new ResponseEntity<>(defaultRes, HttpStatus.OK);
-//        } catch (Exception e) {
-//            log.error(e.getMessage());
-//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
     @GetMapping("/my")
     public ResponseEntity getMyData(
             @RequestHeader(value = "Authorization") String token){
@@ -96,10 +59,7 @@ public class UserController {
         try {
             int userIdx = jwtService.decode(token).getUser_idx();
 
-            //if(profile != null) user.setProfile(profile);
-            //if (user.getProfileUrl() !=null) user.setProfileUrl(s3FileUploadService.upload(profile));
             log.info("test");
-            //userService.user_update(userIdx, user)
             return new ResponseEntity<>(userService.user_update(userIdx, user), HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
