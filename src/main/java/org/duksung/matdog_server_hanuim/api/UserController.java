@@ -25,7 +25,11 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
-
+    /**
+     * 회원가입
+     * @param signUpReq
+     * @return
+     */
     @PostMapping("/signup")
     public ResponseEntity signup(@RequestBody final SignUpReq signUpReq) {
         try {
@@ -36,6 +40,11 @@ public class UserController {
         }
     }
 
+    /**
+     * 내 정보 가져오기
+     * @param token
+     * @return
+     */
     @GetMapping("/my")
     public ResponseEntity getMyData(
             @RequestHeader(value = "Authorization") String token){
@@ -50,8 +59,12 @@ public class UserController {
         }
     }
 
-    /* 회원 정보 수정 */
-
+    /**
+     * 회원 정보 수정
+     * @param token
+     * @param user
+     * @return
+     */
     @PutMapping("")
     public ResponseEntity update_user(
             @RequestHeader(value = "Authorization") String token,
@@ -59,7 +72,6 @@ public class UserController {
         try {
             int userIdx = jwtService.decode(token).getUser_idx();
 
-            log.info("test");
             return new ResponseEntity<>(userService.user_update(userIdx, user), HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -67,7 +79,11 @@ public class UserController {
         }
     }
 
-    //아이디 중복검사
+    /**
+     * 아이디 중복검사
+     * @param id
+     * @return
+     */
     @PostMapping("/check/{id}")
     public ResponseEntity idCheck(
             @PathVariable(value = "id") final String id) {
@@ -75,7 +91,11 @@ public class UserController {
         return new ResponseEntity<>(defaultRes, HttpStatus.OK);
     }
 
-    //찜공고 리스트 조회
+    /**
+     * 찜공고 리스트 조회
+     * @param token
+     * @return
+     */
     @GetMapping("likes")
     public ResponseEntity getUserLike(
             @RequestHeader(value = "Authorization") String token) {
@@ -89,7 +109,11 @@ public class UserController {
         }
     }
 
-    //내가 쓴 공고 리스트 조회
+    /**
+     * 내가 쓴 공고 리스트 조회
+     * @param token
+     * @return
+     */
     @GetMapping("write")
     public ResponseEntity getUserWrite(
             @RequestHeader(value = "Authorization") String token) {
