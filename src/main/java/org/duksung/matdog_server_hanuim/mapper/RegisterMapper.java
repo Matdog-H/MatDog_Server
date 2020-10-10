@@ -1,21 +1,15 @@
 package org.duksung.matdog_server_hanuim.mapper;
 
 import org.apache.ibatis.annotations.*;
-import org.duksung.matdog_server_hanuim.dto.DogImgUrl;
 import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.Register_lost;
 import org.duksung.matdog_server_hanuim.dto.Register_spot;
 import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.model.dogImgUrlRes;
-import org.duksung.matdog_server_hanuim.model.viewAllRes;
-
 import java.util.List;
 
 @Mapper
 public interface RegisterMapper {
-    //모든 분양 공고 리스트 조회(최신순 정렬)
-//    @Select("SELECT * FROM register ORDER BY registerIdx ASC")
-//    List<Register> findAll_register();
     @Select("SELECT * FROM register ORDER BY happenDt")
     List<RegisterRes> findAll_register();
 
@@ -61,13 +55,6 @@ public interface RegisterMapper {
     @Select("SELECT * FROM register_lost WHERE registerIdx = #{registerIdx}")
     RegisterRes findByRegisterIdx_like_lost(@Param("registerIdx") final int registerIdx);
 
-    //공고 상세화면 보여주기
-//    @Select("SELECT * FROM register R, dog_img D WHERE R.registerStatus = #{D.registerStatus} AND R.registerIdx = #{D.registerIdx} ")
-//    viewAllRes viewAllRegister(@Param("registerStatus") final int registerStatus, @Param("registerIdx") final int registerIdx);
-//    @Select("SELECT r.registerIdx, r.registerStatus, r.variety, r.gender, r.transGender, r.weight, r.age, r.protectPlace, r.endDate, r.feature,r.tel, r.email, r.memo, d.dogUrl " +
-//            "FROM register r, dog_img d " +
-//            "WHERE r.registerIdx = d.registerIdx=#{registerIdx} AND r.registerStatus = d.registerStatus=#{registerStatus}")
-//    viewAllRes viewAllRegister(@Param("registerStatus") final int registerStatus, @Param("registerIdx") final int registerIdx);
     @Select("SELECT * FROM register WHERE registerStatus = #{registerStatus} AND registerIdx = #{registerIdx}")
     Register viewAllRegister(@Param("registerStatus") final int registerStatus, @Param("registerIdx") final int registerIdx);
     @Select("SELECT popfile FROM dog_img WHERE registerStatus = #{registerStatus} AND registerIdx = #{registerIdx}")
@@ -79,7 +66,6 @@ public interface RegisterMapper {
     List<dogImgUrlRes> viewAllRegisterLost_img(@Param("registerStatus") final int registerStatus, @Param("registerIdx") final int registerIdx);
 
     //검색_나이순
-    //검색 기능 concat('%',#{userName},'%')
     @Select("SELECT * FROM register WHERE kindCd LIKE concat('%',#{keyword},'%') OR careAddr LIKE concat('%',#{keyword},'%') ORDER BY age DESC")
     List<RegisterRes> search_register_age(@Param("keyword") final String keyword);
     //검색_등록일순

@@ -1,7 +1,6 @@
 package org.duksung.matdog_server_hanuim.model;
 
 import lombok.*;
-import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
 
@@ -32,14 +31,6 @@ public class DefaultRes<T> {
                 .message(message)
                 .build();
     }
-
-//    public static <T> DefaultRes<T> res_two(final int status, final String message, final T t, final T t2) {
-//        return DefaultRes.<T>builder()
-//                .data()
-//                .status(status)
-//                .message(message)
-//                .build();
-//    }
 
     public static final DefaultRes FAIL_DEFAULT_RES = new DefaultRes(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.INTERNAL_SERVER_ERROR);
 }

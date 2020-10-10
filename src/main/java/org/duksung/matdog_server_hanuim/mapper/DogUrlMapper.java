@@ -10,5 +10,4 @@ import org.duksung.matdog_server_hanuim.dto.DogImgUrl;
 public interface DogUrlMapper {
     @Insert("INSERT INTO dog_img(registerIdx, popfile, registerStatus) VALUES(#{dogImgUrl.registerIdx}, #{dogImgUrl.popfile}, #{dogImgUrl.registerStatus})")
     int save(@Param("dogImgUrl") final DogImgUrl dogImgUrl);
-
 }

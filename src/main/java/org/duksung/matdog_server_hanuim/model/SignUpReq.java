@@ -1,7 +1,6 @@
 package org.duksung.matdog_server_hanuim.model;
 
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class SignUpReq {
@@ -16,8 +15,4 @@ public class SignUpReq {
     private int emailcheck;
     private String dm;
     private int dmcheck;
-
-
-//    private MultipartFile profile;
-//    private String profileUrl;
 }

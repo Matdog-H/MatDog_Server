@@ -1,13 +1,9 @@
 package org.duksung.matdog_server_hanuim.mapper;
 
 import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.plugin.Intercepts;
-import org.duksung.matdog_server_hanuim.dto.Register;
-import org.duksung.matdog_server_hanuim.dto.Register_lost;
 import org.duksung.matdog_server_hanuim.dto.Register_spot;
 import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.model.dogImgUrlRes;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -27,13 +23,6 @@ public interface RegisterSpotMapper {
 
     @Select("SELECT popfile FROM dog_img_spot WHERE registerStatus = #{registerStatus} AND registerIdx = #{registerIdx}")
     dogImgUrlRes viewAllRegisterSpot_img(@Param("registerStatus") final int registerStatus, @Param("registerIdx") final int registerIdx);
-
-    //    //검색 기능_나이
-//    @Select("SELECT * FROM register_spot WHERE kindCd LIKE concat('%',#{kindCd},'%') AND careAddr LIKE concat('%',#{careAddr},'%') ORDER BY age")
-//    List<RegisterRes> search_spot_age(@Param("kindCd") final String kindCd, @Param("careAddr") final String careAddr);
-//    //검색 기능_등록일
-//    @Select("SELECT * FROM register_spot WHERE kindCd LIKE concat('%',#{kindCd},'%') AND careAddr LIKE concat('%',#{careAddr},'%') ORDER BY happenDt")
-//    List<RegisterRes> search_spot_date(@Param("kindCd") final String kindCd, @Param("careAddr") final String careAddr);
 
     //검색 기능_나이
     @Select("SELECT * FROM register_spot WHERE kindCd LIKE concat('%',#{keyword},'%') OR careAddr LIKE concat('%',#{keyword},'%') ORDER BY age DESC")

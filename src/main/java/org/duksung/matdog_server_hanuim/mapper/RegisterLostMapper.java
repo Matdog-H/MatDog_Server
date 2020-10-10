@@ -1,11 +1,9 @@
 package org.duksung.matdog_server_hanuim.mapper;
 
 import org.apache.ibatis.annotations.*;
-import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.Register_lost;
 import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.model.dogImgUrlRes;
-
 import java.util.List;
 
 @Mapper
@@ -23,13 +21,6 @@ public interface RegisterLostMapper {
     Register_lost viewAllRegister_lost(@Param("registerStatus") final int registerStatus, @Param("registerIdx") final int registerIdx);
     @Select("SELECT popfile FROM dog_img_lost WHERE registerStatus = #{registerStatus} AND registerIdx = #{registerIdx}")
     dogImgUrlRes viewAllRegisterLost_img(@Param("registerStatus") final int registerStatus, @Param("registerIdx") final int registerIdx);
-
-    //검색 기능_나이
-//    @Select("SELECT * FROM register_lost WHERE kindCd LIKE concat('%',#{kindCd},'%') AND lostPlace LIKE concat('%',#{lostPlace},'%') ORDER BY age")
-//    List<RegisterRes> search_lost_age(@Param("kindCd") final String kindCd, @Param("lostPlace") final String lostPlace);
-//    //검색 기능_등록일
-//    @Select("SELECT * FROM register_lost WHERE kindCd LIKE concat('%',#{kindCd},'%') AND lostPlace LIKE concat('%',#{lostPlace},'%') ORDER BY happenDt")
-//    List<RegisterRes> search_lost_date(@Param("kindCd") final String kindCd, @Param("lostPlace") final String lostPlace);
 
     //검색 기능_나이
     @Select("SELECT * FROM register_lost WHERE kindCd LIKE concat('%',#{keyword},'%') OR lostPlace LIKE concat('%',#{keyword},'%') ORDER BY age DESC")
@@ -56,9 +47,6 @@ public interface RegisterLostMapper {
             "#{re_lost.email}, #{re_lost.dm}, #{re_lost.filename})")
     @Options(useGeneratedKeys = true, keyColumn = "registerIdx", keyProperty = "re_lost.registerIdx")
     int save_lost(@Param("userIdx") final int userIdx, @Param("re_lost") final Register_lost re_lost);
-
-    @Insert("INSERT INTO register_lost(filename) VALUES(#{filename})")
-    int url_lost(@Param("filename") final String filename);
 
     //이미지 저장
     @Insert("INSERT INTO dog_img_lost(userIdx, registerIdx, popfile, registerStatus) VALUES(#{userIdx}, #{registerIdx}, #{popfile}, #{registerStatus})")

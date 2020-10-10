@@ -1,7 +1,6 @@
 package org.duksung.matdog_server_hanuim.dto;
 
 import lombok.Data;
-
 import java.sql.Date;
 
 @Data

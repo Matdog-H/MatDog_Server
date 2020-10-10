@@ -4,12 +4,10 @@ import org.apache.ibatis.annotations.*;
 import org.duksung.matdog_server_hanuim.dto.User;
 import org.duksung.matdog_server_hanuim.model.LoginReq;
 import org.duksung.matdog_server_hanuim.model.SignUpReq;
-
 import java.util.List;
 
 @Mapper
 public interface UserMapper {
-
     //모든 회원 리스트 조회
     @Select("SELECT * FROM user")
     List<User> findAll();
@@ -25,9 +23,6 @@ public interface UserMapper {
     //Useridx로 조회
     @Select("SELECT * FROM user WHERE userIdx = #{userIdx}")
     User findByUidx(@Param("userIdx") final int userIdx);
-
-    //@Update("UPDATE user SET dm = #{userDescriptionReq.u_description} WHERE u_idx = #{userIdx}")
-    //void saveUserDescription(@Param("userIdx") final int userIdx, @Param("userDescriptionReq") final UserDescriptionReq userDescriptionReq);
 
 
     //회원 등록, Auto Increment는 회원 고유 번호
@@ -50,7 +45,4 @@ public interface UserMapper {
     // 아이디와 비밀번호로 조회
     @Select("SELECT * FROM user WHERE id = #{loginReq.id} AND pw = #{loginReq.pw}")
     User findByIdAndPassword(@Param("loginReq") final LoginReq loginReq);
-
-    //찜한 공고 가져오기
-    //@Select("SELECT * FROM ")
 }

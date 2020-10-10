@@ -23,6 +23,5 @@ public class Register {
     private String email;
     private String dm;
 
-    //private MultipartFile[] dogimg;
     private String filename;
 }
