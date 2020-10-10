@@ -8,6 +8,12 @@ import org.duksung.matdog_server_hanuim.dto.ApiDto;
 
 @Mapper
 public interface ApiMapper {
+    /**
+     * open api 공고 저장
+     * @param userIdx
+     * @param apiDto
+     * @return
+     */
     @Insert("INSERT INTO register(userIdx, registerStatus, kindCd, sexCd, neuterYn, weight, age, orgNm, careAddr, happenDt, specialMark, careTel, email, dm, filename) " +
             "VALUES(#{userIdx}, #{api.registerStatus}, #{api.kindCd}, #{api.sexCd}, #{api.neuterYn}, #{api.weight}, " +
             "#{api.age}, #{api.orgNm}, #{api.careAddr}, #{api.happenDt}, " +
