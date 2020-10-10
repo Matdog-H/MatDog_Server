@@ -33,7 +33,13 @@ public class RegisterSpotService {
         this.likeMapper = likeMapper;
     }
 
-    //목격 공고 등록
+    /**
+     * 목격 공고 등록
+     * @param userIdx
+     * @param register_spot
+     * @param dogimg
+     * @return
+     */
     @Transactional
     public DefaultRes saveRegister_spot(final int userIdx, final Register_spot register_spot, final MultipartFile[] dogimg){
         try{
@@ -77,7 +83,13 @@ public class RegisterSpotService {
         }
     }
 
-    //목격 공고 수정
+    /**
+     * 목격 공고 수정
+     * @param userIdx
+     * @param registerIdx
+     * @param register_spot
+     * @return
+     */
     @Transactional
     public DefaultRes register_spot_update(final int userIdx, final int registerIdx, final Register_spot register_spot){
         if(registerSpotMapper.findByRegisterIdx_spot(registerIdx) != null){
@@ -106,7 +118,10 @@ public class RegisterSpotService {
         return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
     }
 
-    //모든 목격 공고 조회_최신순
+    /**
+     * 모든 목격 공고 조회_최신순
+     * @return
+     */
     @Transactional
     public DefaultRes<List<RegisterRes>> getAllRegister_spot(){
         List<RegisterRes> registerSpotList = registerSpotMapper.findAll_spot();
@@ -118,7 +133,10 @@ public class RegisterSpotService {
         return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerSpotList);
     }
 
-    //나이순 목격 공고 조회
+    /**
+     * 나이순 목격 공고 조회
+     * @return
+     */
     @Transactional
     public DefaultRes<List<RegisterRes>> getAllRegister_spot_age(){
         List<RegisterRes> registerSpotList = registerSpotMapper.findAll_spot_age();
@@ -130,6 +148,12 @@ public class RegisterSpotService {
         return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerSpotList);
     }
 
+    /**
+     * 임시보호 공고 검색
+     * @param keyword
+     * @param sort
+     * @return
+     */
     @Transactional
     public DefaultRes search_spot(final String keyword, final int sort){
         List<RegisterRes> dogSearch_age = registerSpotMapper.search_spot_age(keyword);
@@ -154,7 +178,12 @@ public class RegisterSpotService {
         }return DefaultRes.res(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.NOT_CORRECT_REQUEST);
     }
 
-    //원하는 품종 리스트 검색
+    /**
+     * 원하는 품종 리스트 검색
+     * @param kindCd
+     * @param sort
+     * @return
+     */
     @Transactional
     public DefaultRes findDogList_spot(final String kindCd, final int sort){
         List<RegisterRes> dogList_age = registerSpotMapper.findDogList_spot_age(kindCd);
@@ -180,7 +209,12 @@ public class RegisterSpotService {
         return DefaultRes.res(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.NOT_CORRECT_REQUEST);
     }
 
-    //목격 공고 삭제
+    /**
+     * 목격 공고 삭제
+     * @param userIdx
+     * @param registerIdx
+     * @return
+     */
     @Transactional
     public DefaultRes deleteByRegisterIdx_spot(final int userIdx, final int registerIdx){
         final Register_spot registerSpot = registerSpotMapper.findByRegisterIdx_spot(registerIdx);
@@ -202,6 +236,13 @@ public class RegisterSpotService {
         }
     }
 
+    /**
+     * 임시보호 공고 상세보기
+     * @param userIdx
+     * @param registerStatus
+     * @param registerIdx
+     * @return
+     */
     @Transactional
     public DetailLikeRes<Object> viewDetail_spot(final int userIdx, final int registerStatus, final int registerIdx){
         Register_spot registerSpot = registerSpotMapper.viewAllRegister_spot(registerStatus, registerIdx);
