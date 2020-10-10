@@ -98,7 +98,12 @@ public class RegisterService {
         }
     }
 
-    //검색
+    /**
+     * 보호소 공고 검색
+     * @param keyword
+     * @param sort
+     * @return
+     */
     @Transactional
     public DefaultRes search_register(final String keyword, final int sort) {
         List<RegisterRes> dogSearch_age = registerMapper.search_register_age(keyword);
@@ -124,7 +129,12 @@ public class RegisterService {
         return DefaultRes.res(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.NOT_CORRECT_REQUEST);
     }
 
-    //품종 검색
+    /**
+     * 품종 검색
+     * @param kindCd
+     * @param sort
+     * @return
+     */
     @Transactional
     public DefaultRes findDogList(final String kindCd, final int sort) {
         List<RegisterRes> dogList_age = registerMapper.findDogList_age(kindCd);
@@ -153,7 +163,13 @@ public class RegisterService {
         return DefaultRes.res(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.NOT_CORRECT_REQUEST);
     }
 
-    //공고 수정
+    /**
+     * 공고 수정
+     * @param userIdx
+     * @param registerIdx
+     * @param register
+     * @return
+     */
     @Transactional
     public DefaultRes register_update(final int userIdx, final int registerIdx, final Register register) {
 
@@ -188,7 +204,10 @@ public class RegisterService {
         return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
     }
 
-    //모든 공고 조회
+    /**
+     * 모든 공고 조회
+     * @return
+     */
     @Transactional
     public DefaultRes<List<RegisterRes>> getAllRegister() {
         List<RegisterRes> registerList = registerMapper.findAll_register();
@@ -197,7 +216,10 @@ public class RegisterService {
         return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerList);
     }
 
-    //나이순 공고 조회
+    /**
+     * 나이순 공고 조회
+     * @return
+     */
     @Transactional
     public DefaultRes<List<RegisterRes>> getAllRegister_age() {
         List<RegisterRes> registerList = registerMapper.findAll_age();
@@ -209,7 +231,11 @@ public class RegisterService {
         return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerList);
     }
 
-    //userIdx가 쓴 공고 반환
+    /**
+     * userIdx가 쓴 공고 반환
+     * @param userIdx
+     * @return
+     */
     @Transactional
     public DefaultRes<List<Register>> getUserWriteRegister(final int userIdx) {
         List<Register> registerList = registerMapper.findByuserIdx(userIdx);
@@ -221,7 +247,12 @@ public class RegisterService {
         return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerList);
     }
 
-    //공고 삭제
+    /**
+     * 공고 삭제
+     * @param userIdx
+     * @param registerIdx
+     * @return
+     */
     @Transactional
     public DefaultRes deleteByRegisterIdx(final int userIdx, final int registerIdx) {
         final Register register = registerMapper.findByRegisterIdx(registerIdx);
@@ -241,7 +272,13 @@ public class RegisterService {
         }
     }
 
-    //모든 공고 보여주기
+    /**
+     * 모든 공고 보여주기
+     * @param userIdx
+     * @param registerStatus
+     * @param registerIdx
+     * @return
+     */
     public DetailLikeRes<Object> viewDetail(final int userIdx, final int registerStatus, final int registerIdx) {
         Register register = registerMapper.viewAllRegister(registerStatus, registerIdx);
         dogImgUrlRes dogImgUrl = registerMapper.viewAllRegister_img(registerStatus, registerIdx);
