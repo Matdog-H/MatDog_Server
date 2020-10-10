@@ -28,7 +28,13 @@ public class RegisterSpotController {
         this.userService = userService;
     }
 
-    //목격 공고 등록
+    /**
+     * 임시보호 공고 등록
+     * @param registerSpot
+     * @param token
+     * @param dogimg
+     * @return
+     */
     @PostMapping("program/spot")
     public ResponseEntity registerNotice_spot(
             Register_spot registerSpot,
@@ -51,7 +57,13 @@ public class RegisterSpotController {
         }
     }
 
-    //목격 공고 수정
+    /**
+     * 임시보호 공고 수정
+     * @param token
+     * @param registerIdx
+     * @param registerSpot
+     * @return
+     */
     @PutMapping("program/spot/{registerIdx}")
     public ResponseEntity update_register_spot(
             @RequestHeader(value = "Authorization") String token,
@@ -74,7 +86,12 @@ public class RegisterSpotController {
         }
     }
 
-    //목격 공고 삭제
+    /**
+     * 임시보호 공고 삭제
+     * @param registerIdx
+     * @param token
+     * @return
+     */
     @DeleteMapping("program/spot/{registerIdx}")
     public ResponseEntity delete_spot_register(
             @PathVariable(value = "registerIdx") final int registerIdx,
@@ -96,7 +113,10 @@ public class RegisterSpotController {
         }
     }
 
-    //내가 쓴 모든 공고 가져오기(목격)_최신순
+    /**
+     * 내가 쓴 모든 공고 가져오기(목격)_최신순
+     * @return
+     */
     @GetMapping("program/allSpot")
     public ResponseEntity getSpotRegister(){
         try{
@@ -110,7 +130,10 @@ public class RegisterSpotController {
         }
     }
 
-    //내가 쓴 모든 공고 가져오기(목격)_나이순
+    /**
+     * 내가 쓴 모든 공고 가져오기(목격)_나이순
+     * @return
+     */
     @GetMapping("program/allSpotAge")
     public ResponseEntity getSpotRegister_age(){
         try{
@@ -124,6 +147,12 @@ public class RegisterSpotController {
         }
     }
 
+    /**
+     * 임시보호 공고 검색
+     * @param keyword
+     * @param sort
+     * @return
+     */
     @GetMapping("program/spot/search/{sort}")
     public ResponseEntity searchSpot(
             @RequestParam(value = "keyword", defaultValue = "") final String keyword,
@@ -140,7 +169,12 @@ public class RegisterSpotController {
         }
     }
 
-    //원하는 품종 리스트 검색
+    /**
+     * 임시보호 품종 리스트 검색
+     * @param kindCd
+     * @param sort
+     * @return
+     */
     @GetMapping("program/spot/finddog/{sort}")
     public ResponseEntity findDogList_spot(
             @RequestParam(value = "kindCd") final String kindCd,
@@ -156,6 +190,13 @@ public class RegisterSpotController {
         }
     }
 
+    /**
+     * 임시보호 공고 상세보기
+     * @param token
+     * @param registerStatus
+     * @param registerIdx
+     * @return
+     */
     @GetMapping("program/viewallspot/{registerStatus}/{registerIdx}")
     public ResponseEntity viewAll_register(
             @RequestHeader(value = "Authorization") String token,
