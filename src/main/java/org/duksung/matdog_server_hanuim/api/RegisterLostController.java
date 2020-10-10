@@ -29,7 +29,13 @@ public class RegisterLostController {
         this.userService = userService;
     }
 
-    //실종 공고 등록
+    /**
+     * 실종 공고 등록
+     * @param registerLost
+     * @param token
+     * @param dogimg
+     * @return
+     */
     @PostMapping("program/lost")
     public ResponseEntity registerNotice_lost(
             Register_lost registerLost,
@@ -52,7 +58,13 @@ public class RegisterLostController {
         }
     }
 
-    //실종 공고 수정
+    /**
+     * 실종 공고 수정
+     * @param registerIdx
+     * @param registerLost
+     * @param token
+     * @return
+     */
     @PutMapping("program/lost/{registerIdx}")
     public ResponseEntity update_register_lost(
             @PathVariable(value = "registerIdx") final int registerIdx,
@@ -75,7 +87,12 @@ public class RegisterLostController {
         }
     }
 
-    //실종 공고 삭제
+    /**
+     * 실종 공고 삭제
+     * @param registerIdx
+     * @param token
+     * @return
+     */
     @DeleteMapping("program/lost/{registerIdx}")
     public ResponseEntity delete_lost_register(
             @PathVariable(value = "registerIdx") final int registerIdx,
@@ -97,7 +114,10 @@ public class RegisterLostController {
         }
     }
 
-    //내가 쓴 모든 공고 가져오기(실종)
+    /**
+     * 내가 쓴 모든 공고 가져오기(실종)
+     * @return
+     */
     @GetMapping("program/allLost")
     public ResponseEntity getLostRegister(){
         try{
@@ -111,7 +131,10 @@ public class RegisterLostController {
         }
     }
 
-    //내가 쓴 모든 공고 가져오기(실종)_나이순
+    /**
+     * 내가 쓴 모든 공고 가져오기(실종)_나이순
+     * @return
+     */
     @GetMapping("program/allLostAge")
     public ResponseEntity getLostRegister_age(){
         try{
@@ -125,6 +148,12 @@ public class RegisterLostController {
         }
     }
 
+    /**
+     * 실종 공고 검색
+     * @param keyword
+     * @param sort
+     * @return
+     */
     @GetMapping("program/lost/search/{sort}")
     public ResponseEntity searchLost(
             @RequestParam(value = "keyword", defaultValue = "") final String keyword,
@@ -140,6 +169,12 @@ public class RegisterLostController {
         }
     }
 
+    /**
+     * 품종 리스트 검색
+     * @param kindCd
+     * @param sort
+     * @return
+     */
     @GetMapping("program/lost/finddog/{sort}")
     public ResponseEntity findDogList_lost(
             @RequestParam(value = "kindCd") final String kindCd,
@@ -155,6 +190,13 @@ public class RegisterLostController {
         }
     }
 
+    /**
+     * 실종 공고 상세보기
+     * @param token
+     * @param registerStatus
+     * @param registerIdx
+     * @return
+     */
     @GetMapping("program/viewalllost/{registerStatus}/{registerIdx}")
     public ResponseEntity viewAll_register(
             @RequestHeader(value = "Authorization") String token,
