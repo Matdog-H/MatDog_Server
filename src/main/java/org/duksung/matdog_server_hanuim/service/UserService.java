@@ -60,13 +60,6 @@ public class UserService {
      * @param id 아이디
      * @return DefaultRes
      */
-//    public DefaultRes findById(final String id) {
-//        final User user = userMapper.findById(id);
-//        if (user == null) {
-//            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
-//        }
-//        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_USER, user);
-//    }
     public DefaultRes findById(final String id) {
         final User user = userMapper.findById(id);
         try{
@@ -91,13 +84,9 @@ public class UserService {
     @Transactional
     public DefaultRes save(final SignUpReq signUpReq) {
         try {
-//            if(signUpReq.getProfile() != null)
-//                signUpReq.setProfileUrl(s3FileUploadService.resizeupload(signUpReq.getProfile()));
             userMapper.save(signUpReq);
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_USER);
         } catch (Exception e) {
-            //Rollback
-            //String data = "필수입력값을 입력하세요!";
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             log.error(e.getMessage());
             return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
@@ -154,11 +143,6 @@ public class UserService {
                 myUser.setDmcheck(user.getDmcheck());
                 myUser.setEmailcheck(user.getEmailcheck());
                 myUser.setTelcheck(user.getTelcheck());
-//
-//                if(signUpReq.getProfile() != null)
-//                    signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
-
-//                if (user.getProfileUrl() !=null) myUser.setProfileUrl(s3FileUploadService.upload(user.getProfile()));
                 userMapper.updateUserInfo(userIdx, myUser);
                 return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_USER);
             } catch (Exception e) {
@@ -170,18 +154,6 @@ public class UserService {
         return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
     }
 
-
-//    @Transactional
-//    public DefaultRes findUserLikes(final int userIdx){
-//        if(userMapper.findByUidx(userIdx) != null){
-//            List<Register_like> listRegisterList = likeMapper.findRegisterLikeByUserIdx(userIdx);
-//            List<Register> listRegister = new LinkedList<>();
-//
-//            try{
-//
-//            }
-//        }
-//    }
 
     /**
      * ID으로 회원 조회
