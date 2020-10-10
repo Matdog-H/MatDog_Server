@@ -19,6 +19,14 @@ public class LikeService {
         this.likeMapper = likeMapper;
     }
 
+    /**
+     * 좋아요 상태 변경 및 생성
+     * @param userIdx
+     * @param registerIdx
+     * @param registerStatus
+     * @param likeStatus
+     * @return
+     */
     @Transactional
     public DefaultRes setLike(final int userIdx, final int registerIdx, final int registerStatus, final int likeStatus) {
         try {
