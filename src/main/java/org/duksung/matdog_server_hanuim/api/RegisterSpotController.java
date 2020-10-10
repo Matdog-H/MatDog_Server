@@ -1,23 +1,17 @@
 package org.duksung.matdog_server_hanuim.api;
 
 import lombok.extern.slf4j.Slf4j;
-import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.dto.Register_spot;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
 import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.service.JwtService;
 import org.duksung.matdog_server_hanuim.service.RegisterSpotService;
 import org.duksung.matdog_server_hanuim.service.UserService;
-import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
-
 import static org.duksung.matdog_server_hanuim.model.DefaultRes.FAIL_DEFAULT_RES;
 
 @RestController
@@ -130,23 +124,6 @@ public class RegisterSpotController {
         }
     }
 
-    //목격 공고 검색
-//    @GetMapping("program/spot/search/{sort}")
-//    public ResponseEntity searchSpot(
-//            @RequestParam(value = "kindCd", defaultValue = "") final String kindCd,
-//            @RequestParam(value = "careAddr", defaultValue = "") final String careAddr,
-//            @PathVariable(value = "sort") final int sort
-//    ) {
-//        try {
-//            log.info("목격 공고 검색 성공");
-//            DefaultRes<List<Register_spot>> defaultRes = registerSpotService.search_spot(kindCd, careAddr, sort);
-//            return new ResponseEntity<>(defaultRes, HttpStatus.OK);
-//        } catch (Exception e) {
-//            log.info("분양 검색 실패");
-//            log.error(e.getMessage());
-//            return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
     @GetMapping("program/spot/search/{sort}")
     public ResponseEntity searchSpot(
             @RequestParam(value = "keyword", defaultValue = "") final String keyword,
