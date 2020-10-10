@@ -27,7 +27,13 @@ public class RegisterController {
         this.userService = userService;
     }
 
-    //공고 등록
+    /**
+     * 보호소 공고 등록
+     * @param register
+     * @param token
+     * @param dogimg
+     * @return
+     */
     @PostMapping("program/register")
     public ResponseEntity registerNotice(
             Register register,
@@ -49,7 +55,12 @@ public class RegisterController {
         }
     }
 
-    //분양 검색
+    /**
+     * 보호소 공고 검색
+     * @param keyword
+     * @param sort
+     * @return
+     */
     @GetMapping("program/register/search/{sort}")
     public ResponseEntity searchRegister(
             @RequestParam(value = "keyword", defaultValue = "") final String keyword,
@@ -65,6 +76,12 @@ public class RegisterController {
         }
     }
 
+    /**
+     * 보호소 공고 검색(품종)
+     * @param kindCd
+     * @param sort
+     * @return
+     */
     @GetMapping("program/register/finddog/{sort}")
     public ResponseEntity findDogList(
             @RequestParam(value = "kindCd") final String kindCd,
@@ -137,14 +154,9 @@ public class RegisterController {
     }
 
     /**
-     * [getRegister]
-     * userMapper에서 finduserIdx해서 userIdx를 가져와서 그 user가 쓴 공고를 가져온다
-     * <p>
-     * [getHeartRegister]
-     * userMapper에서 finduserIdx해서 userIdx를 가져와서 그 user가 찜한
+     * 내가 쓴 모든 공고 가져오기(분양)_최신순
+     * @return
      */
-
-    //내가 쓴 모든 공고 가져오기(분양)_최신순
     @GetMapping("program/allregister")
     public ResponseEntity getRegister() {
         try {
@@ -158,7 +170,10 @@ public class RegisterController {
         }
     }
 
-    //내가 쓴 모든 공고 가져오기(목격)_나이순
+    /**
+     * 내가 쓴 모든 공고 가져오기(목격)_나이순
+     * @return
+     */
     @GetMapping("program/allregisterAge")
     public ResponseEntity getRegister_age() {
         try {
@@ -172,6 +187,10 @@ public class RegisterController {
         }
     }
 
+    /**
+     * 보호소 모든 공고 가져오기
+     * @return
+     */
     @GetMapping("program/all")
     public ResponseEntity getAll_register() {
         try {
@@ -186,6 +205,13 @@ public class RegisterController {
         }
     }
 
+    /**
+     * 보호소 공고 상세보기
+     * @param token
+     * @param registerStatus
+     * @param registerIdx
+     * @return
+     */
     @GetMapping("program/viewall/{registerStatus}/{registerIdx}")
     public ResponseEntity viewAll_register(
             @RequestHeader(value = "Authorization") String token,
