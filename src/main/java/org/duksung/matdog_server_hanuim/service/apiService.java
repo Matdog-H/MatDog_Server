@@ -2,7 +2,6 @@ package org.duksung.matdog_server_hanuim.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.ApiDto;
-import org.duksung.matdog_server_hanuim.dto.Register;
 import org.duksung.matdog_server_hanuim.mapper.ApiMapper;
 import org.duksung.matdog_server_hanuim.mapper.LikeMapper;
 import org.duksung.matdog_server_hanuim.mapper.RegisterMapper;
@@ -15,9 +14,7 @@ import org.json.simple.parser.JSONParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
-
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 
 @Slf4j
 @Service
