@@ -38,6 +38,12 @@ public class S3FileUploadService {
         this.amazonS3Client = amazonS3Client;
     }
 
+    /**
+     * S3에 이미지 업로드
+     * @param uploadFile
+     * @return
+     * @throws IOException
+     */
     public String upload(MultipartFile uploadFile) throws IOException {
         String origName = uploadFile.getOriginalFilename();
         String url;
@@ -64,6 +70,12 @@ public class S3FileUploadService {
         return url;
     }
 
+    /**
+     * S3 리사이즈 이미지 업로드
+     * @param uploadFile
+     * @return
+     * @throws IOException
+     */
     public String resizeupload(MultipartFile uploadFile) throws IOException {
         String origName = uploadFile.getOriginalFilename();
         String url;
