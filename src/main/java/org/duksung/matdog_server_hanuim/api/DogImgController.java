@@ -2,8 +2,6 @@ package org.duksung.matdog_server_hanuim.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.service.DogImgService;
-import org.duksung.matdog_server_hanuim.service.JwtService;
-import org.duksung.matdog_server_hanuim.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

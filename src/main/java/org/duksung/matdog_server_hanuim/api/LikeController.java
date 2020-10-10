@@ -27,6 +27,14 @@ public class LikeController {
         this.userService = userService;
     }
 
+    /**
+     * 좋아요 상태 변경
+     * @param token
+     * @param likeStatus
+     * @param registerIdx
+     * @param registerStatus
+     * @return
+     */
     @PostMapping("like/{registeridx}/{registerstatus}/{likestatus}")
     public ResponseEntity like(
             @RequestHeader(value = "Authorization") String token,
