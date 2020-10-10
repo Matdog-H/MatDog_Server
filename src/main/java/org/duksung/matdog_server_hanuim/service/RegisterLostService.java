@@ -201,54 +201,6 @@ public class RegisterLostService {
         }
     }
 
-    //모든 공고 보여주기
-//    public DefaultRes<Register_lost> viewAllRegisterLost(final int registerStatus, final int registerIdx) {
-//        Register_lost registerLost = registerLostMapper.viewAllRegister_lost(registerStatus, registerIdx);
-//        if (registerLost != null) {
-//            try {
-//                log.info("1");
-//                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLost);
-//            } catch (Exception e) {
-//                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//                log.info("2");
-//                log.error(e.getMessage());
-//                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
-//            }
-//        }
-//        log.info("3");
-//        return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.NOT_FOUND_REGISTER);
-//    }
-//
-//    public DefaultRes<List<dogImgUrlRes>> viewAllRegisterLost_img(final int registerStatus, final int registerIdx){
-//        List<dogImgUrlRes> dogImgUrl = registerLostMapper.viewAllRegisterLost_img(registerStatus, registerIdx);
-//
-//        if(dogImgUrl != null){
-//            try{
-//                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogImgUrl);
-//            } catch (Exception e) {
-//                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//                log.error(e.getMessage());
-//                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
-//            }
-//        }
-//        return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.NOT_FOUND_REGISTER);
-//    }
-    @Transactional
-//    public ViewAllDetailRes<Object> viewDetail_lost(final int registerStatus, final int registerIdx){
-//        Register_lost registerLost = registerLostMapper.viewAllRegister_lost(registerStatus, registerIdx);
-//        List<dogImgUrlRes> dogImgUrl = registerLostMapper.viewAllRegisterLost_img(registerStatus, registerIdx);
-//
-//        if(registerLost != null && dogImgUrl != null){
-//            try{
-//                return ViewAllDetailRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLost, dogImgUrl);
-//            }catch (Exception e){
-//                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//                log.error(e.getMessage());
-//                return ViewAllDetailRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
-//            }
-//        }
-//        return ViewAllDetailRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
-//    }
     public DetailLikeRes<Object> viewDetail_lost(final int userIdx, final int registerStatus, final int registerIdx){
         Register_lost registerLost = registerLostMapper.viewAllRegister_lost(registerStatus, registerIdx);
         dogImgUrlRes dogImgUrl = registerLostMapper.viewAllRegisterLost_img(registerStatus, registerIdx);
