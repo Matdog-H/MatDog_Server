@@ -81,7 +81,6 @@ public class RegisterSpotService {
     @Transactional
     public DefaultRes register_spot_update(final int userIdx, final int registerIdx, final Register_spot register_spot){
         if(registerSpotMapper.findByRegisterIdx_spot(registerIdx) != null){
-            //gender,weight,age,protectPlace,findPlace,findDate,feature,tel,email,dm
             try{
                 Register_spot myRegisterSpot = registerSpotMapper.findByRegisterIdx_spot(registerIdx);
                 if(register_spot.getKindCd() != null) myRegisterSpot.setKindCd(register_spot.getKindCd());
@@ -131,30 +130,6 @@ public class RegisterSpotService {
         return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerSpotList);
     }
 
-    //목격 공고 검색
-//    @Transactional
-//    public DefaultRes search_spot(final String kindCd, final String careAddr, final int sort){
-//        List<RegisterRes> dogSearch_age = registerSpotMapper.search_spot_age(kindCd, careAddr);
-//        List<RegisterRes> dogSearch_date = registerSpotMapper.search_spot_age(kindCd, careAddr);
-//
-//        if(sort==1){
-//            if(dogSearch_age.isEmpty()){
-//                log.info("임시보호 공고 검색 없음_나이");
-//                return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
-//            } else{
-//                log.info("임시보호 공고 검색 성공_나이");
-//                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogSearch_age);
-//            }
-//        } else if(sort==2){
-//            if(dogSearch_date.isEmpty()){
-//                log.info("임시보호 공고 검색 없음_등록일");
-//                return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
-//            } else{
-//                log.info("임시보호 공고 검색 성공_등록일순");
-//                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogSearch_date);
-//            }
-//        }return DefaultRes.res(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.NOT_CORRECT_REQUEST);
-//    }
     @Transactional
     public DefaultRes search_spot(final String keyword, final int sort){
         List<RegisterRes> dogSearch_age = registerSpotMapper.search_spot_age(keyword);
@@ -227,38 +202,6 @@ public class RegisterSpotService {
         }
     }
 
-    //모든 공고 보여주기
-//    public DefaultRes<Register_spot> viewAllRegister(final int registerStatus, final int registerIdx) {
-//        Register_spot registerSpot = registerSpotMapper.viewAllRegister_spot(registerStatus, registerIdx);
-//        if (registerSpot != null) {
-//            try {
-//                log.info("1");
-//                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerSpot);
-//            } catch (Exception e) {
-//                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//                log.info("2");
-//                log.error(e.getMessage());
-//                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
-//            }
-//        }
-//        log.info("3");
-//        return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.NOT_FOUND_REGISTER);
-//    }
-//
-//    public DefaultRes<List<dogImgUrlRes>> viewAllRegister_img(final int registerStatus, final int registerIdx){
-//        List<dogImgUrlRes> dogImgUrl = registerSpotMapper.viewAllRegisterSpot_img(registerStatus, registerIdx);
-//
-//        if(dogImgUrl != null){
-//            try{
-//                return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, dogImgUrl);
-//            } catch (Exception e) {
-//                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//                log.error(e.getMessage());
-//                return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
-//            }
-//        }
-//        return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.NOT_FOUND_REGISTER);
-//    }
     @Transactional
     public DetailLikeRes<Object> viewDetail_spot(final int userIdx, final int registerStatus, final int registerIdx){
         Register_spot registerSpot = registerSpotMapper.viewAllRegister_spot(registerStatus, registerIdx);
