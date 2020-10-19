@@ -19,7 +19,7 @@ public interface RegisterLostMapper {
      * 모든 실종 공고 리스트 조회(나이순 정렬)
      * @return
      */
-    @Select("SELECT * FROM register_lost ORDER BY age DESC")
+    @Select("SELECT * FROM register_lost ORDER BY age*1 DESC")
     List<RegisterRes> findAll_lost_age();
 
     /**

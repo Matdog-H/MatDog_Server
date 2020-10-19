@@ -11,6 +11,8 @@ import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -18,6 +20,7 @@ import java.sql.Date;
 
 @Slf4j
 @Service
+@Component
 public class apiService {
     private final ApiMapper apiMapper;
     private final LikeMapper likeMapper;
@@ -35,11 +38,13 @@ public class apiService {
      * @return
      */
     @Transactional
+    @Scheduled(cron = "*/10 * * * * *")
     public DefaultRes save_api(final String xmlJSONObj) {
         if(xmlJSONObj == null){
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
         } else{
             try{
+                System.out.println("1");
                 JSONParser jsonParser = new JSONParser();
                 JSONObject jsonObject = (JSONObject) jsonParser.parse(xmlJSONObj);
                 JSONObject response = (JSONObject) jsonObject.get("response");
@@ -67,9 +72,7 @@ public class apiService {
                     apiDto.setCareAddr(dogInfo.get("careAddr").toString());
 
                     long longDate = (long)dogInfo.get("happenDt")*79260;
-                    System.out.println((long)dogInfo.get("happenDt"));
                     Date sqlDate = new Date(longDate);
-                    System.out.println(sqlDate);
 
 
                     apiDto.setHappenDt(sqlDate);

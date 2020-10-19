@@ -7,29 +7,28 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class DetailLikeRes<T> {
+public class DetailLikeRes2<T> {
     private int status;
 
     private String message;
 
     private T register;
 
-    private T img;
-
     private int likeStatus;
 
-    public static <T> DetailLikeRes<T> res(final int status, final String message){
+    private T contactopen;
+
+    public static <T> DetailLikeRes2<T> res(final int status, final String message){
         return res(status, message);
     }
 
-    public static <T> DetailLikeRes<T> res(final int status, final String message, final T t, final T t2, final int likeStatus){
-        return DetailLikeRes.<T>builder()
+    public static <T> DetailLikeRes2<T> res(final int status, final String message, final T t, final int likeStatus, final T t3){
+        return DetailLikeRes2.<T>builder()
                 .status(status)
                 .message(message)
                 .register(t)
-                .img(t2)
                 .likeStatus(likeStatus)
+                .contactopen(t3)
                 .build();
     }
 }
-

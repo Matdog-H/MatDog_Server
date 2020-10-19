@@ -39,7 +39,7 @@ public class RegisterSpotController {
     public ResponseEntity registerNotice_spot(
             Register_spot registerSpot,
             @RequestHeader(value = "Authorization") String token,
-            @RequestPart(value = "dogimg") final MultipartFile[] dogimg){
+            @RequestPart(value = "dogimg", required = false) final MultipartFile[] dogimg){
         int userIdx = jwtService.decode(token).getUser_idx();
         DefaultRes user = userService.findUser(userIdx);
 

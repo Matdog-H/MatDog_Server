@@ -4,6 +4,8 @@ import org.apache.ibatis.annotations.*;
 import org.duksung.matdog_server_hanuim.dto.User;
 import org.duksung.matdog_server_hanuim.model.LoginReq;
 import org.duksung.matdog_server_hanuim.model.SignUpReq;
+import org.duksung.matdog_server_hanuim.model.contactOpen;
+
 import java.util.List;
 
 @Mapper
@@ -67,4 +69,7 @@ public interface UserMapper {
      */
     @Select("SELECT * FROM user WHERE id = #{loginReq.id} AND pw = #{loginReq.pw}")
     User findByIdAndPassword(@Param("loginReq") final LoginReq loginReq);
+
+    @Select("SELECT telcheck, emailcheck, dmcheck FROM user WHERE  userIdx = #{userIdx}")
+    contactOpen showOpen(@Param("userIdx") final int userIdx);
 }

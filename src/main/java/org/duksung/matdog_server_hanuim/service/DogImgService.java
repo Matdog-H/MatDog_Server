@@ -6,6 +6,7 @@ import org.duksung.matdog_server_hanuim.mapper.RegisterMapper;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
+import org.python.util.PythonInterpreter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +31,11 @@ public class DogImgService {
     @Transactional
     public DefaultRes dogImgTransfer(final MultipartFile dogimg) throws IOException {
         String url =  s3FileUploadService.dogImgTransfer(dogimg);
+
+        PythonInterpreter python = new PythonInterpreter();
+        python.execfile("Untitled.py");
+        python.exec("print(url_read(url))");
+
         return DefaultRes.res(StatusCode.OK, ResponseMessage.IMG_TRANSFER, url);
     }
 }

@@ -4,10 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.*;
 import org.duksung.matdog_server_hanuim.mapper.LikeMapper;
 import org.duksung.matdog_server_hanuim.mapper.RegisterLostMapper;
-import org.duksung.matdog_server_hanuim.model.DefaultRes;
-import org.duksung.matdog_server_hanuim.model.LikeReq;
-import org.duksung.matdog_server_hanuim.model.RegisterRes;
-import org.duksung.matdog_server_hanuim.model.dogImgUrlRes;
+import org.duksung.matdog_server_hanuim.mapper.UserMapper;
+import org.duksung.matdog_server_hanuim.model.*;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.springframework.stereotype.Service;
@@ -24,13 +22,16 @@ public class RegisterLostService {
     private final S3FileUploadService s3FileUploadService;
     private final UserService userService;
     private final LikeMapper likeMapper;
+    private final UserMapper userMapper;
 
-    public RegisterLostService(final RegisterLostMapper registerLostMapper, final S3FileUploadService s3FileUploadService, final UserService userService, final LikeMapper likeMapper) {
+    public RegisterLostService(final RegisterLostMapper registerLostMapper, final S3FileUploadService s3FileUploadService, final UserService userService,
+                               final LikeMapper likeMapper, final UserMapper userMapper) {
         log.info("실종 서비스");
         this.registerLostMapper = registerLostMapper;
         this.s3FileUploadService = s3FileUploadService;
         this.userService = userService;
         this.likeMapper = likeMapper;
+        this.userMapper = userMapper;
     }
 
     /**
@@ -239,26 +240,26 @@ public class RegisterLostService {
      * @param registerIdx
      * @return
      */
-    public DetailLikeRes<Object> viewDetail_lost(final int userIdx, final int registerStatus, final int registerIdx){
+    public DetailLikeRes2<Object> viewDetail_lost(final int userIdx, final int registerStatus, final int registerIdx){
         Register_lost registerLost = registerLostMapper.viewAllRegister_lost(registerStatus, registerIdx);
-        dogImgUrlRes dogImgUrl = registerLostMapper.viewAllRegisterLost_img(registerStatus, registerIdx);
         LikeReq likeStatus = likeMapper.showStatus_lost(userIdx, registerIdx, registerStatus);
+        contactOpen open = userMapper.showOpen(userIdx);
 
-        if(registerLost != null || dogImgUrl != null){
+        if(registerLost != null){
             try{
                 if(likeStatus == null){
                     likeMapper.save_like_lost(userIdx, registerIdx, registerStatus, 0);
                     LikeReq now_likeStatus = likeMapper.showStatus_lost(userIdx, registerIdx, registerStatus);
 
-                    return DetailLikeRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLost, dogImgUrl, now_likeStatus.getLikeStatus());
+                    return DetailLikeRes2.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLost, now_likeStatus.getLikeStatus(), open);
                 } else
-                    return DetailLikeRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLost, dogImgUrl, likeStatus.getLikeStatus());
+                    return DetailLikeRes2.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerLost, likeStatus.getLikeStatus(), open);
             }catch (Exception e){
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 log.error(e.getMessage());
-                return DetailLikeRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+                return DetailLikeRes2.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
             }
         }
-        return DetailLikeRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+        return DetailLikeRes2.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
     }
 }

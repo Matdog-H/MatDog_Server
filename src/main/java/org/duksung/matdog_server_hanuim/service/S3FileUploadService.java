@@ -9,9 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 
@@ -40,6 +43,7 @@ public class S3FileUploadService {
 
     /**
      * S3에 이미지 업로드
+     *
      * @param uploadFile
      * @return
      * @throws IOException
@@ -54,7 +58,7 @@ public class S3FileUploadService {
             final String saveFileName = getUuid() + ext;
             //파일 객체 생성
             File file = new File(System.getProperty("user.dir") + saveFileName);
-            System.out.println(file);
+
             //파일 변환
             uploadFile.transferTo(file);
             //S3 파일 업로드
@@ -63,7 +67,7 @@ public class S3FileUploadService {
             url = defaultUrl + saveFileName;
             //파일 삭제
             file.delete();
-        }catch (StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
             //파일이 없을 경우 예외 처리
             url = null;
         }
@@ -72,6 +76,7 @@ public class S3FileUploadService {
 
     /**
      * S3 리사이즈 이미지 업로드
+     *
      * @param uploadFile
      * @return
      * @throws IOException
@@ -86,10 +91,10 @@ public class S3FileUploadService {
             final String saveFileName = getUuid() + ext;
             //파일 객체 생성
             File file = new File(System.getProperty("user.dir") + saveFileName);
+
             System.out.println(file);
             //파일 변환
             uploadFile.transferTo(file);
-            System.out.println("finish");
 
 
             // java-image-scaling 라이브러리
@@ -101,21 +106,17 @@ public class S3FileUploadService {
 
             BufferedImage resizedImage = rescale.filter(img, null);
 
-            ImageIO.write(resizedImage,"jpg", file);
-
-            //log.info("되나요?");
+            ImageIO.write(resizedImage, "jpg", file);
 
             //S3 파일 업로드
             uploadOnS3(saveFileName, file);
             //주소 할당
             url = defaultUrl + saveFileName;
 
-            //log.info(url);
-
             //파일 삭제
             file.delete();
 
-        }catch (StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
             //파일이 없을 경우 예외 처리
             url = null;
         }
@@ -132,16 +133,15 @@ public class S3FileUploadService {
             final String saveFileName = getUuid() + ext;
             //파일 객체 생성
             File file = new File(System.getProperty("user.dir") + saveFileName);
-            System.out.println(file);
             //파일 변환
             uploadFile.transferTo(file);
             //S3 파일 업로드
-            //uploadOnS3(saveFileName, file);
+            uploadOnS3(saveFileName, file);
             //주소 할당
             url = defaultUrl + saveFileName;
             //파일 삭제
             file.delete();
-        }catch (StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
             //파일이 없을 경우 예외 처리
             url = null;
         }

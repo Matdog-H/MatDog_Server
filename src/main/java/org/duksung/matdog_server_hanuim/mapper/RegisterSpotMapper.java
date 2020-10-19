@@ -4,7 +4,6 @@ import org.apache.ibatis.annotations.*;
 import org.duksung.matdog_server_hanuim.dto.Register_spot;
 import org.duksung.matdog_server_hanuim.model.RegisterRes;
 import org.duksung.matdog_server_hanuim.model.dogImgUrlRes;
-
 import java.util.List;
 
 @Mapper
@@ -20,7 +19,7 @@ public interface RegisterSpotMapper {
      * 모든 목격 공고 리스트 조회_나이순
      * @return
      */
-    @Select("SELECT * FROM register_spot ORDER BY age DESC")
+    @Select("SELECT * FROM register_spot ORDER BY age*1 DESC")
     List<RegisterRes> findAll_spot_age();
 
     /**

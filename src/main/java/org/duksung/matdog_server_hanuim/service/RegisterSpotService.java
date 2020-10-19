@@ -4,10 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.duksung.matdog_server_hanuim.dto.*;
 import org.duksung.matdog_server_hanuim.mapper.LikeMapper;
 import org.duksung.matdog_server_hanuim.mapper.RegisterSpotMapper;
-import org.duksung.matdog_server_hanuim.model.DefaultRes;
-import org.duksung.matdog_server_hanuim.model.LikeReq;
-import org.duksung.matdog_server_hanuim.model.RegisterRes;
-import org.duksung.matdog_server_hanuim.model.dogImgUrlRes;
+import org.duksung.matdog_server_hanuim.mapper.UserMapper;
+import org.duksung.matdog_server_hanuim.model.*;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
 import org.springframework.stereotype.Service;
@@ -24,13 +22,16 @@ public class RegisterSpotService {
     private final S3FileUploadService s3FileUploadService;
     private final UserService userService;
     private final LikeMapper likeMapper;
+    private final UserMapper userMapper;
 
-    public RegisterSpotService(final RegisterSpotMapper registerSpotMapper, final S3FileUploadService s3FileUploadService, final UserService userService, final LikeMapper likeMapper){
+    public RegisterSpotService(final RegisterSpotMapper registerSpotMapper, final S3FileUploadService s3FileUploadService, final UserService userService,
+                               final LikeMapper likeMapper, final UserMapper userMapper){
         log.info("목격 서비스");
         this.registerSpotMapper = registerSpotMapper;
         this.s3FileUploadService = s3FileUploadService;
         this.userService = userService;
         this.likeMapper = likeMapper;
+        this.userMapper = userMapper;
     }
 
     /**
@@ -54,6 +55,8 @@ public class RegisterSpotService {
             if(register_spot.getCareAddr() == null) register_spot.setCareAddr("없음");
             if(register_spot.getSpecialMark() == null) register_spot.setSpecialMark("없음");
 
+            //if(dogimg == null) register_spot.setFilename("http://s3.ap-northeast-2.amazonaws.com/matdog/14c4e65fbf4a4554a0f9543f87a32ea8.png");
+
 
             Register_spot returnedData = register_spot;
             register_spot.getRegisterIdx();
@@ -65,7 +68,9 @@ public class RegisterSpotService {
                 if(i == 0){
                     MultipartFile img_resize = dogimg[i];
                     String url_resize = s3FileUploadService.resizeupload(img_resize);
-                    register_spot.setFilename(url_resize);
+                    if (dogimg == null)
+                        register_spot.setFilename("http://s3.ap-northeast-2.amazonaws.com/matdog/14c4e65fbf4a4554a0f9543f87a32ea8.png");
+                    else register_spot.setFilename(url_resize);
                     registerSpotMapper.save_spot(userIdx, register_spot);
                     likeMapper.save_like_spot(userIdx, register_spot.getRegisterIdx(), register_spot.getRegisterStatus(), 0);
                 } else {
@@ -244,26 +249,26 @@ public class RegisterSpotService {
      * @return
      */
     @Transactional
-    public DetailLikeRes<Object> viewDetail_spot(final int userIdx, final int registerStatus, final int registerIdx){
+    public DetailLikeRes2<Object> viewDetail_spot(final int userIdx, final int registerStatus, final int registerIdx){
         Register_spot registerSpot = registerSpotMapper.viewAllRegister_spot(registerStatus, registerIdx);
-        dogImgUrlRes dogImgUrl = registerSpotMapper.viewAllRegisterSpot_img(registerStatus, registerIdx);
         LikeReq likeStatus = likeMapper.showStatus_spot(userIdx, registerIdx, registerStatus);
+        contactOpen open = userMapper.showOpen(userIdx);
 
-        if(registerSpot != null || dogImgUrl != null ){
+        if(registerSpot != null){
             try{
                 if(likeStatus == null) {
                     likeMapper.save_like_spot(userIdx, registerIdx, registerStatus, 0);
                     LikeReq now_likeStatus = likeMapper.showStatus_spot(userIdx, registerIdx, registerStatus);
 
-                    return DetailLikeRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerSpot, dogImgUrl, now_likeStatus.getLikeStatus());
+                    return DetailLikeRes2.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerSpot, now_likeStatus.getLikeStatus(), open);
                 } else
-                    return DetailLikeRes.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerSpot, dogImgUrl, likeStatus.getLikeStatus());
+                    return DetailLikeRes2.res(StatusCode.OK, ResponseMessage.READ_REGISTER, registerSpot, likeStatus.getLikeStatus(), open);
             } catch (Exception e){
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 log.error(e.getMessage());
-                return DetailLikeRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+                return DetailLikeRes2.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
             }
         }
-        return DetailLikeRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
+        return DetailLikeRes2.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_REGISTER);
     }
 }

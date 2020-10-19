@@ -44,7 +44,7 @@ public interface RegisterMapper {
      * 모든 분양 공고 리스트 조회(나이순 정렬)
      * @return
      */
-    @Select("SELECT * FROM register ORDER BY age DESC")
+    @Select("SELECT * FROM register order by age*1 DESC")
     List<RegisterRes> findAll_age();
 
     /**
