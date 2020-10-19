@@ -3,7 +3,7 @@
 #### 분양. 유기견을 위한 강아지 종 인식 및 매칭 서비스
 
 ## 환경
-![](https://img.shields.io/badge/IntelliJ IDEA 2020.1.2 x64-green) ![](https://img.shields.io/badge/Postman-blue)
+![](https://img.shields.io/badge/IntelliJIDEA-2020.1.2x64-green) ![](https://img.shields.io/badge/Postman-blue)
 
 ## 로고
 <img width="380" alt="matdog" src="https://user-images.githubusercontent.com/43837954/90312413-40201700-df3f-11ea-9c47-f413c15f6d32.png">
