@@ -1,8 +1,6 @@
 package org.duksung.matdog_server_hanuim.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.duksung.matdog_server_hanuim.mapper.DogUrlMapper;
-import org.duksung.matdog_server_hanuim.mapper.RegisterMapper;
 import org.duksung.matdog_server_hanuim.model.DefaultRes;
 import org.duksung.matdog_server_hanuim.utils.ResponseMessage;
 import org.duksung.matdog_server_hanuim.utils.StatusCode;
@@ -16,25 +14,31 @@ import java.io.IOException;
 @Slf4j
 public class DogImgService {
     private final S3FileUploadService s3FileUploadService;
-
     public DogImgService(S3FileUploadService s3FileUploadService) {
         log.info("서비스");
-        this.s3FileUploadService=s3FileUploadService;
+        this.s3FileUploadService = s3FileUploadService;
     }
 
     /**
-     * 공고 이미지 등록
+     * 강아지 객체인식
+     *
      * @param dogimg
      * @return
      * @throws IOException
      */
     @Transactional
     public DefaultRes dogImgTransfer(final MultipartFile dogimg) throws IOException {
-        String url =  s3FileUploadService.dogImgTransfer(dogimg);
+        String url = s3FileUploadService.dogImgTransfer(dogimg);
 
-        PythonInterpreter python = new PythonInterpreter();
-        python.execfile("Untitled.py");
-        python.exec("print(url_read(url))");
+        System.out.println("1");
+        PythonInterpreter interpreter = new PythonInterpreter();
+        System.out.println(interpreter);
+        System.out.println("222222");
+        interpreter.execfile("Untitled.py");
+        System.out.println("6");
+        interpreter.exec("print(url_read(url))");
+        System.out.println("7");
+
 
         return DefaultRes.res(StatusCode.OK, ResponseMessage.IMG_TRANSFER, url);
     }
